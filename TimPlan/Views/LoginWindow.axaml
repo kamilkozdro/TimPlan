@@ -1,0 +1,41 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TimPlan.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
+        x:DataType="vm:LoginWindowViewModel"
+        x:CompileBindings="True"
+        x:Class="TimPlan.Views.LoginWindow"
+        Title="LoginWindow"
+		Background="LightCyan"
+		SystemDecorations="None"
+		WindowStartupLocation="CenterScreen">
+
+	<Design.DataContext>
+		<vm:LoginWindowViewModel/>
+	</Design.DataContext>
+
+	<Border BorderBrush="Black"
+			BorderThickness="2"
+			Width="400"
+			Height="200">
+		<StackPanel Classes="VerticalCenter">
+			<StackPanel Classes="HorizontalCenter">
+				<TextBox Classes="Default"
+						 Text="{Binding Username}"
+						 Watermark="Username"/>
+				<TextBox Classes="Default"
+						 Text="{Binding Password}"
+						 Watermark="Password"
+						 PasswordChar="*"/>
+			</StackPanel>
+			<Button Classes="Default"
+					Command="{Binding LoginCommand}"
+					Width="80">
+				Login
+			</Button>
+		</StackPanel>
+	</Border>
+	
+</Window>

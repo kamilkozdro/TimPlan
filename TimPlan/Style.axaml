@@ -1,0 +1,57 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- Add Styles Here -->
+	
+	<!-- StackPanels Styles -->
+	<Style Selector="StackPanel.HorizontalCenter">
+		<Setter Property="Orientation" Value="Horizontal"/>
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+	<Style Selector="StackPanel.VerticalCenter">
+		<Setter Property="Orientation" Value="Vertical"/>
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+	
+	<!-- TextBox Styles -->
+	<Style Selector="TextBox.Default">
+		<Setter Property="Width" Value="150"/>
+		<Setter Property="Height" Value="40"/>
+		<Setter Property="Margin" Value="10"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+	</Style>
+	
+	<!-- Button Styles -->
+	<Style Selector="Button.Default">
+		<Setter Property="MinWidth" Value="60"/>
+		<Setter Property="MinHeight" Value="40"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="BorderBrush" Value="Black"/>
+		<Setter Property="Margin" Value="10"/>
+		<Setter Property="Background" Value="LightSkyBlue"/>
+	</Style>
+	<Style Selector="Button.Default:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Background" Value="LightSkyBlue"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="BorderBrush" Value="Black"/>
+	</Style>
+	<Style Selector="Button.Default:pressed /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Background" Value="DodgerBlue"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="BorderBrush" Value="Black"/>
+	</Style>
+	
+	
+</Styles>
