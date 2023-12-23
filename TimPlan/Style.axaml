@@ -52,6 +52,10 @@
 		<Setter Property="BorderThickness" Value="1"/>
 		<Setter Property="BorderBrush" Value="Black"/>
 	</Style>
-	
+
+	<!--  TextBlock Styles -->
+	<Style Selector="TextBlock.Default">
+		<Setter Property="Margin" Value="3"/>
+	</Style>
 	
 </Styles>

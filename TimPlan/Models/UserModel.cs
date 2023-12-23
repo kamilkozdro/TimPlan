@@ -8,19 +8,26 @@ namespace TimPlan.Models
 {
     public class UserModel
     {
-        public int Id { get; set; }
+        public uint Id { get; set; }
         public string? Name { get; set; }
-        public string? Login { get; set; }
-        public string? Password { get; set; }
-        public string? UserName { get; set; }
-        public int TeamId { get; set; }
-        public int TeamRoleID { get; set; }
 
-        public TeamRoleModel? Role { get; set; }
+        #region DbNames
+
+        public const string DbName = "users";
+        public const string DbIdCol = "id";
+        public const string DbLoginCol = "login";
+        public const string DbPasswordCol = "password";
+
+        #endregion
 
         public UserModel()
         {
             
+        }
+
+        public override string ToString()
+        {
+            return $"Id:{Id}, Name:{Name}";
         }
 
     }

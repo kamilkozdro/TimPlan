@@ -9,6 +9,10 @@ namespace TimPlan.Models
 {
     public class TeamModel
     {
+
+
+
+
         [Column ("id")]
         public int Id { get; set; }
         [Column("name")]

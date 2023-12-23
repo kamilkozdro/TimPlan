@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using TimPlan.Models;
 using TimPlan.ViewModels;
@@ -40,15 +41,16 @@ public partial class App : Application
             // Wait for the login to complete
             UserModel usernameResult = await loginCompletionSource.Task;
 
-            
-
             MainViewModel mainViewModel = new MainViewModel();
             MainWindow mainWindow = new MainWindow();
             mainWindow.DataContext = mainViewModel;
 
             desktop.MainWindow = mainWindow;
+
             mainWindow.Show();
             loginWindow.Close();
+
+            mainViewModel.LoggedUser = usernameResult;
 
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)

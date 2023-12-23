@@ -7,6 +7,7 @@ using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TimPlan.Lib;
 using TimPlan.Models;
 
 namespace TimPlan.ViewModels
@@ -43,11 +44,17 @@ namespace TimPlan.ViewModels
 
         private void ButtonLoginClick()
         {
-            UserModel loggedUser = new UserModel()
+            UserModel loggedUser = SQLAccess.SelectUser(Username, Password);
+
+            if (loggedUser == null)
             {
-                Name = "logged user 1"
-            };
-            OnSuccesfullLogin(loggedUser);
+                Debug.WriteLine("Wrong credentials");
+                return;
+            }
+            else
+            {
+                OnSuccesfullLogin(loggedUser);
+            }
         }
 
         public void OnSuccesfullLogin(UserModel user)

@@ -7,43 +7,105 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimPlan.Models;
+using System.Diagnostics;
 
 namespace TimPlan.Lib
 {
     static public class SQLAccess
     {
 
-        static private string _ConnectionString = "name=\"Default\" connectionString=\"Data Source=.\\SharedPlannerDB.db;Version=3;\" providerName=\"System.Data.SqlClient\"";
+        static private string _ConnectionString = "Data Source=.\\TimPlanDB.db;Version=3;";
 
-        public static UserModel? SelectUser(uint userId)
+        #region Select
+
+        static public UserModel? SelectUser(uint id)
         {
-            using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+            try
             {
-                string queryString = $"SELECT * " +
-                                $"FROM users " +
-                                $"WHERE id='{userId}'";
-                var queryOutput = connection.Query<UserModel>(queryString, new DynamicParameters());
-                queryOutput.ToList();
-
-                if (queryOutput.Count() != 1)
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
-                    // THROW ERROR - Database Error: Not unique user name!
-                    return null;
-                }
+                    string queryString = $"SELECT * " +
+                                    $"FROM {UserModel.DbName} " +
+                                    $"WHERE {UserModel.DbIdCol}={id}";
+                    UserModel queryOutput = connection.QuerySingle<UserModel>(queryString, new DynamicParameters());
 
-                return queryOutput.ElementAt(0);
+                    return queryOutput;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectUser(uint):{e.Message}");
+                return null;
             }
         }
+
+        static public UserModel SelectUser(string login, string password)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"SELECT * " +
+                                    $"FROM {UserModel.DbName} " +
+                                    $"WHERE {UserModel.DbLoginCol}='{login}' " +
+                                    $"AND {UserModel.DbPasswordCol}='{password}'";
+
+                    UserModel queryOutput = connection.QuerySingle<UserModel>(queryString, new DynamicParameters());
+                    Debug.WriteLine(queryOutput);
+
+                    return queryOutput;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectUser(string, string):{e.Message}");
+                return null;
+            }
+        }
+
+        #endregion
+
+
+        #region Insert
 
         public static void InsertUser(UserModel user)
         {
-            using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+            try
             {
-                string queryString = $"INSERT " +
-                                $"INTO Users (Name) " +
-                                $"VALUES (@Name)";
-                connection.Execute(queryString, user);
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"INSERT " +
+                                    $"INTO Users (Name) " +
+                                    $"VALUES (@Name)";
+                    connection.Execute(queryString, user);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"InsertUser():{e.Message}");
             }
         }
+
+        public static void InsertTeam(TeamModel team)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"INSERT " +
+                                    $"INTO Teams (Name) " +
+                                    $"VALUES (@Name)";
+                    connection.Execute(queryString, team);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"InsertUser():{e.Message}");
+            }
+        }
+
+        #endregion
+
+
     }
 }

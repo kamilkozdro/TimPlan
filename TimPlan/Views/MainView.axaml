@@ -21,9 +21,10 @@
 				>
 			<WrapPanel Orientation="Horizontal"
 					   VerticalAlignment="Center">
-				<TextBlock>
-					Tool panel
-				</TextBlock>
+				<TextBlock Classes="Default"
+						   Text="Logged as:"/>
+				<TextBlock Classes="Default"
+						   Text="{Binding LoggedUserName}"/>
 			</WrapPanel>
 		</Border>
 		

@@ -25,4 +25,10 @@
   <ItemGroup>
     <Folder Include="CustomControls\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="TimPlanDB.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
