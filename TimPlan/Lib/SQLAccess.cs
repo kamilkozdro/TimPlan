@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TimPlan.Models;
 using System.Diagnostics;
 
@@ -18,7 +16,26 @@ namespace TimPlan.Lib
 
         #region Select
 
-        static public UserModel? SelectUser(uint id)
+        static public List<UserModel> SelectAllUsers()
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"SELECT * " +
+                                    $"FROM {UserModel.DbName} ";
+                    List<UserModel> queryOutput = connection.Query<UserModel>(queryString, new DynamicParameters()).ToList();
+
+                    return queryOutput;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectAllUsers():{e.Message}");
+                return null;
+            }
+        }
+        static public UserModel SelectUser(uint id)
         {
             try
             {
@@ -27,7 +44,7 @@ namespace TimPlan.Lib
                     string queryString = $"SELECT * " +
                                     $"FROM {UserModel.DbName} " +
                                     $"WHERE {UserModel.DbIdCol}={id}";
-                    UserModel queryOutput = connection.QuerySingle<UserModel>(queryString, new DynamicParameters());
+                    UserModel queryOutput = connection.QuerySingleOrDefault<UserModel>(queryString, new DynamicParameters());
 
                     return queryOutput;
                 }
@@ -38,7 +55,6 @@ namespace TimPlan.Lib
                 return null;
             }
         }
-
         static public UserModel SelectUser(string login, string password)
         {
             try
@@ -50,8 +66,7 @@ namespace TimPlan.Lib
                                     $"WHERE {UserModel.DbLoginCol}='{login}' " +
                                     $"AND {UserModel.DbPasswordCol}='{password}'";
 
-                    UserModel queryOutput = connection.QuerySingle<UserModel>(queryString, new DynamicParameters());
-                    Debug.WriteLine(queryOutput);
+                    UserModel queryOutput = connection.QuerySingleOrDefault<UserModel>(queryString, new DynamicParameters());
 
                     return queryOutput;
                 }
@@ -62,9 +77,29 @@ namespace TimPlan.Lib
                 return null;
             }
         }
+        static public UserModel SelectUserByLogin(string login)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"SELECT * " +
+                                    $"FROM {UserModel.DbName} " +
+                                    $"WHERE {UserModel.DbLoginCol}='{login}'";
+
+                    UserModel queryOutput = connection.QuerySingleOrDefault<UserModel>(queryString, new DynamicParameters());
+
+                    return queryOutput;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectUserByLogin(string):{e.Message}");
+                return null;
+            }
+        }
 
         #endregion
-
 
         #region Insert
 
@@ -75,14 +110,17 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"INSERT " +
-                                    $"INTO Users (Name) " +
-                                    $"VALUES (@Name)";
+                                    $"INTO {UserModel.DbName} " +
+                                    $"({UserModel.DbNameCol},{UserModel.DbLoginCol},{UserModel.DbPasswordCol}) " +
+                                    $"VALUES (@{nameof(UserModel.Name)}," +
+                                    $"@{nameof(UserModel.Login)}," +
+                                    $"@{nameof(UserModel.Password)})";
                     connection.Execute(queryString, user);
                 }
             }
             catch (Exception e)
             {
-                Debug.WriteLine($"InsertUser():{e.Message}");
+                Debug.WriteLine($"InsertUser(UserModel):{e.Message}");
             }
         }
 
@@ -106,6 +144,50 @@ namespace TimPlan.Lib
 
         #endregion
 
+        #region Update
 
+        public static void UpdateUser(UserModel user)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"UPDATE {UserModel.DbName} " +
+                                    $"SET {UserModel.DbNameCol} = @{nameof(UserModel.Name)}, " +
+                                    $"{UserModel.DbLoginCol} = @{nameof(UserModel.Login)}, " +
+                                    $"{UserModel.DbPasswordCol} = @{nameof(UserModel.Password)} " +
+                                    $"WHERE {UserModel.DbIdCol} = @{nameof(UserModel.Id)}";
+                    connection.Execute(queryString, user);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"UpdateUser(UserModel):{e.Message}");
+            }
+        }
+
+        #endregion
+
+        #region Delete
+
+        public static void DeleteUser(uint id)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"DELETE " +
+                                    $"FROM {UserModel.DbName} " +
+                                    $"WHERE {UserModel.DbIdCol} = {id}";
+                    connection.Execute(queryString);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"DeleteUser(uint):{e.Message}");
+            }
+        }
+
+        #endregion
     }
 }

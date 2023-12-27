@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using TimPlan.Models;
 using System;
+using System.Reactive;
 
 namespace TimPlan.ViewModels;
 
@@ -36,13 +37,34 @@ public class MainViewModel : ViewModelBase
     public ObservableCollection<TreeViewNode> TreeViewNodes { get; set; }
     public TreeViewNode SelectedNode { get; set; }
 
+    #region Commands
+
+    public ReactiveCommand<Unit, Unit> AddUserCommand { get; }
+    public ReactiveCommand<Unit, Unit> DeleteUserCommand { get; }
+    public ReactiveCommand<Unit, Unit> EditUserCommand { get; }
+
+    #endregion
+
+
+
     public MainViewModel()
     {
 
         this.WhenAnyValue(o => o.LoggedUser)
             .Subscribe(UpdateUserLogged);
 
-        TreeViewNodes = new ObservableCollection<TreeViewNode>()
+
+        #region Set Commands
+
+        AddUserCommand = ReactiveCommand.Create(ShowAddUserDialog);
+        DeleteUserCommand = ReactiveCommand.Create(ShowDeleteUserDialog);
+        EditUserCommand = ReactiveCommand.Create(ShowEditUserDialog);
+
+        #endregion
+
+
+
+    TreeViewNodes = new ObservableCollection<TreeViewNode>()
         {
             new TreeViewNode("Node 1", 1,
                 new ObservableCollection<TreeViewNode>()
@@ -63,6 +85,21 @@ public class MainViewModel : ViewModelBase
         }
 
         LoggedUserName = user.Name;
+    }
+
+    private void ShowAddUserDialog()
+    {
+
+    }
+
+    private void ShowDeleteUserDialog()
+    {
+
+    }
+
+    private void ShowEditUserDialog()
+    {
+
     }
 
     private void ClearTreeView()

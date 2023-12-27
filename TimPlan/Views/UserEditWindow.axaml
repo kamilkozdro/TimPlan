@@ -1,0 +1,81 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:TimPlan.ViewModels"
+		mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
+        x:Class="TimPlan.Views.UserEditWindow"
+        x:DataType="vm:UserEditViewModel"
+	    x:CompileBindings="True"
+        Title="UserEditWindow"
+		Background="LightCyan"
+		SizeToContent="WidthAndHeight">
+	<Design.DataContext>
+		<vm:UserEditViewModel />
+	</Design.DataContext>
+
+	<StackPanel Orientation="Horizontal">
+		<!-- Users list -->
+		<StackPanel Orientation="Vertical"
+					MinWidth="100">
+			<TextBlock Classes="Header1"
+					   Text="Users List:"/>
+			<ListBox ItemsSource="{Binding Users}"
+					 SelectedItem="{Binding SelectedUser}"
+					 DisplayMemberBinding="{Binding Name}">
+			</ListBox>
+		</StackPanel>
+		
+		<StackPanel Orientation="Vertical">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition MinWidth="50"/>
+					<ColumnDefinition MinWidth="100"/>
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<TextBlock Classes="Default"
+						   Grid.Column="0"
+						   Grid.Row="0"
+						   Text="Username:"/>
+				<TextBox Classes="Default"
+						   Grid.Column="1"
+						   Grid.Row="0"
+						 Text="{Binding Username}"/>
+				<TextBlock Classes="Default"
+						   Grid.Column="0"
+						   Grid.Row="1"
+						   Text="Login:"/>
+				<TextBox Classes="Default"
+						   Grid.Column="1"
+						   Grid.Row="1"
+						 Text="{Binding Login}"/>
+				<TextBlock Classes="Default"
+						   Grid.Column="0"
+						   Grid.Row="2"
+						   Text="Password:"/>
+				<TextBox Classes="Default"
+						   Grid.Column="1"
+						   Grid.Row="2"
+						 Text="{Binding Password}"
+						 PasswordChar="*"/>
+			</Grid>
+			<!-- Buttons -->
+			<StackPanel Orientation="Horizontal">
+				<Button Classes="Default"
+						Content="Add"
+						Command="{Binding AddUserCommand}"/>
+				<Button Classes="Default"
+						Content="Edit"
+						Command="{Binding EditUserCommand}"/>
+				<Button Classes="Default"
+						Content="Delete"
+						Command="{Binding DeleteUserCommand}"/>
+			</StackPanel>
+		</StackPanel>
+		
+	</StackPanel>
+</Window>

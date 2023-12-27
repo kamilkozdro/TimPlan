@@ -10,11 +10,14 @@ namespace TimPlan.Models
     {
         public uint Id { get; set; }
         public string? Name { get; set; }
+        public string? Login { get; set; }
+        public string? Password {  get; set; }
 
         #region DbNames
 
         public const string DbName = "users";
         public const string DbIdCol = "id";
+        public const string DbNameCol = "name";
         public const string DbLoginCol = "login";
         public const string DbPasswordCol = "password";
 
@@ -27,7 +30,7 @@ namespace TimPlan.Models
 
         public override string ToString()
         {
-            return $"Id:{Id}, Name:{Name}";
+            return $"Id:{Id}, Name:{Name}, Login:{Login}";
         }
 
     }

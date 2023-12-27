@@ -17,15 +17,25 @@
 		<!-- Tool Panel -->
 		<Border DockPanel.Dock="Top"
 				MinHeight="50"
-				Background="LightSkyBlue"
-				>
-			<WrapPanel Orientation="Horizontal"
+				Background="LightSkyBlue">
+			<StackPanel Orientation="Vertical">
+				<!-- Common Tool panel -->
+				<WrapPanel Orientation="Horizontal"
 					   VerticalAlignment="Center">
-				<TextBlock Classes="Default"
-						   Text="Logged as:"/>
-				<TextBlock Classes="Default"
-						   Text="{Binding LoggedUserName}"/>
-			</WrapPanel>
+					<TextBlock Classes="Default"
+							   Text="Logged as:"/>
+					<TextBlock Classes="Default"
+							   Text="{Binding LoggedUserName}"/>
+				</WrapPanel>
+				<!-- Admin Tool panel -->
+				<Button Click="ButtonAddUserClick">
+					Add User
+				</Button>
+				<WrapPanel>
+					
+				</WrapPanel>
+			</StackPanel>
+			
 		</Border>
 		
 		<!-- Main view -->

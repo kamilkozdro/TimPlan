@@ -3,6 +3,9 @@
     <Design.PreviewWith>
         <Border Padding="20">
             <!-- Add Controls for Previewer Here -->
+			<TextBlock Classes="Default">
+				Hello test block
+			</TextBlock>
         </Border>
     </Design.PreviewWith>
 
@@ -56,6 +59,14 @@
 	<!--  TextBlock Styles -->
 	<Style Selector="TextBlock.Default">
 		<Setter Property="Margin" Value="3"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+
+	<Style Selector="TextBlock.Header1">
+		<Setter Property="Margin" Value="3"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="FontWeight" Value="Bold"/>
 	</Style>
 	
 </Styles>
