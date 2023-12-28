@@ -1,10 +1,8 @@
-﻿using DynamicData.Binding;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using TimPlan.Models;
 using System;
-using System.Reactive;
+using System.Diagnostics;
 
 namespace TimPlan.ViewModels;
 
@@ -36,12 +34,16 @@ public class MainViewModel : ViewModelBase
 
     public ObservableCollection<TreeViewNode> TreeViewNodes { get; set; }
     public TreeViewNode SelectedNode { get; set; }
+    private bool _EditUsersVisibility;
+    public bool EditUsersVisibility
+    {
+        get { return _EditUsersVisibility; }
+        set { this.RaiseAndSetIfChanged(ref _EditUsersVisibility, value); }
+    }
+
 
     #region Commands
 
-    public ReactiveCommand<Unit, Unit> AddUserCommand { get; }
-    public ReactiveCommand<Unit, Unit> DeleteUserCommand { get; }
-    public ReactiveCommand<Unit, Unit> EditUserCommand { get; }
 
     #endregion
 
@@ -49,16 +51,10 @@ public class MainViewModel : ViewModelBase
 
     public MainViewModel()
     {
-
         this.WhenAnyValue(o => o.LoggedUser)
             .Subscribe(UpdateUserLogged);
 
-
         #region Set Commands
-
-        AddUserCommand = ReactiveCommand.Create(ShowAddUserDialog);
-        DeleteUserCommand = ReactiveCommand.Create(ShowDeleteUserDialog);
-        EditUserCommand = ReactiveCommand.Create(ShowEditUserDialog);
 
         #endregion
 
@@ -79,27 +75,28 @@ public class MainViewModel : ViewModelBase
     {
         if(user == null) return;
 
+        user.ReadSystemRole();
+
         if(string.IsNullOrEmpty(user.Name))
         {
             LoggedUserName = "Noname";
         }
+        else
+        {
+            LoggedUserName = user.Name;
+        }
 
-        LoggedUserName = user.Name;
-    }
-
-    private void ShowAddUserDialog()
-    {
-
-    }
-
-    private void ShowDeleteUserDialog()
-    {
-
-    }
-
-    private void ShowEditUserDialog()
-    {
-
+        if (user.SystemRole == null)
+        {
+            EditUsersVisibility = false;
+        }
+        else
+        {
+            EditUsersVisibility = user.SystemRole.IsAdmin ||
+                                user.SystemRole.CanEditUsers;
+        }
+        
+        
     }
 
     private void ClearTreeView()
@@ -109,10 +106,6 @@ public class MainViewModel : ViewModelBase
 
     private void BuildProjectBasedTreeView()
     {
-
-
-
-
         ClearTreeView();
 
     }

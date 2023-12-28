@@ -1,15 +1,10 @@
-﻿using DynamicData.Binding;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TimPlan.Lib;
 using TimPlan.Models;
 

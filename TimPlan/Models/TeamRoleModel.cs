@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,9 @@ namespace TimPlan.Models
 {
     public class TeamRoleModel
     {
+        [Column(DbIdCol)]
         public int Id { get; set; }
+        [Column(DbNameCol)]
         public string? Name { get; set; }
 
         //TODO: Define privileges
@@ -18,6 +21,13 @@ namespace TimPlan.Models
         public bool? CanEditForeignTasks { get; set; }
         public bool? CanReadForeignTasks { get; set; }
 
+        #region DbNames
+
+        public const string DbTableName = "team_roles";
+        public const string DbIdCol = "id";
+        public const string DbNameCol = "name";
+
+        #endregion
 
         public TeamRoleModel()
         {

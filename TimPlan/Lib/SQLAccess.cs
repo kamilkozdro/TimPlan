@@ -98,6 +98,27 @@ namespace TimPlan.Lib
                 return null;
             }
         }
+        static public SystemRoleModel SelectSystemRole(uint id)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"SELECT * " +
+                                    $"FROM {SystemRoleModel.DbTableName} " +
+                                    $"WHERE {SystemRoleModel.DbIdCol}={id}";
+                    SystemRoleModel queryOutput = connection.QuerySingleOrDefault<SystemRoleModel>(queryString, new DynamicParameters());
+
+                    return queryOutput;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectSystemRole(uint):{e.Message}");
+                return null;
+            }
+        }
+
 
         #endregion
 

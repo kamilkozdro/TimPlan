@@ -40,6 +40,7 @@ namespace TimPlan.ViewModels
                 (username, password) => !string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password));
 
             LoginCommand = ReactiveCommand.Create(ButtonLoginClick, IsButtonLoginEnabled);
+
         }
 
         private void ButtonLoginClick()

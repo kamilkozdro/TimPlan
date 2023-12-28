@@ -26,9 +26,13 @@
 							   Text="Logged as:"/>
 					<TextBlock Classes="Default"
 							   Text="{Binding LoggedUserName}"/>
+					<Button Classes="Default"
+							Content="Add Task"/>
 				</WrapPanel>
 				<!-- Admin Tool panel -->
-				<Button Click="ButtonAddUserClick">
+				<Button Classes="Default"
+						IsVisible="{Binding EditUsersVisibility}"
+						Click="ButtonAddUserClick">
 					Add User
 				</Button>
 				<WrapPanel>
