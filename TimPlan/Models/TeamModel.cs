@@ -9,14 +9,14 @@ namespace TimPlan.Models
 {
     public class TeamModel
     {
-        [Column ("id")]
-        public int Id { get; set; }
-        [Column("name")]
+        [Column (DbIdCol)]
+        public uint Id { get; set; }
+        [Column(DbNameCol)]
         public string? Name { get; set; }
 
         #region DbNames
 
-        public const string DbTableName = "team_models";
+        public const string DbTableName = "teams";
         public const string DbIdCol = "id";
         public const string DbNameCol = "name";
 
@@ -25,6 +25,11 @@ namespace TimPlan.Models
         public TeamModel()
         {
             
+        }
+
+        public override string ToString()
+        {
+            return $"Id:{Id}, Name:{Name}";
         }
     }
 }

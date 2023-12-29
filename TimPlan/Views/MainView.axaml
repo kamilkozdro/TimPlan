@@ -37,6 +37,10 @@
 							IsVisible="{Binding EditUsersVisibility}"
 							Click="ButtonAddUserClick"
 							Content="Add User"/>
+					<Button Classes="Default"
+							IsVisible="{Binding EditTeamsVisibility}"
+							Click="ButtonAddTeamClick"
+							Content="Add Team"/>
 				</WrapPanel>
 			</StackPanel>
 			

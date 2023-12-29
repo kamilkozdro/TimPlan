@@ -67,8 +67,6 @@ namespace TimPlan.ViewModels
 
         public UserEditViewModel()
         {
-            Users = new ObservableCollection<UserModel>(SQLAccess.SelectAllUsers());
-
             this.WhenAnyValue(o => o.SelectedUser)
                 .Subscribe(UpdateSelectedUser);
 
@@ -93,6 +91,7 @@ namespace TimPlan.ViewModels
             EditUserCommand = ReactiveCommand.Create(EditUser, editUserCheck);
             DeleteUserCommand = ReactiveCommand.Create(DeleteUser, deleteUserCheck);
 
+            UpdateUsersList();
         }
 
         private void UpdateUsersList()

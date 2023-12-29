@@ -19,6 +19,14 @@ public partial class MainView : UserControl
         userEditWindow.Show();
     }
 
+    public void ButtonAddTeamClick(object sender, RoutedEventArgs e)
+    {
+        TeamEditViewModel teamEditWindowVM = new TeamEditViewModel();
+        TeamEditWindow teamEditWindow = new TeamEditWindow();
+        teamEditWindow.DataContext = teamEditWindowVM;
+        teamEditWindow.Show();
+    }
+
     public void ButtonAddTaskClick(object sender, RoutedEventArgs e)
     {
         TaskEditViewModel taskEditWindowVM = new TaskEditViewModel();

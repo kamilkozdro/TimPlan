@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TimPlan.Models
 {
@@ -19,6 +14,8 @@ namespace TimPlan.Models
         public bool CanEditUsers { get; set; }
         [Column(DbCanEditSystemRolesCol)]
         public bool CanEditSystemRoles { get; set; }
+        [Column(DbCanEditTeamsCol)]
+        public bool CanEditTeams { get; set; }
 
         #region DbNames
 
@@ -28,6 +25,7 @@ namespace TimPlan.Models
         public const string DbIsAdminCol = "is_admin";
         public const string DbCanEditUsersCol = "can_edit_users";
         public const string DbCanEditSystemRolesCol = "can_edit_system_roles";
+        public const string DbCanEditTeamsCol = "can_edit_teams";
 
         #endregion
         public SystemRoleModel()
@@ -38,7 +36,8 @@ namespace TimPlan.Models
         public override string ToString()
         {
             return $"Id:{Id}, Name:{Name}, IsAdmin:{IsAdmin}, CanEditUsers:{CanEditUsers}," +
-                $" CanEditUsers:{CanEditUsers}, CanEditSystemRoles:{CanEditSystemRoles}"; ;
+                $" CanEditUsers:{CanEditUsers}, CanEditSystemRoles:{CanEditSystemRoles}," +
+                $" CanEditTeams:{CanEditTeams}"; ;
         }
     }
 }

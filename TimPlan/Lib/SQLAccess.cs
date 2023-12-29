@@ -21,6 +21,10 @@ namespace TimPlan.Lib
                 new CustomPropertyTypeMap(typeof(UserModel),
                 (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
                 prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
+            SqlMapper.SetTypeMap(typeof(TeamModel),
+                new CustomPropertyTypeMap(typeof(TeamModel),
+                (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
+                prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
             SqlMapper.SetTypeMap(typeof(SystemRoleModel),
                 new CustomPropertyTypeMap(typeof(SystemRoleModel),
                 (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
@@ -36,7 +40,7 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"SELECT * " +
-                                    $"FROM {UserModel.DbName} ";
+                                    $"FROM {UserModel.DbTableName} ";
                     List<UserModel> queryOutput = connection.Query<UserModel>(queryString, new DynamicParameters()).ToList();
 
                     return queryOutput;
@@ -55,7 +59,7 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"SELECT * " +
-                                    $"FROM {UserModel.DbName} " +
+                                    $"FROM {UserModel.DbTableName} " +
                                     $"WHERE {UserModel.DbIdCol}={id}";
                     UserModel queryOutput = connection.QuerySingleOrDefault<UserModel>(queryString, new DynamicParameters());
 
@@ -75,7 +79,7 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"SELECT * " +
-                                    $"FROM {UserModel.DbName} " +
+                                    $"FROM {UserModel.DbTableName} " +
                                     $"WHERE {UserModel.DbLoginCol}='{login}' " +
                                     $"AND {UserModel.DbPasswordCol}='{password}'";
 
@@ -97,7 +101,7 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"SELECT * " +
-                                    $"FROM {UserModel.DbName} " +
+                                    $"FROM {UserModel.DbTableName} " +
                                     $"WHERE {UserModel.DbLoginCol}='{login}'";
 
                     UserModel queryOutput = connection.QuerySingleOrDefault<UserModel>(queryString, new DynamicParameters());
@@ -108,6 +112,66 @@ namespace TimPlan.Lib
             catch (Exception e)
             {
                 Debug.WriteLine($"SelectUserByLogin(string):{e.Message}");
+                return null;
+            }
+        }
+        static public List<TeamModel> SelectAllTeams()
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"SELECT * " +
+                                    $"FROM {TeamModel.DbTableName} ";
+                    List<TeamModel> queryOutput = connection.Query<TeamModel>(queryString, new DynamicParameters()).ToList();
+
+                    return queryOutput;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectAllTeams():{e.Message}");
+                return null;
+            }
+        }
+        static public TeamModel SelectTeam(uint id)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"SELECT * " +
+                                    $"FROM {TeamModel.DbTableName} " +
+                                    $"WHERE {TeamModel.DbIdCol}={id}";
+                    TeamModel queryOutput = connection.QuerySingleOrDefault<TeamModel>(queryString, new DynamicParameters());
+
+                    return queryOutput;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectTeam(uint):{e.Message}");
+                return null;
+            }
+        }
+        static public TeamModel SelectTeamByName(string name)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"SELECT * " +
+                                    $"FROM {TeamModel.DbTableName} " +
+                                    $"WHERE {TeamModel.DbNameCol}='{name}'";
+
+                    TeamModel queryOutput = connection.QuerySingleOrDefault<TeamModel>(queryString, new DynamicParameters());
+
+                    return queryOutput;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectTeamByName(string):{e.Message}");
                 return null;
             }
         }
@@ -144,7 +208,7 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"INSERT " +
-                                    $"INTO {UserModel.DbName} " +
+                                    $"INTO {UserModel.DbTableName} " +
                                     $"({UserModel.DbNameCol},{UserModel.DbLoginCol},{UserModel.DbPasswordCol}) " +
                                     $"VALUES (@{nameof(UserModel.Name)}," +
                                     $"@{nameof(UserModel.Login)}," +
@@ -165,14 +229,15 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"INSERT " +
-                                    $"INTO Teams (Name) " +
-                                    $"VALUES (@Name)";
+                                    $"INTO {TeamModel.DbTableName} " +
+                                    $"({TeamModel.DbNameCol}) " +
+                                    $"VALUES (@{nameof(TeamModel.Name)})";
                     connection.Execute(queryString, team);
                 }
             }
             catch (Exception e)
             {
-                Debug.WriteLine($"InsertUser():{e.Message}");
+                Debug.WriteLine($"InsertTeam(TeamModel):{e.Message}");
             }
         }
 
@@ -186,7 +251,7 @@ namespace TimPlan.Lib
             {
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
-                    string queryString = $"UPDATE {UserModel.DbName} " +
+                    string queryString = $"UPDATE {UserModel.DbTableName} " +
                                     $"SET {UserModel.DbNameCol} = @{nameof(UserModel.Name)}, " +
                                     $"{UserModel.DbLoginCol} = @{nameof(UserModel.Login)}, " +
                                     $"{UserModel.DbPasswordCol} = @{nameof(UserModel.Password)} " +
@@ -197,6 +262,24 @@ namespace TimPlan.Lib
             catch (Exception e)
             {
                 Debug.WriteLine($"UpdateUser(UserModel):{e.Message}");
+            }
+        }
+
+        public static void UpdateTeam(TeamModel team)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"UPDATE {TeamModel.DbTableName} " +
+                                    $"SET {TeamModel.DbNameCol} = @{nameof(TeamModel.Name)}, "+
+                                    $"WHERE {TeamModel.DbIdCol} = @{nameof(TeamModel.Id)}";
+                    connection.Execute(queryString, team);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"UpdateTeam(TeamModel):{e.Message}");
             }
         }
 
@@ -211,7 +294,7 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"DELETE " +
-                                    $"FROM {UserModel.DbName} " +
+                                    $"FROM {UserModel.DbTableName} " +
                                     $"WHERE {UserModel.DbIdCol} = {id}";
                     connection.Execute(queryString);
                 }
@@ -219,6 +302,23 @@ namespace TimPlan.Lib
             catch (Exception e)
             {
                 Debug.WriteLine($"DeleteUser(uint):{e.Message}");
+            }
+        }
+        public static void DeleteTeam(uint id)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"DELETE " +
+                                    $"FROM {TeamModel.DbTableName} " +
+                                    $"WHERE {TeamModel.DbIdCol} = {id}";
+                    connection.Execute(queryString);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"DeleteTeam(uint):{e.Message}");
             }
         }
 

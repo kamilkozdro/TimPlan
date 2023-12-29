@@ -40,6 +40,12 @@ public class MainViewModel : ViewModelBase
         get { return _EditUsersVisibility; }
         set { this.RaiseAndSetIfChanged(ref _EditUsersVisibility, value); }
     }
+    private bool _EditTeamsVisibility;
+    public bool EditTeamsVisibility
+    {
+        get { return _EditTeamsVisibility; }
+        set { this.RaiseAndSetIfChanged(ref _EditTeamsVisibility, value); }
+    }
 
 
     #region Commands
@@ -95,6 +101,8 @@ public class MainViewModel : ViewModelBase
         {
             EditUsersVisibility = user.SystemRole.IsAdmin ||
                                 user.SystemRole.CanEditUsers;
+            EditTeamsVisibility = user.SystemRole.IsAdmin ||
+                                user.SystemRole.CanEditTeams;
         }
         
         

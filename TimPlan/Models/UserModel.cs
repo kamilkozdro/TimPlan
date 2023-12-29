@@ -26,7 +26,7 @@ namespace TimPlan.Models
 
         #region DbNames
 
-        public const string DbName = "users";
+        public const string DbTableName = "users";
         public const string DbIdCol = "id";
         public const string DbNameCol = "name";
         public const string DbLoginCol = "login";
