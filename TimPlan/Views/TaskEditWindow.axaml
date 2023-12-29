@@ -1,0 +1,86 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:TimPlan.ViewModels"
+		mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="400"
+        x:Class="TimPlan.Views.TaskEditWindow"
+		x:DataType="vm:TaskEditViewModel"
+	    x:CompileBindings="True"
+		Background="LightCyan"
+		SizeToContent="WidthAndHeight"
+        Title="TaskEditWindow">
+	<StackPanel Orientation="Vertical">
+		<Grid Margin="3">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"
+								  MinWidth="100"/>
+				<ColumnDefinition MinWidth="150"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+			
+			<TextBlock Classes="Default"
+					   Grid.Row="0" Grid.Column="0"
+					   Text="Name"/>
+			<TextBox Classes="Default"
+					 Grid.Row="0" Grid.Column="1"
+					 HorizontalAlignment="Left"
+					 HorizontalContentAlignment="Left"
+					 Width="250"/>
+			<TextBlock Classes="Default"
+					   Grid.Row="1" Grid.Column="0"
+					   Text="Start Date"/>
+			<DatePicker Classes="Default"
+						Grid.Row="1" Grid.Column="1"/>
+			<TextBlock Classes="Default"
+					   Grid.Row="2" Grid.Column="0"
+					   Text="End Date"/>
+			<DatePicker Classes="Default"
+						Grid.Row="2" Grid.Column="1"/>
+			<TextBlock Classes="Default"
+					   Grid.Row="3" Grid.Column="0"
+					   Text="Private"/>
+			<CheckBox Classes="Default"
+					  Grid.Row="3" Grid.Column="1"/>
+			<TextBlock Classes="Default"
+					   Grid.Row="4" Grid.Column="0"
+					   Text="Team"/>
+			<ComboBox Classes="Default"
+					  Grid.Row="4" Grid.Column="1"
+					  MaxWidth="250"/>
+			<TextBlock Classes="Default"
+					   Grid.Row="5" Grid.Column="0"
+					   Text="User"/>
+			<ComboBox Classes="Default"
+					  Grid.Row="5" Grid.Column="1"
+					  MaxWidth="250"/>
+			<TextBlock Classes="Default"
+					   Grid.Row="6" Grid.Column="0"
+					   Text="Description"/>
+			<TextBox Classes="Default"
+					 Grid.Row="6" Grid.Column="1"
+					 Grid.RowSpan="2"
+					 HorizontalAlignment="Left"
+					 HorizontalContentAlignment="Left"
+					 VerticalContentAlignment="Top"
+					 Height="100"
+					 Width="250"
+					 AcceptsReturn="True"
+					 TextWrapping="Wrap"/>
+			
+		</Grid>
+		<WrapPanel>
+			<Button Classes="Default"
+					Content="Create"/>
+		</WrapPanel>
+	</StackPanel>
+</Window>

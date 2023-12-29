@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using TimPlan.Lib;
 using TimPlan.Models;
 using TimPlan.ViewModels;
 using TimPlan.Views;
@@ -15,6 +16,7 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        SQLAccess.MapClassAttributes();
     }
 
     public override async void OnFrameworkInitializationCompleted()

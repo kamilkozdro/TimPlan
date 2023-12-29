@@ -47,7 +47,7 @@ namespace TimPlan.Models
 
         public override string ToString()
         {
-            return $"Id:{Id}, Name:{Name}, Login:{Login}";
+            return $"Id:{Id}, Name:{Name}, Login:{Login}, SystemRoleID:{SystemRoleId}";
         }
 
     }

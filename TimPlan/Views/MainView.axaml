@@ -27,16 +27,16 @@
 					<TextBlock Classes="Default"
 							   Text="{Binding LoggedUserName}"/>
 					<Button Classes="Default"
-							Content="Add Task"/>
+							Content="Add Task"
+							Click="ButtonAddTaskClick"/>
 				</WrapPanel>
+				
 				<!-- Admin Tool panel -->
-				<Button Classes="Default"
-						IsVisible="{Binding EditUsersVisibility}"
-						Click="ButtonAddUserClick">
-					Add User
-				</Button>
 				<WrapPanel>
-					
+					<Button Classes="Default"
+							IsVisible="{Binding EditUsersVisibility}"
+							Click="ButtonAddUserClick"
+							Content="Add User"/>
 				</WrapPanel>
 			</StackPanel>
 			

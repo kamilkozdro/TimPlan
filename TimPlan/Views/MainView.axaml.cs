@@ -18,4 +18,12 @@ public partial class MainView : UserControl
         userEditWindow.DataContext = userEditWindowVM;
         userEditWindow.Show();
     }
+
+    public void ButtonAddTaskClick(object sender, RoutedEventArgs e)
+    {
+        TaskEditViewModel taskEditWindowVM = new TaskEditViewModel();
+        TaskEditWindow taskEditWindow = new TaskEditWindow();
+        taskEditWindow.DataContext = taskEditWindowVM;
+        taskEditWindow.Show();
+    }
 }

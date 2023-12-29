@@ -76,6 +76,7 @@ public class MainViewModel : ViewModelBase
         if(user == null) return;
 
         user.ReadSystemRole();
+        Debug.WriteLine(user);
 
         if(string.IsNullOrEmpty(user.Name))
         {

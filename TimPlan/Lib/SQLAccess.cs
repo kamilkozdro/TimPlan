@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using TimPlan.Models;
 using System.Diagnostics;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TimPlan.Lib
 {
@@ -13,6 +14,18 @@ namespace TimPlan.Lib
     {
 
         static private string _ConnectionString = "Data Source=.\\TimPlanDB.db;Version=3;";
+
+        static public void MapClassAttributes()
+        {
+            SqlMapper.SetTypeMap(typeof(UserModel),
+                new CustomPropertyTypeMap(typeof(UserModel),
+                (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
+                prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
+            SqlMapper.SetTypeMap(typeof(SystemRoleModel),
+                new CustomPropertyTypeMap(typeof(SystemRoleModel),
+                (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
+                prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
+        }
 
         #region Select
 
