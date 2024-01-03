@@ -8,12 +8,12 @@
              x:DataType="vm:MainViewModel"
 			 x:CompileBindings="True"
 			 Background="LightCyan">
-  <Design.DataContext>
-    <vm:MainViewModel />
-  </Design.DataContext>
+	<Design.DataContext>
+		<vm:MainViewModel />
+	</Design.DataContext>
 
 	<DockPanel>
-		
+
 		<!-- Tool Panel -->
 		<Border DockPanel.Dock="Top"
 				MinHeight="50"
@@ -30,22 +30,22 @@
 							Content="Add Task"
 							Command="{Binding TaskEditCommand}"/>
 				</WrapPanel>
-				
+
 				<!-- Admin Tool panel -->
 				<WrapPanel>
 					<Button Classes="Default"
 							IsVisible="{Binding EditUsersVisibility}"
-							Click="ButtonAddUserClick"
+							Command="{Binding UserEditCommand}"
 							Content="Add User"/>
 					<Button Classes="Default"
 							IsVisible="{Binding EditTeamsVisibility}"
-							Click="ButtonAddTeamClick"
+							Command="{Binding TeamEditCommand}"
 							Content="Add Team"/>
 				</WrapPanel>
 			</StackPanel>
-			
+
 		</Border>
-		
+
 		<!-- Main view -->
 		<SplitView IsPaneOpen="True"
 				   DisplayMode="Inline"
@@ -57,8 +57,8 @@
 							Height="40"
 							Background="Turquoise">
 						<StackPanel Orientation="Horizontal">
-							
-							
+
+
 						</StackPanel>
 					</Border>
 					<!-- TreeView Panel -->

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Reactive;
 using System.Windows.Input;
 using System.Reactive.Linq;
+using TimPlan.Services;
 
 namespace TimPlan.ViewModels;
 
@@ -54,31 +55,45 @@ public class MainViewModel : ViewModelBase
     #region Commands
 
     public ReactiveCommand<Unit, Unit> TaskEditCommand { get; }
+    public ReactiveCommand<Unit, Unit> TeamEditCommand { get; }
+    public ReactiveCommand<Unit, Unit> UserEditCommand { get; }
 
     #endregion
 
-    public Interaction<TaskEditViewModel, bool?> ShowTaskEditWindow { get; }
+    private IWindowService _WindowService = new WindowService();
 
     public MainViewModel()
     {
-        ShowTaskEditWindow = new Interaction<TaskEditViewModel, bool?>();
-
-        TaskEditCommand = ReactiveCommand.CreateFromTask(async () =>
-        {
-            TaskEditViewModel taskEditVM = new TaskEditViewModel(LoggedUser);
-            bool? result = await ShowTaskEditWindow.Handle(taskEditVM);
-        });
+        
 
         this.WhenAnyValue(o => o.LoggedUser)
             .Subscribe(UpdateUserLogged);
 
         #region Set Commands
 
+        TaskEditCommand = ReactiveCommand.Create(() =>
+        {
+            _WindowService.OpenTaskEditWindow(LoggedUser);
+        });
+
+        TeamEditCommand = ReactiveCommand.Create(() =>
+        {
+            _WindowService.OpenTeamEditWindow();
+        });
+
+        UserEditCommand = ReactiveCommand.Create(() =>
+        {
+            _WindowService.OpenUserEditWindow();
+        });
+
+
+
+
         #endregion
 
 
 
-    TreeViewNodes = new ObservableCollection<TreeViewNode>()
+        TreeViewNodes = new ObservableCollection<TreeViewNode>()
         {
             new TreeViewNode("Node 1", 1,
                 new ObservableCollection<TreeViewNode>()
