@@ -21,14 +21,22 @@ namespace TimPlan.Lib
                 new CustomPropertyTypeMap(typeof(UserModel),
                 (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
                 prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
+            
             SqlMapper.SetTypeMap(typeof(TeamModel),
                 new CustomPropertyTypeMap(typeof(TeamModel),
                 (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
                 prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
+            
             SqlMapper.SetTypeMap(typeof(SystemRoleModel),
                 new CustomPropertyTypeMap(typeof(SystemRoleModel),
                 (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
                 prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
+            
+            SqlMapper.SetTypeMap(typeof(TaskModel),
+                new CustomPropertyTypeMap(typeof(TaskModel),
+                (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
+                prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
+
         }
 
         #region Select
@@ -175,6 +183,45 @@ namespace TimPlan.Lib
                 return null;
             }
         }
+        static public List<TaskModel> SelectAllTask()
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"SELECT * " +
+                                    $"FROM {TaskModel.DbTableName} ";
+                    List<TaskModel> queryOutput = connection.Query<TaskModel>(queryString, new DynamicParameters()).ToList();
+
+                    return queryOutput;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectAllTask():{e.Message}");
+                return null;
+            }
+        }
+        static public TaskModel SelectTask(uint id)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"SELECT * " +
+                                    $"FROM {TaskModel.DbTableName} " +
+                                    $"WHERE {TaskModel.DbIdCol}={id}";
+                    TaskModel queryOutput = connection.QuerySingleOrDefault<TaskModel>(queryString, new DynamicParameters());
+
+                    return queryOutput;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectTask(uint):{e.Message}");
+                return null;
+            }
+        }
         static public SystemRoleModel SelectSystemRole(uint id)
         {
             try
@@ -201,7 +248,7 @@ namespace TimPlan.Lib
 
         #region Insert
 
-        public static void InsertUser(UserModel user)
+        static public void InsertUser(UserModel user)
         {
             try
             {
@@ -221,8 +268,7 @@ namespace TimPlan.Lib
                 Debug.WriteLine($"InsertUser(UserModel):{e.Message}");
             }
         }
-
-        public static void InsertTeam(TeamModel team)
+        static public void InsertTeam(TeamModel team)
         {
             try
             {
@@ -240,12 +286,46 @@ namespace TimPlan.Lib
                 Debug.WriteLine($"InsertTeam(TeamModel):{e.Message}");
             }
         }
+        static public void InsertTask(TaskModel user)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"INSERT " +
+                                    $"INTO {TaskModel.DbTableName} " +
+                                    $"({TaskModel.DbNameCol}," +
+                                    $"{TaskModel.DbParentTaskIdCol}," +
+                                    $"{TaskModel.DbDateCreatedCol}," +
+                                    $"{TaskModel.DbDateStartCol}," +
+                                    $"{TaskModel.DbDateEndCol}," +
+                                    $"{TaskModel.DbDescriptionCol}," +
+                                    $"{TaskModel.DbIsCompletedCol}," +
+                                    $"{TaskModel.DbPrivateCol}," +
+                                    $"{TaskModel.DbCreatorUserIdCol}) " +
+                                    $"VALUES (@{nameof(TaskModel.Name)}," +
+                                    $"@{nameof(TaskModel.ParentTaskID)}," +
+                                    $"@{nameof(TaskModel.DateCreated)}," +
+                                    $"@{nameof(TaskModel.DateStart)}," +
+                                    $"@{nameof(TaskModel.DateEnd)}," +
+                                    $"@{nameof(TaskModel.Description)}," +
+                                    $"@{nameof(TaskModel.IsCompleted)}," +
+                                    $"@{nameof(TaskModel.Private)}," +
+                                    $"@{nameof(TaskModel.CreatorUserId)})";
+                    connection.Execute(queryString, user);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"InsertUser(UserModel):{e.Message}");
+            }
+        }
 
         #endregion
 
         #region Update
 
-        public static void UpdateUser(UserModel user)
+        static public void UpdateUser(UserModel user)
         {
             try
             {
@@ -264,8 +344,7 @@ namespace TimPlan.Lib
                 Debug.WriteLine($"UpdateUser(UserModel):{e.Message}");
             }
         }
-
-        public static void UpdateTeam(TeamModel team)
+        static public void UpdateTeam(TeamModel team)
         {
             try
             {
@@ -282,12 +361,36 @@ namespace TimPlan.Lib
                 Debug.WriteLine($"UpdateTeam(TeamModel):{e.Message}");
             }
         }
-
+        static public void UpdateTask(TaskModel task)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"UPDATE {TaskModel.DbTableName} " +
+                                    $"SET {TaskModel.DbNameCol} = @{nameof(TaskModel.Name)}," +
+                                    $"{TaskModel.DbParentTaskIdCol} = @{nameof(TaskModel.ParentTaskID)}," +
+                                    $"{TaskModel.DbDateCreatedCol} = @{nameof(TaskModel.DateCreated)}," +
+                                    $"{TaskModel.DbDateStartCol} = @{nameof(TaskModel.DateStart)}," +
+                                    $"{TaskModel.DbDateEndCol} = @{nameof(TaskModel.DateEnd)}," +
+                                    $"{TaskModel.DbDescriptionCol} = @{nameof(TaskModel.Description)}," +
+                                    $"{TaskModel.DbIsCompletedCol} = @{nameof(TaskModel.IsCompleted)}," +
+                                    $"{TaskModel.DbPrivateCol} = @{nameof(TaskModel.Private)}," +
+                                    $"{TaskModel.DbCreatorUserIdCol} = @{nameof(TaskModel.CreatorUserId)}" +
+                                    $"WHERE {TaskModel.DbIdCol} = @{nameof(TaskModel.Id)}";
+                    connection.Execute(queryString, task);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"UpdateTask(TaskModel):{e.Message}");
+            }
+        }
         #endregion
 
         #region Delete
 
-        public static void DeleteUser(uint id)
+        static public void DeleteUser(uint id)
         {
             try
             {
@@ -304,7 +407,7 @@ namespace TimPlan.Lib
                 Debug.WriteLine($"DeleteUser(uint):{e.Message}");
             }
         }
-        public static void DeleteTeam(uint id)
+        static public void DeleteTeam(uint id)
         {
             try
             {
@@ -321,7 +424,23 @@ namespace TimPlan.Lib
                 Debug.WriteLine($"DeleteTeam(uint):{e.Message}");
             }
         }
-
+        static public void DeleteTask(uint id)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"DELETE " +
+                                    $"FROM {TaskModel.DbTableName} " +
+                                    $"WHERE {TaskModel.DbIdCol} = {id}";
+                    connection.Execute(queryString);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"DeleteTask(uint):{e.Message}");
+            }
+        }
         #endregion
     }
 }

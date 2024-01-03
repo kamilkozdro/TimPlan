@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:TimPlan.ViewModels"
-		mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="400"
+		mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="450"
         x:Class="TimPlan.Views.TaskEditWindow"
 		x:DataType="vm:TaskEditViewModel"
 	    x:CompileBindings="True"
@@ -35,39 +35,61 @@
 					 Grid.Row="0" Grid.Column="1"
 					 HorizontalAlignment="Left"
 					 HorizontalContentAlignment="Left"
-					 Width="250"/>
+					 Width="250"
+					 Text="{Binding Name}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="1" Grid.Column="0"
 					   Text="Start Date"/>
 			<DatePicker Classes="Default"
-						Grid.Row="1" Grid.Column="1"/>
+						Grid.Row="1" Grid.Column="1"
+						SelectedDate="{Binding StartDate}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="2" Grid.Column="0"
 					   Text="End Date"/>
 			<DatePicker Classes="Default"
-						Grid.Row="2" Grid.Column="1"/>
+						Grid.Row="2" Grid.Column="1"
+						SelectedDate="{Binding EndDate}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="3" Grid.Column="0"
 					   Text="Private"/>
 			<CheckBox Classes="Default"
-					  Grid.Row="3" Grid.Column="1"/>
+					  Grid.Row="3" Grid.Column="1"
+					  IsChecked="{Binding Private}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="4" Grid.Column="0"
 					   Text="Team"/>
 			<ComboBox Classes="Default"
 					  Grid.Row="4" Grid.Column="1"
-					  MaxWidth="250"/>
+					  MinWidth="150"
+					  MaxWidth="250"
+					  ItemsSource="{Binding Teams}"
+					  DisplayMemberBinding="{Binding Name}"
+					  SelectedItem="{Binding SelectedTeam}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="5" Grid.Column="0"
 					   Text="User"/>
 			<ComboBox Classes="Default"
 					  Grid.Row="5" Grid.Column="1"
-					  MaxWidth="250"/>
+					  MinWidth="150"
+				  MaxWidth="250"
+				  ItemsSource="{Binding Users}"
+				  DisplayMemberBinding="{Binding Name}"
+				  SelectedItem="{Binding SelectedUser}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="6" Grid.Column="0"
+					   Text="Parent Task"/>
+			<ComboBox Classes="Default"
+					  Grid.Row="6" Grid.Column="1"
+					  MinWidth="150"
+				  MaxWidth="250"
+				  ItemsSource="{Binding Tasks}"
+				  DisplayMemberBinding="{Binding Name}"
+				  SelectedItem="{Binding SelectedParentTask}"/>
+			<TextBlock Classes="Default"
+					   Grid.Row="7" Grid.Column="0"
 					   Text="Description"/>
 			<TextBox Classes="Default"
-					 Grid.Row="6" Grid.Column="1"
+					 Grid.Row="7" Grid.Column="1"
 					 Grid.RowSpan="2"
 					 HorizontalAlignment="Left"
 					 HorizontalContentAlignment="Left"
@@ -75,12 +97,14 @@
 					 Height="100"
 					 Width="250"
 					 AcceptsReturn="True"
-					 TextWrapping="Wrap"/>
+					 TextWrapping="Wrap"
+					 Text="{Binding Description}"/>
 			
 		</Grid>
 		<WrapPanel>
 			<Button Classes="Default"
-					Content="Create"/>
+					Content="Create"
+					Command="{Binding CreateTaskCommand}"/>
 		</WrapPanel>
 	</StackPanel>
 </Window>

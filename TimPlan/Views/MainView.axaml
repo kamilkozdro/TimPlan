@@ -28,7 +28,7 @@
 							   Text="{Binding LoggedUserName}"/>
 					<Button Classes="Default"
 							Content="Add Task"
-							Click="ButtonAddTaskClick"/>
+							Command="{Binding TaskEditCommand}"/>
 				</WrapPanel>
 				
 				<!-- Admin Tool panel -->

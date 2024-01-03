@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TimPlan.Models
 {
-    public class WorkTaskModel
+    public class TaskModel
     {
         [Column(DbIdCol)]
         public uint Id { get; set; }
         [Column(DbNameCol)]
         public string? Name { get; set; }
         [Column(DbParentTaskIdCol)]
-        public uint ParentTaskID { get; set; }
+        public uint? ParentTaskID { get; set; }
         [Column(DbDateCreatedCol)]
         public DateTime? DateCreated { get; set; }
         [Column(DbDateStartCol)]
@@ -28,7 +24,14 @@ namespace TimPlan.Models
         [Column(DbPrivateCol)]
         public bool Private { get; set; }
         [Column(DbCreatorUserIdCol)]
-        public uint CreatorUserID { get; set; }
+        public uint CreatorUserId { get; set; }
+        [Column(DbUserIdCol)]
+        public uint UserId { get; set; }
+
+        [Column(DbTeamIdCol)]
+        public uint? TeamId { get; set; }
+
+
 
         #region DbNames
 
@@ -43,11 +46,26 @@ namespace TimPlan.Models
         public const string DbIsCompletedCol = "is_completed";
         public const string DbPrivateCol = "private";
         public const string DbCreatorUserIdCol = "creator_user_id";
+        public const string DbUserIdCol = "user_id";
+        public const string DbTeamIdCol = "team_id";
 
         #endregion
-        public WorkTaskModel()
+
+        public TaskModel()
         {
             
+        }
+
+
+
+        public override string ToString()
+        {
+            return $"Id:{Id}, Name:{Name}, ParentTaskId:{ParentTaskID}," +
+                $" DateCreated:{DateCreated}, DateStart:{DateStart}," +
+                $" DateEnd:{DateEnd}, Description:{Description}," +
+                $" IsCompleted:{IsCompleted}, Private:{Private}," +
+                $" CreatorUserId:{CreatorUserId}, UserId:{UserId}," +
+                $" TeamId:{TeamId}";
         }
 
     }

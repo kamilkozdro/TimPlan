@@ -3,6 +3,9 @@ using System.Collections.ObjectModel;
 using TimPlan.Models;
 using System;
 using System.Diagnostics;
+using System.Reactive;
+using System.Windows.Input;
+using System.Reactive.Linq;
 
 namespace TimPlan.ViewModels;
 
@@ -10,7 +13,7 @@ public class MainViewModel : ViewModelBase
 {
 
     #region Models
-    public ObservableCollection<WorkTaskModel> WorkTasks { get; set; }
+    public ObservableCollection<TaskModel> WorkTasks { get; set; }
     public ObservableCollection<TeamModel> Teams { get; set; }
     public ObservableCollection<UserModel> Users { get; set; }
 
@@ -50,13 +53,22 @@ public class MainViewModel : ViewModelBase
 
     #region Commands
 
+    public ReactiveCommand<Unit, Unit> TaskEditCommand { get; }
 
     #endregion
 
-
+    public Interaction<TaskEditViewModel, bool?> ShowTaskEditWindow { get; }
 
     public MainViewModel()
     {
+        ShowTaskEditWindow = new Interaction<TaskEditViewModel, bool?>();
+
+        TaskEditCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            TaskEditViewModel taskEditVM = new TaskEditViewModel(LoggedUser);
+            bool? result = await ShowTaskEditWindow.Handle(taskEditVM);
+        });
+
         this.WhenAnyValue(o => o.LoggedUser)
             .Subscribe(UpdateUserLogged);
 
