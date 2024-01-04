@@ -183,7 +183,7 @@ namespace TimPlan.Lib
                 return null;
             }
         }
-        static public List<TaskModel> SelectAllTask()
+        static public List<TaskModel> SelectAllTasks()
         {
             try
             {
@@ -199,6 +199,27 @@ namespace TimPlan.Lib
             catch (Exception e)
             {
                 Debug.WriteLine($"SelectAllTask():{e.Message}");
+                return null;
+            }
+        }
+        static public List<TaskModel> SelectAllTasksWithoutForeignPrivate(uint userId)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"SELECT * " +
+                                    $"FROM {TaskModel.DbTableName} " +
+                                    $"WHERE NOT ({TaskModel.DbCreatorUserIdCol} <> {userId} " +
+                                    $"AND {TaskModel.DbPrivateCol} = true)";
+                    List<TaskModel> queryOutput = connection.Query<TaskModel>(queryString, new DynamicParameters()).ToList();
+
+                    return queryOutput;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectAllTasksWithoutForeignPrivate(uint):{e.Message}");
                 return null;
             }
         }
@@ -248,7 +269,7 @@ namespace TimPlan.Lib
 
         #region Insert
 
-        static public void InsertUser(UserModel user)
+        static public bool InsertUser(UserModel user)
         {
             try
             {
@@ -261,14 +282,17 @@ namespace TimPlan.Lib
                                     $"@{nameof(UserModel.Login)}," +
                                     $"@{nameof(UserModel.Password)})";
                     connection.Execute(queryString, user);
+
+                    return true;
                 }
             }
             catch (Exception e)
             {
                 Debug.WriteLine($"InsertUser(UserModel):{e.Message}");
+                return false;
             }
         }
-        static public void InsertTeam(TeamModel team)
+        static public bool InsertTeam(TeamModel team)
         {
             try
             {
@@ -279,14 +303,17 @@ namespace TimPlan.Lib
                                     $"({TeamModel.DbNameCol}) " +
                                     $"VALUES (@{nameof(TeamModel.Name)})";
                     connection.Execute(queryString, team);
+
+                    return true;
                 }
             }
             catch (Exception e)
             {
                 Debug.WriteLine($"InsertTeam(TeamModel):{e.Message}");
+                return false;
             }
         }
-        static public void InsertTask(TaskModel user)
+        static public bool InsertTask(TaskModel user)
         {
             try
             {
@@ -302,7 +329,9 @@ namespace TimPlan.Lib
                                     $"{TaskModel.DbDescriptionCol}," +
                                     $"{TaskModel.DbIsCompletedCol}," +
                                     $"{TaskModel.DbPrivateCol}," +
-                                    $"{TaskModel.DbCreatorUserIdCol}) " +
+                                    $"{TaskModel.DbCreatorUserIdCol}," +
+                                    $"{TaskModel.DbUserIdCol}," +
+                                    $"{TaskModel.DbTeamIdCol}) " +
                                     $"VALUES (@{nameof(TaskModel.Name)}," +
                                     $"@{nameof(TaskModel.ParentTaskID)}," +
                                     $"@{nameof(TaskModel.DateCreated)}," +
@@ -311,13 +340,18 @@ namespace TimPlan.Lib
                                     $"@{nameof(TaskModel.Description)}," +
                                     $"@{nameof(TaskModel.IsCompleted)}," +
                                     $"@{nameof(TaskModel.Private)}," +
-                                    $"@{nameof(TaskModel.CreatorUserId)})";
+                                    $"@{nameof(TaskModel.CreatorUserId)}," +
+                                    $"@{nameof(TaskModel.UserId)}," +
+                                    $"@{nameof(TaskModel.TeamId)})";
                     connection.Execute(queryString, user);
+
+                    return true;
                 }
             }
             catch (Exception e)
             {
                 Debug.WriteLine($"InsertUser(UserModel):{e.Message}");
+                return false;
             }
         }
 
@@ -376,7 +410,9 @@ namespace TimPlan.Lib
                                     $"{TaskModel.DbDescriptionCol} = @{nameof(TaskModel.Description)}," +
                                     $"{TaskModel.DbIsCompletedCol} = @{nameof(TaskModel.IsCompleted)}," +
                                     $"{TaskModel.DbPrivateCol} = @{nameof(TaskModel.Private)}," +
-                                    $"{TaskModel.DbCreatorUserIdCol} = @{nameof(TaskModel.CreatorUserId)}" +
+                                    $"{TaskModel.DbCreatorUserIdCol} = @{nameof(TaskModel.CreatorUserId)}," +
+                                    $"{TaskModel.DbUserIdCol} = @{nameof(TaskModel.UserId)}," +
+                                    $"{TaskModel.DbTeamIdCol} = @{nameof(TaskModel.TeamId)}" +
                                     $"WHERE {TaskModel.DbIdCol} = @{nameof(TaskModel.Id)}";
                     connection.Execute(queryString, task);
                 }

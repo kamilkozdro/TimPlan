@@ -53,6 +53,7 @@
 					   Grid.Row="3" Grid.Column="0"
 					   Text="Private"/>
 			<CheckBox Classes="Default"
+					  Name="CheckBoxPrivate"
 					  Grid.Row="3" Grid.Column="1"
 					  IsChecked="{Binding Private}"/>
 			<TextBlock Classes="Default"
@@ -64,27 +65,29 @@
 					  MaxWidth="250"
 					  ItemsSource="{Binding Teams}"
 					  DisplayMemberBinding="{Binding Name}"
-					  SelectedItem="{Binding SelectedTeam}"/>
+					  SelectedItem="{Binding SelectedTeam}"
+					  IsEnabled="{Binding ElementName=CheckBoxPrivate, Path=!IsChecked}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="5" Grid.Column="0"
 					   Text="User"/>
 			<ComboBox Classes="Default"
 					  Grid.Row="5" Grid.Column="1"
 					  MinWidth="150"
-				  MaxWidth="250"
-				  ItemsSource="{Binding Users}"
-				  DisplayMemberBinding="{Binding Name}"
-				  SelectedItem="{Binding SelectedUser}"/>
+					  MaxWidth="250"
+					  ItemsSource="{Binding Users}"
+					  DisplayMemberBinding="{Binding Name}"
+					  SelectedItem="{Binding SelectedUser}"
+				  IsEnabled="{Binding ElementName=CheckBoxPrivate, Path=!IsChecked}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="6" Grid.Column="0"
 					   Text="Parent Task"/>
 			<ComboBox Classes="Default"
 					  Grid.Row="6" Grid.Column="1"
 					  MinWidth="150"
-				  MaxWidth="250"
-				  ItemsSource="{Binding Tasks}"
-				  DisplayMemberBinding="{Binding Name}"
-				  SelectedItem="{Binding SelectedParentTask}"/>
+					  MaxWidth="250"
+					  ItemsSource="{Binding Tasks}"
+					  DisplayMemberBinding="{Binding Name}"
+					  SelectedItem="{Binding SelectedParentTask}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="7" Grid.Column="0"
 					   Text="Description"/>

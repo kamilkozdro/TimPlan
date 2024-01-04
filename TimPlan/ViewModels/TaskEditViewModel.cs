@@ -3,6 +3,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -24,15 +25,15 @@ namespace TimPlan.ViewModels
             set { this.RaiseAndSetIfChanged(ref _Name, value); }
         }
 
-        private DateTime _StartDate;
-        public DateTime StartDate
+        private DateTimeOffset? _StartDate;
+        public DateTimeOffset? StartDate
         {
             get { return _StartDate; }
             set { this.RaiseAndSetIfChanged(ref _StartDate, value); }
         }
 
-        private DateTime _EndDate;
-        public DateTime EndDate
+        private DateTimeOffset? _EndDate;
+        public DateTimeOffset? EndDate
         {
             get { return _EndDate; }
             set { this.RaiseAndSetIfChanged(ref _EndDate, value); }
@@ -110,7 +111,17 @@ namespace TimPlan.ViewModels
 
             this.WhenAnyValue(o => o.SelectedTeam)
                 .Subscribe(UpdateUsers);
-
+            
+            this.WhenAnyValue(o => o.Private)
+                .Subscribe(o =>
+                {
+                    if(Private)
+                    {
+                        SelectedTeam = null;
+                        SelectedUser = _LoggedUser;
+                    }
+                });
+            
             IObservable<bool> createTaskCheck = this.WhenAnyValue
                 (x => x.Name,
                 x => x.SelectedUser)
@@ -120,7 +131,9 @@ namespace TimPlan.ViewModels
 
             UpdateTeams();
             UpdateUsers(null);
-            UpdateTasks();
+
+            ResetProperties();
+
         }
 
         private void UpdateTeams()
@@ -135,37 +148,32 @@ namespace TimPlan.ViewModels
 
         private void UpdateTasks()
         {
-            Tasks = new ObservableCollection<TaskModel>(SQLAccess.SelectAllTask());
+            Tasks = new ObservableCollection<TaskModel>(SQLAccess.SelectAllTasksWithoutForeignPrivate(_LoggedUser.Id));
         }
 
         private void CreateTask()
         {
             TaskModel newTask = new TaskModel();
             newTask.Name = Name;
-            newTask.DateStart = StartDate;
-            newTask.DateEnd = EndDate;
+            newTask.DateCreated = DateTime.Now.Date;
+            newTask.DateStart = StartDate?.DateTime.Date;
+            newTask.DateEnd = EndDate?.DateTime.Date;
             newTask.Private = Private;
-            if(SelectedParentTask != null)
-            {
-                newTask.ParentTaskID = SelectedParentTask.Id;
-            }
-            else
-            {
-                newTask.ParentTaskID = null;
-            }
-            if(SelectedTeam != null)
-            {
-                newTask.TeamId = SelectedTeam.Id;
-            }
-            else
-            {
-                newTask.TeamId = null;
-            }
+            newTask.ParentTaskID = SelectedParentTask?.Id;
+            newTask.TeamId = SelectedTeam?.Id;
             newTask.UserId = SelectedUser.Id;
             newTask.Description = Description;
             
             newTask.CreatorUserId = _LoggedUser.Id;
 
+           if( SQLAccess.InsertTask(newTask))
+            {
+                ResetProperties();
+            }
+           else
+            {
+                Debug.WriteLine("Creating task failed. Could not insert task into database.");
+            }
 
         }
 
@@ -180,5 +188,18 @@ namespace TimPlan.ViewModels
             return true;
         }
 
+        private void ResetProperties()
+        {
+            Name = string.Empty;
+            StartDate = DateTime.Now;
+            EndDate = DateTime.Now;
+            Private = false;
+            SelectedParentTask = null;
+            SelectedTeam = null;
+            SelectedUser = _LoggedUser;
+            Description = string.Empty;
+
+            UpdateTasks();
+        }
     }
 }
