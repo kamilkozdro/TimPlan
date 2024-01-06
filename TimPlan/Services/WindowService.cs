@@ -27,6 +27,14 @@ namespace TimPlan.Services
             teamEditWindow.Show();
         }
 
+        public void OpenTeamRoleEditWindow()
+        {
+            TeamRoleEditViewModel teamRoleEditVM = new TeamRoleEditViewModel();
+            TeamRoleEditWindow teamRoleEditWindow = new TeamRoleEditWindow();
+            teamRoleEditWindow.DataContext = teamRoleEditVM;
+            teamRoleEditWindow.Show();
+        }
+
         public void OpenUserEditWindow()
         {
             UserEditViewModel userEditWindowVM = new UserEditViewModel();

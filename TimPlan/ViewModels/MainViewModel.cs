@@ -57,6 +57,7 @@ public class MainViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> TaskEditCommand { get; }
     public ReactiveCommand<Unit, Unit> TeamEditCommand { get; }
     public ReactiveCommand<Unit, Unit> UserEditCommand { get; }
+    public ReactiveCommand<Unit, Unit> TeamRoleEditCommand { get; }
 
     #endregion
 
@@ -64,7 +65,6 @@ public class MainViewModel : ViewModelBase
 
     public MainViewModel()
     {
-        
 
         this.WhenAnyValue(o => o.LoggedUser)
             .Subscribe(UpdateUserLogged);
@@ -86,11 +86,13 @@ public class MainViewModel : ViewModelBase
             _WindowService.OpenUserEditWindow();
         });
 
-
+        TeamRoleEditCommand = ReactiveCommand.Create(() =>
+        {
+            _WindowService.OpenTeamRoleEditWindow();
+        });
 
 
         #endregion
-
 
 
         TreeViewNodes = new ObservableCollection<TreeViewNode>()

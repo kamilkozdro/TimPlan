@@ -36,11 +36,15 @@
 					<Button Classes="Default"
 							IsVisible="{Binding EditUsersVisibility}"
 							Command="{Binding UserEditCommand}"
-							Content="Add User"/>
+							Content="Edit User"/>
 					<Button Classes="Default"
 							IsVisible="{Binding EditTeamsVisibility}"
 							Command="{Binding TeamEditCommand}"
-							Content="Add Team"/>
+							Content="Edit Team"/>
+				<Button Classes="Default"
+							IsVisible="{Binding EditTeamsVisibility}"
+							Command="{Binding TeamRoleEditCommand}"
+							Content="Edit Team Role"/>
 				</WrapPanel>
 			</StackPanel>
 

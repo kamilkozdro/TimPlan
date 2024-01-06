@@ -1,0 +1,64 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:TimPlan.ViewModels"
+		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="TimPlan.Views.TeamRoleEditWindow"
+        x:DataType="vm:TeamRoleEditViewModel"
+	    x:CompileBindings="True"
+		Background="LightCyan"
+		SizeToContent="WidthAndHeight"
+        Title="TeamRoleEditWindow">
+
+	<Design.DataContext>
+		<vm:TeamRoleEditViewModel />
+	</Design.DataContext>
+
+	<StackPanel Orientation="Horizontal">
+		<!-- Teams list -->
+		<StackPanel Orientation="Vertical"
+					MinWidth="100">
+			<TextBlock Classes="Header1"
+					   Text="Team Roles List:"/>
+			<ListBox ItemsSource="{Binding TeamRoles}"
+					 SelectedItem="{Binding SelectedTeamRole}"
+					 DisplayMemberBinding="{Binding Name}">
+			</ListBox>
+		</StackPanel>
+
+		<StackPanel Orientation="Vertical">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition MinWidth="50"/>
+					<ColumnDefinition MinWidth="100"/>
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<TextBlock Classes="Default"
+						   Grid.Column="0"
+						   Grid.Row="0"
+						   Text="Role name:"/>
+				<TextBox Classes="Default"
+						 Grid.Column="1"
+						 Grid.Row="0"
+						 Text="{Binding RoleName}"/>
+			</Grid>
+			<!-- Buttons -->
+			<StackPanel Orientation="Horizontal">
+				<Button Classes="Default"
+						Content="Add"
+						Command="{Binding CreateTeamRoleCommand}"/>
+				<Button Classes="Default"
+						Content="Edit"
+						Command="{Binding EditTeamRoleCommand}"/>
+				<Button Classes="Default"
+						Content="Delete"
+						Command="{Binding DeleteTeamRoleCommand}"/>
+			</StackPanel>
+		</StackPanel>
+
+	</StackPanel>
+	
+</Window>

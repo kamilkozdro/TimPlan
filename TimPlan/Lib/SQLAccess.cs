@@ -66,6 +66,31 @@ namespace TimPlan.Lib
                 return null;
             }
         }
+        static public T SelectSingle<T>(string dbTableName, uint id)
+        {
+            if (!typeof(IDbRecord).IsAssignableFrom(typeof(T)))
+            {
+                throw new ArgumentException($"{nameof(T)} must implement IDbRecord interface.");
+            }
+
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"SELECT * " +
+                                    $"FROM {dbTableName} " +
+                                    $"WHERE id={id}";
+                    T queryOutput = connection.QuerySingleOrDefault<T>(queryString, new DynamicParameters());
+
+                    return queryOutput;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectUser(uint):{e.Message}");
+                return default(T);
+            }
+        }
         static public UserModel SelectUser(uint id)
         {
             try
@@ -231,6 +256,27 @@ namespace TimPlan.Lib
                 return null;
             }
         }
+        static public TeamRoleModel SelectTeamRoleByName(string roleName)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"SELECT * " +
+                                    $"FROM {TeamRoleModel.DbTableName} " +
+                                    $"WHERE {TeamRoleModel.DbNameCol}='{roleName}'";
+
+                    TeamRoleModel queryOutput = connection.QuerySingleOrDefault<TeamRoleModel>(queryString, new DynamicParameters());
+
+                    return queryOutput;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectTeamRoleByName(string):{e.Message}");
+                return null;
+            }
+        }
 
 
         #endregion
@@ -322,7 +368,27 @@ namespace TimPlan.Lib
                 return false;
             }
         }
+        static public bool InsertTeamRole(TeamRoleModel teamRole)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"INSERT " +
+                                    $"INTO {TeamRoleModel.DbTableName} " +
+                                    $"({TeamRoleModel.DbNameCol}) " +
+                                    $"VALUES (@{nameof(TeamRoleModel.Name)})";
+                    connection.Execute(queryString, teamRole);
 
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"TeamRoleModel(TeamRoleModel):{e.Message}");
+                return false;
+            }
+        }
         #endregion
 
         #region Update
@@ -390,6 +456,23 @@ namespace TimPlan.Lib
                 Debug.WriteLine($"UpdateTask(TaskModel):{e.Message}");
             }
         }
+        static public void UpdateTeamRole(TeamRoleModel teamRole)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"UPDATE {TeamRoleModel.DbTableName} " +
+                                    $"SET {TeamRoleModel.DbNameCol} = @{nameof(TeamRoleModel.Name)}, " +
+                                    $"WHERE {TeamRoleModel.DbIdCol} = @{nameof(TeamRoleModel.Id)}";
+                    connection.Execute(queryString, teamRole);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"UpdateTeamRole(TeamRoleModel):{e.Message}");
+            }
+        }
         #endregion
 
         #region Delete
@@ -443,6 +526,23 @@ namespace TimPlan.Lib
             catch (Exception e)
             {
                 Debug.WriteLine($"DeleteTask(uint):{e.Message}");
+            }
+        }
+        static public void DeleteTeamRole(uint id)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"DELETE " +
+                                    $"FROM {TeamRoleModel.DbTableName} " +
+                                    $"WHERE {TeamRoleModel.DbIdCol} = {id}";
+                    connection.Execute(queryString);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"DeleteTeamRole(uint):{e.Message}");
             }
         }
         #endregion

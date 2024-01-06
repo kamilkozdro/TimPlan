@@ -8,5 +8,6 @@ namespace TimPlan.Interfaces
 {
     public interface IDbRecord
     {
+
     }
 }

@@ -12,5 +12,6 @@ namespace TimPlan.Services
         void OpenTaskEditWindow(UserModel loggedUser);
         void OpenTeamEditWindow();
         void OpenUserEditWindow();
+        void OpenTeamRoleEditWindow();
     }
 }
