@@ -138,12 +138,12 @@ namespace TimPlan.ViewModels
 
         private void UpdateTeams()
         {
-            Teams = new ObservableCollection<TeamModel>(SQLAccess.SelectAllTeams());
+            Teams = new ObservableCollection<TeamModel>(SQLAccess.SelectAll<TeamModel>(TeamModel.DbTableName));
         }
 
         private void UpdateUsers(TeamModel selectedTeam)
         {
-            Users = new ObservableCollection<UserModel>(SQLAccess.SelectAllUsers());
+            Users = new ObservableCollection<UserModel>(SQLAccess.SelectAll<UserModel>(UserModel.DbTableName));
         }
 
         private void UpdateTasks()

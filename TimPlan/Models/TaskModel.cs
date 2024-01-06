@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using TimPlan.Interfaces;
 
 namespace TimPlan.Models
 {
-    public class TaskModel
+    public class TaskModel :IDbRecord
     {
         [Column(DbIdCol)]
         public uint Id { get; set; }

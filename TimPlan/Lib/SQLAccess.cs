@@ -7,6 +7,7 @@ using System.Linq;
 using TimPlan.Models;
 using System.Diagnostics;
 using System.ComponentModel.DataAnnotations.Schema;
+using TimPlan.Interfaces;
 
 namespace TimPlan.Lib
 {
@@ -41,22 +42,27 @@ namespace TimPlan.Lib
 
         #region Select
 
-        static public List<UserModel> SelectAllUsers()
+        static public List<T> SelectAll<T>(string dbTableName)
         {
             try
             {
+                if (!typeof(IDbRecord).IsAssignableFrom(typeof(T)))
+                {
+                    throw new ArgumentException($"{nameof(T)} must implement IDbRecord interface.");
+                }
+
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"SELECT * " +
-                                    $"FROM {UserModel.DbTableName} ";
-                    List<UserModel> queryOutput = connection.Query<UserModel>(queryString, new DynamicParameters()).ToList();
+                                    $"FROM {dbTableName} ";
+                    List<T> queryOutput = connection.Query<T>(queryString, new DynamicParameters()).ToList();
 
                     return queryOutput;
                 }
             }
             catch (Exception e)
             {
-                Debug.WriteLine($"SelectAllUsers():{e.Message}");
+                Debug.WriteLine($"SelectAll<T>(string):{e.Message}");
                 return null;
             }
         }
@@ -123,25 +129,6 @@ namespace TimPlan.Lib
                 return null;
             }
         }
-        static public List<TeamModel> SelectAllTeams()
-        {
-            try
-            {
-                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
-                {
-                    string queryString = $"SELECT * " +
-                                    $"FROM {TeamModel.DbTableName} ";
-                    List<TeamModel> queryOutput = connection.Query<TeamModel>(queryString, new DynamicParameters()).ToList();
-
-                    return queryOutput;
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine($"SelectAllTeams():{e.Message}");
-                return null;
-            }
-        }
         static public TeamModel SelectTeam(uint id)
         {
             try
@@ -180,25 +167,6 @@ namespace TimPlan.Lib
             catch (Exception e)
             {
                 Debug.WriteLine($"SelectTeamByName(string):{e.Message}");
-                return null;
-            }
-        }
-        static public List<TaskModel> SelectAllTasks()
-        {
-            try
-            {
-                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
-                {
-                    string queryString = $"SELECT * " +
-                                    $"FROM {TaskModel.DbTableName} ";
-                    List<TaskModel> queryOutput = connection.Query<TaskModel>(queryString, new DynamicParameters()).ToList();
-
-                    return queryOutput;
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine($"SelectAllTask():{e.Message}");
                 return null;
             }
         }

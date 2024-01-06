@@ -76,7 +76,7 @@ namespace TimPlan.ViewModels
 
         private void UpdateTeamsList()
         {
-            Teams = new ObservableCollection<TeamModel>(SQLAccess.SelectAllTeams());
+            Teams = new ObservableCollection<TeamModel>(SQLAccess.SelectAll<TeamModel>(TeamModel.DbTableName));
         }
 
         private void UpdateSelectedTeam(TeamModel team)

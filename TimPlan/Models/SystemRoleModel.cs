@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using TimPlan.Interfaces;
 
 namespace TimPlan.Models
 {
-    public class SystemRoleModel
+    public class SystemRoleModel : IDbRecord
     {
         [Column(DbIdCol)]
         public int Id { get; set; }

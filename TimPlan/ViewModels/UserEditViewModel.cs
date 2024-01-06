@@ -92,11 +92,12 @@ namespace TimPlan.ViewModels
             DeleteUserCommand = ReactiveCommand.Create(DeleteUser, deleteUserCheck);
 
             UpdateUsersList();
+
         }
 
         private void UpdateUsersList()
         {
-            Users = new ObservableCollection<UserModel>(SQLAccess.SelectAllUsers());
+            Users = new ObservableCollection<UserModel>(SQLAccess.SelectAll<UserModel>(UserModel.DbTableName));
         }
 
         private void UpdateSelectedUser(UserModel user)

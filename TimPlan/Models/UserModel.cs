@@ -5,11 +5,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TimPlan.Interfaces;
 using TimPlan.Lib;
 
 namespace TimPlan.Models
 {
-    public class UserModel
+    public class UserModel : IDbRecord
     {
         [Column(DbIdCol)]
         public uint Id { get; set; }

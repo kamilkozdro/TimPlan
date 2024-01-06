@@ -7,6 +7,7 @@ using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TimPlan.Interfaces;
 using TimPlan.Lib;
 using TimPlan.Models;
 

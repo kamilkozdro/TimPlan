@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TimPlan.Interfaces;
 
 namespace TimPlan.Models
 {
-    public class TeamRoleModel
+    public class TeamRoleModel : IDbRecord
     {
         [Column(DbIdCol)]
         public int Id { get; set; }
