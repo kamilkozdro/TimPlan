@@ -19,12 +19,47 @@ namespace TimPlan.ViewModels
             get { return _Users; }
             set { this.RaiseAndSetIfChanged(ref _Users, value); }
         }
-
+        private ObservableCollection<TeamModel> _Teams;
+        public ObservableCollection<TeamModel> Teams
+        {
+            get { return _Teams; }
+            set { this.RaiseAndSetIfChanged(ref _Teams, value); }
+        }
+        private ObservableCollection<TeamRoleModel> _TeamRoles;
+        public ObservableCollection<TeamRoleModel> TeamRoles
+        {
+            get { return _TeamRoles; }
+            set { this.RaiseAndSetIfChanged(ref _TeamRoles, value); }
+        }
+        private ObservableCollection<SystemRoleModel> _SystemRoles;
+        public ObservableCollection<SystemRoleModel> SystemRoles
+        {
+            get { return _SystemRoles; }
+            set { this.RaiseAndSetIfChanged(ref _SystemRoles, value); }
+        }
         private UserModel _SelectedUser;
         public UserModel SelectedUser
         {
             get { return _SelectedUser; }
             set { this.RaiseAndSetIfChanged(ref _SelectedUser, value); }
+        }
+        private TeamModel _SelectedTeam;
+        public TeamModel SelectedTeam
+        {
+            get { return _SelectedTeam; }
+            set { this.RaiseAndSetIfChanged(ref _SelectedTeam, value); }
+        }
+        private TeamRoleModel _SelectedTeamRole;
+        public TeamRoleModel SelectedTeamRole
+        {
+            get { return _SelectedTeamRole; }
+            set { this.RaiseAndSetIfChanged(ref _SelectedTeamRole, value); }
+        }
+        private SystemRoleModel _SelectedSystemRole;
+        public SystemRoleModel SelectedSystemRole
+        {
+            get { return _SelectedSystemRole; }
+            set { this.RaiseAndSetIfChanged(ref _SelectedSystemRole, value); }
         }
 
 
@@ -73,14 +108,16 @@ namespace TimPlan.ViewModels
             IObservable<bool> addUserCheck = this.WhenAnyValue(
                 x => x.Username,
                 x => x.Login,
-                x => x.Password)
+                x => x.Password,
+                x =>x.SelectedSystemRole)
                 .Select(_ => CheckAddUser());
 
             IObservable<bool> editUserCheck = this.WhenAnyValue(
                 x => x.Username,
                 x => x.Login,
                 x => x.Password,
-                x => x.SelectedUser)
+                x => x.SelectedUser,
+                x => x.SelectedSystemRole)
                 .Select(_ => CheckEditUser());
 
             IObservable<bool> deleteUserCheck = this.WhenAnyValue(
@@ -92,7 +129,9 @@ namespace TimPlan.ViewModels
             DeleteUserCommand = ReactiveCommand.Create(DeleteUser, deleteUserCheck);
 
             UpdateUsersList();
-
+            SystemRoles = new ObservableCollection<SystemRoleModel>(SQLAccess.SelectAll<SystemRoleModel>(SystemRoleModel.DbTableName));
+            Teams = new ObservableCollection<TeamModel>(SQLAccess.SelectAll<TeamModel>(TeamModel.DbTableName));
+            TeamRoles = new ObservableCollection<TeamRoleModel>(SQLAccess.SelectAll<TeamRoleModel>(TeamRoleModel.DbTableName));
         }
 
         private void UpdateUsersList()
@@ -109,11 +148,17 @@ namespace TimPlan.ViewModels
                 Username = string.Empty;
                 Login = string.Empty;
                 Password = string.Empty;
+                SelectedSystemRole = null;
+                SelectedTeam = null;
+                SelectedTeamRole = null;
                 return;
             }
 
             Username = user.Name;
             Login = user.Login;
+            SelectedSystemRole = SystemRoles.Single(role => role.Id == user.SystemRoleId);
+            SelectedTeam = Teams.SingleOrDefault(team => team.Id == user.TeamId);
+            SelectedTeamRole = TeamRoles.SingleOrDefault(teamRole => teamRole.Id == user.TeamRoleId);
 
         }
 
@@ -132,6 +177,9 @@ namespace TimPlan.ViewModels
             newUser.Name = Username;
             newUser.Login = Login;
             newUser.Password = Password;
+            newUser.SystemRoleId = SelectedSystemRole.Id;
+            newUser.TeamId = SelectedTeam?.Id;
+            newUser.TeamRoleId = SelectedTeamRole?.Id;
 
             SQLAccess.InsertUser(newUser);
 
@@ -143,7 +191,8 @@ namespace TimPlan.ViewModels
         {
             if (string.IsNullOrEmpty(Username)
                 || string.IsNullOrEmpty(Login)
-                || string.IsNullOrEmpty(Password))
+                || string.IsNullOrEmpty(Password)
+                || SelectedSystemRole == null)
             {
                 return false;
             }
@@ -155,7 +204,7 @@ namespace TimPlan.ViewModels
         {
             UserModel checkUserLogin = SQLAccess.SelectUserByLogin(Login);
 
-            if (checkUserLogin != null)
+            if (checkUserLogin != null && SelectedUser.Login != Login)
             {
                 Debug.WriteLine($"User with that login already exists");
                 return;
@@ -165,6 +214,9 @@ namespace TimPlan.ViewModels
             editedUser.Name = Username;
             editedUser.Login = Login;
             editedUser.Password = Password;
+            editedUser.SystemRoleId = SelectedSystemRole.Id;
+            editedUser.TeamId = SelectedTeam?.Id;
+            editedUser.TeamRoleId = SelectedTeamRole?.Id;
 
             SQLAccess.UpdateUser(editedUser);
 
@@ -177,7 +229,8 @@ namespace TimPlan.ViewModels
             if (string.IsNullOrEmpty(Username)
                 || string.IsNullOrEmpty(Login)
                 || string.IsNullOrEmpty(Password)
-                || SelectedUser == null)
+                || SelectedUser == null
+                || SelectedSystemRole == null)
             {
                 return false;
             }

@@ -36,6 +36,9 @@
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 				<TextBlock Classes="Default"
 						   Grid.Column="0"
@@ -62,6 +65,42 @@
 						   Grid.Row="2"
 						 Text="{Binding Password}"
 						 PasswordChar="*"/>
+				<TextBlock Classes="Default"
+						   Grid.Column="0"
+						   Grid.Row="3"
+						   Text="System Role"/>
+				<ComboBox Classes="Default"
+						  Grid.Column="1"
+						  Grid.Row="3" 
+						  MinWidth="150"
+						  MaxWidth="250"
+						  ItemsSource="{Binding SystemRoles}"
+						  DisplayMemberBinding="{Binding Name}"
+						  SelectedItem="{Binding SelectedSystemRole}"/>
+				<TextBlock Classes="Default"
+						   Grid.Column="0"
+						   Grid.Row="4"
+						   Text="Team"/>
+				<ComboBox Classes="Default"
+						  Grid.Column="1"
+						  Grid.Row="4"
+						  MinWidth="150"
+						  MaxWidth="250"
+						  ItemsSource="{Binding Teams}"
+						  DisplayMemberBinding="{Binding Name}"
+						  SelectedItem="{Binding SelectedTeam}"/>
+				<TextBlock Classes="Default"
+						   Grid.Column="0"
+						   Grid.Row="5"
+						   Text="Team Role"/>
+				<ComboBox Classes="Default"
+						  Grid.Column="1"
+						  Grid.Row="5"
+						  MinWidth="150"
+						  MaxWidth="250"
+						  ItemsSource="{Binding TeamRoles}"
+						  DisplayMemberBinding="{Binding Name}"
+						  SelectedItem="{Binding SelectedTeamRole}"/>
 			</Grid>
 			<!-- Buttons -->
 			<StackPanel Orientation="Horizontal">

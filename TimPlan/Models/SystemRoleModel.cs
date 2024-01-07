@@ -6,7 +6,7 @@ namespace TimPlan.Models
     public class SystemRoleModel : IDbRecord
     {
         [Column(DbIdCol)]
-        public int Id { get; set; }
+        public uint Id { get; set; }
         [Column(DbNameCol)]
         public string Name { get; set; }
         [Column(DbIsAdminCol)]

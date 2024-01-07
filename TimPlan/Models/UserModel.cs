@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TimPlan.Interfaces;
 using TimPlan.Lib;
 
@@ -22,8 +18,14 @@ namespace TimPlan.Models
         public string? Password {  get; set; }
         [Column(DbSystemRoleIdCol)]
         public uint SystemRoleId { get; set; }
+        [Column(DbTeamId)]
+        public uint? TeamId { get; set; }
+        [Column(DbTeamRoleId)]
+        public uint? TeamRoleId { get; set; }
 
-        public SystemRoleModel SystemRole { get; set; }
+        public SystemRoleModel? SystemRole { get; set; } = null;
+        public TeamModel? Team { get; set; } = null;
+        public TeamRoleModel? TeamRole { get; set; } = null;
 
         #region DbNames
 
@@ -33,6 +35,8 @@ namespace TimPlan.Models
         public const string DbLoginCol = "login";
         public const string DbPasswordCol = "password";
         public const string DbSystemRoleIdCol = "system_role_id";
+        public const string DbTeamId = "team_id";
+        public const string DbTeamRoleId = "team_role_id";
 
         #endregion
 
@@ -43,8 +47,25 @@ namespace TimPlan.Models
 
         public void ReadSystemRole()
         {
-            SystemRole = SQLAccess.SelectSystemRole(SystemRoleId);
+            SystemRole = SQLAccess.SelectSingle<SystemRoleModel>(SystemRoleModel.DbTableName, SystemRoleId);
         }
+
+        public void ReadTeam()
+        {
+            if(TeamId !=  null)
+            {
+                Team = SQLAccess.SelectSingle<TeamModel>(TeamModel.DbTableName, (uint)TeamId);
+            }
+        }
+
+        public void ReadTeamRole()
+        {
+            if (TeamRoleId != null)
+            {
+                TeamRole = SQLAccess.SelectSingle<TeamRoleModel>(TeamRoleModel.DbTableName, (uint)TeamRoleId);
+            }
+        }
+            
 
         public override string ToString()
         {

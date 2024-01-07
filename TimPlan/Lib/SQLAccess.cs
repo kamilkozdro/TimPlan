@@ -291,10 +291,18 @@ namespace TimPlan.Lib
                 {
                     string queryString = $"INSERT " +
                                     $"INTO {UserModel.DbTableName} " +
-                                    $"({UserModel.DbNameCol},{UserModel.DbLoginCol},{UserModel.DbPasswordCol}) " +
+                                    $"({UserModel.DbNameCol}," +
+                                    $"{UserModel.DbLoginCol}," +
+                                    $"{UserModel.DbPasswordCol}," +
+                                    $"{UserModel.DbSystemRoleIdCol}," +
+                                    $"{UserModel.DbTeamId}," +
+                                    $"{UserModel.DbTeamRoleId}) " +
                                     $"VALUES (@{nameof(UserModel.Name)}," +
                                     $"@{nameof(UserModel.Login)}," +
-                                    $"@{nameof(UserModel.Password)})";
+                                    $"@{nameof(UserModel.Password)}," +
+                                    $"@{nameof(UserModel.SystemRoleId)}," +
+                                    $"@{nameof(UserModel.TeamId)}," +
+                                    $"@{nameof(UserModel.TeamRoleId)})";
                     connection.Execute(queryString, user);
 
                     return true;
@@ -402,7 +410,10 @@ namespace TimPlan.Lib
                     string queryString = $"UPDATE {UserModel.DbTableName} " +
                                     $"SET {UserModel.DbNameCol} = @{nameof(UserModel.Name)}, " +
                                     $"{UserModel.DbLoginCol} = @{nameof(UserModel.Login)}, " +
-                                    $"{UserModel.DbPasswordCol} = @{nameof(UserModel.Password)} " +
+                                    $"{UserModel.DbPasswordCol} = @{nameof(UserModel.Password)}, " +
+                                    $"{UserModel.DbSystemRoleIdCol} = @{nameof(UserModel.SystemRoleId)}, " +
+                                    $"{UserModel.DbTeamId} = @{nameof(UserModel.TeamId)}, " +
+                                    $"{UserModel.DbTeamRoleId} = @{nameof(UserModel.TeamRoleId)} " +
                                     $"WHERE {UserModel.DbIdCol} = @{nameof(UserModel.Id)}";
                     connection.Execute(queryString, user);
                 }
@@ -419,7 +430,7 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"UPDATE {TeamModel.DbTableName} " +
-                                    $"SET {TeamModel.DbNameCol} = @{nameof(TeamModel.Name)}, "+
+                                    $"SET {TeamModel.DbNameCol} = @{nameof(TeamModel.Name)} "+
                                     $"WHERE {TeamModel.DbIdCol} = @{nameof(TeamModel.Id)}";
                     connection.Execute(queryString, team);
                 }
@@ -446,7 +457,7 @@ namespace TimPlan.Lib
                                     $"{TaskModel.DbPrivateCol} = @{nameof(TaskModel.Private)}," +
                                     $"{TaskModel.DbCreatorUserIdCol} = @{nameof(TaskModel.CreatorUserId)}," +
                                     $"{TaskModel.DbUserIdCol} = @{nameof(TaskModel.UserId)}," +
-                                    $"{TaskModel.DbTeamIdCol} = @{nameof(TaskModel.TeamId)}" +
+                                    $"{TaskModel.DbTeamIdCol} = @{nameof(TaskModel.TeamId)} " +
                                     $"WHERE {TaskModel.DbIdCol} = @{nameof(TaskModel.Id)}";
                     connection.Execute(queryString, task);
                 }
@@ -463,7 +474,7 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"UPDATE {TeamRoleModel.DbTableName} " +
-                                    $"SET {TeamRoleModel.DbNameCol} = @{nameof(TeamRoleModel.Name)}, " +
+                                    $"SET {TeamRoleModel.DbNameCol} = @{nameof(TeamRoleModel.Name)} " +
                                     $"WHERE {TeamRoleModel.DbIdCol} = @{nameof(TeamRoleModel.Id)}";
                     connection.Execute(queryString, teamRole);
                 }
