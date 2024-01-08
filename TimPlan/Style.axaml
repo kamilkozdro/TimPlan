@@ -16,11 +16,14 @@
 		<Setter Property="Orientation" Value="Horizontal"/>
 		<Setter Property="HorizontalAlignment" Value="Center"/>
 		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="Margin" Value="3"/>
+		
 	</Style>
 	<Style Selector="StackPanel.VerticalCenter">
 		<Setter Property="Orientation" Value="Vertical"/>
 		<Setter Property="HorizontalAlignment" Value="Center"/>
 		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="Margin" Value="3"/>
 	</Style>
 	
 	<!-- TextBox Styles -->
@@ -42,7 +45,7 @@
 		<Setter Property="HorizontalAlignment" Value="Center"/>
 		<Setter Property="BorderThickness" Value="1"/>
 		<Setter Property="BorderBrush" Value="Black"/>
-		<Setter Property="Margin" Value="10"/>
+		<Setter Property="Margin" Value="3"/>
 		<Setter Property="Background" Value="LightSkyBlue"/>
 	</Style>
 	<Style Selector="Button.Default:pointerover /template/ ContentPresenter#PART_ContentPresenter">

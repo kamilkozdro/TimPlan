@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Avalonia;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Xml.Linq;
 using TimPlan.Lib;
 using TimPlan.Models;
 
@@ -22,6 +24,39 @@ namespace TimPlan.ViewModels
             get { return _RoleName; }
             set { this.RaiseAndSetIfChanged(ref _RoleName, value); }
         }
+        private bool _CanEditAllTasks;
+        public bool CanEditAllTasks
+        {
+            get { return _CanEditAllTasks; }
+            set { this.RaiseAndSetIfChanged(ref _CanEditAllTasks, value); }
+        }
+        private bool _CanEditCreatedTasks;
+        public bool CanEditCreatedTasks
+        {
+            get { return _CanEditCreatedTasks; }
+            set { this.RaiseAndSetIfChanged(ref _CanEditCreatedTasks, value); }
+        }
+        private bool _CanAssignTasks;
+        public bool CanAssignTasks
+        {
+            get { return _CanAssignTasks; }
+            set { this.RaiseAndSetIfChanged(ref _CanAssignTasks, value); }
+        }
+        private bool _CanViewForeignTasks;
+        public bool CanViewForeignTasks
+        {
+            get { return _CanViewForeignTasks; }
+            set { this.RaiseAndSetIfChanged(ref _CanViewForeignTasks, value); }
+        }
+        private bool _CanViewAllTasks;
+        public bool CanViewAllTasks
+        {
+            get { return _CanViewAllTasks; }
+            set { this.RaiseAndSetIfChanged(ref _CanViewAllTasks, value); }
+        }
+
+
+
 
         private ObservableCollection<TeamRoleModel> _TeamRoles;
         public ObservableCollection<TeamRoleModel> TeamRoles
@@ -66,7 +101,7 @@ namespace TimPlan.ViewModels
 
             IObservable<bool> deleteTeamCheck = this.WhenAnyValue(
                 x => x.SelectedTeamRole)
-                .Select(_ => CheckEditTeamRole());
+                .Select(_ => CheckDeleteTeamRole());
 
             CreateTeamRoleCommand = ReactiveCommand.Create(CreateTeamRole, createTeamCheck);
             EditTeamRoleCommand = ReactiveCommand.Create(EditTeamRole, editTeamCheck);
@@ -79,37 +114,40 @@ namespace TimPlan.ViewModels
         {
             TeamRoles = new ObservableCollection<TeamRoleModel>(SQLAccess.SelectAll<TeamRoleModel>(TeamRoleModel.DbTableName));
         }
-
         private void UpdateSelectedTeamRole(TeamRoleModel selectedTeamRole)
         {
             if (selectedTeamRole == null ||
                 string.IsNullOrEmpty(selectedTeamRole.Name))
             {
-                RoleName = string.Empty;
+                ResetProperties();
                 return;
             }
 
             RoleName = selectedTeamRole.Name;
+            CanEditAllTasks = selectedTeamRole.CanEditAllTasks;
+            CanEditCreatedTasks = selectedTeamRole.CanEditCreatedTasks;
+            CanAssignTasks = selectedTeamRole.CanAssignTasks;
+            CanViewForeignTasks = selectedTeamRole.CanViewForeignTasks;
+            CanViewAllTasks = selectedTeamRole.CanViewAllTasks;
         }
         private void CreateTeamRole()
         {
             TeamRoleModel checkTeamRoleName = SQLAccess.SelectTeamRoleByName(RoleName);
 
-            if (checkTeamRoleName != null)
+            if (checkTeamRoleName != null && SelectedTeamRole.Name != RoleName)
             {
                 Debug.WriteLine($"Team Role with that name already exists");
                 return;
             }
 
             TeamRoleModel newTeamRole = new TeamRoleModel();
-            newTeamRole.Name = RoleName;
+            SetSelectedPropertiesToTeamRole(ref newTeamRole);
 
             SQLAccess.InsertTeamRole(newTeamRole);
 
             SelectedTeamRole = null;
             UpdateTeamRolesList();
         }
-
         private bool CheckCreateTeamRole()
         {
             if (string.IsNullOrEmpty(RoleName))
@@ -119,26 +157,24 @@ namespace TimPlan.ViewModels
 
             return true;
         }
-
         private void EditTeamRole()
         {
             TeamRoleModel checkRoleName = SQLAccess.SelectTeamRoleByName(RoleName);
 
-            if (checkRoleName != null)
+            if (checkRoleName != null && SelectedTeamRole.Name != RoleName)
             {
                 Debug.WriteLine($"Team with that name already exists");
                 return;
             }
 
             TeamRoleModel editedTeamRole = SelectedTeamRole;
-            editedTeamRole.Name = RoleName;
+            SetSelectedPropertiesToTeamRole(ref editedTeamRole);
 
             SQLAccess.UpdateTeamRole(editedTeamRole);
 
             SelectedTeamRole = null;
             UpdateTeamRolesList();
         }
-
         private bool CheckEditTeamRole()
         {
             if (SelectedTeamRole == null ||
@@ -149,7 +185,6 @@ namespace TimPlan.ViewModels
 
             return true;
         }
-
         private void DeleteTeamRole()
         {
             SQLAccess.DeleteTeamRole(SelectedTeamRole.Id);
@@ -157,7 +192,6 @@ namespace TimPlan.ViewModels
             UpdateTeamRolesList();
             SelectedTeamRole = null;
         }
-
         private bool CheckDeleteTeamRole()
         {
             if (SelectedTeamRole == null)
@@ -167,8 +201,24 @@ namespace TimPlan.ViewModels
 
             return true;
         }
-
-
+        private void SetSelectedPropertiesToTeamRole(ref TeamRoleModel teamRole)
+        {
+            teamRole.Name = RoleName;
+            teamRole.CanEditAllTasks = CanEditAllTasks;
+            teamRole.CanEditCreatedTasks = CanEditCreatedTasks;
+            teamRole.CanAssignTasks = CanAssignTasks;
+            teamRole.CanViewForeignTasks = CanViewForeignTasks;
+            teamRole.CanViewAllTasks = CanViewAllTasks;
+        }
+        private void ResetProperties()
+        {
+            RoleName = string.Empty;
+            CanEditAllTasks = false;
+            CanEditCreatedTasks = false;
+            CanAssignTasks = false;
+            CanViewForeignTasks = false;
+            CanViewAllTasks = false;
+        }
 
     }
 }

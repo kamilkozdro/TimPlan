@@ -38,6 +38,11 @@ namespace TimPlan.Lib
                 (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
                 prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
 
+            SqlMapper.SetTypeMap(typeof(TeamRoleModel),
+                new CustomPropertyTypeMap(typeof(TeamRoleModel),
+                (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
+                prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
+
         }
 
         #region Select
@@ -46,13 +51,13 @@ namespace TimPlan.Lib
         {
             try
             {
-                if (!typeof(IDbRecord).IsAssignableFrom(typeof(T)))
-                {
-                    throw new ArgumentException($"{nameof(T)} must implement IDbRecord interface.");
-                }
-
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
+                    if (!typeof(IDbRecord).IsAssignableFrom(typeof(T)))
+                    {
+                        throw new ArgumentException($"{nameof(T)} must implement IDbRecord interface.");
+                    }
+
                     string queryString = $"SELECT * " +
                                     $"FROM {dbTableName} ";
                     List<T> queryOutput = connection.Query<T>(queryString, new DynamicParameters()).ToList();
@@ -68,13 +73,15 @@ namespace TimPlan.Lib
         }
         static public T SelectSingle<T>(string dbTableName, uint id)
         {
-            if (!typeof(IDbRecord).IsAssignableFrom(typeof(T)))
-            {
-                throw new ArgumentException($"{nameof(T)} must implement IDbRecord interface.");
-            }
+            
 
             try
             {
+                if (!typeof(IDbRecord).IsAssignableFrom(typeof(T)))
+                {
+                    throw new ArgumentException($"{nameof(T)} must implement IDbRecord interface.");
+                }
+
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"SELECT * " +
@@ -87,7 +94,7 @@ namespace TimPlan.Lib
             }
             catch (Exception e)
             {
-                Debug.WriteLine($"SelectUser(uint):{e.Message}");
+                Debug.WriteLine($"SelectSingle<{nameof(T)}>(string, uint):{e.Message}");
                 return default(T);
             }
         }
@@ -384,8 +391,18 @@ namespace TimPlan.Lib
                 {
                     string queryString = $"INSERT " +
                                     $"INTO {TeamRoleModel.DbTableName} " +
-                                    $"({TeamRoleModel.DbNameCol}) " +
-                                    $"VALUES (@{nameof(TeamRoleModel.Name)})";
+                                    $"({TeamRoleModel.DbNameCol}), " +
+                                    $"({TeamRoleModel.DbCanEditAllTasks}), " +
+                                    $"({TeamRoleModel.DbCanEditCreatedTasks}), " +
+                                    $"({TeamRoleModel.DbCanAssignTasks}), " +
+                                    $"({TeamRoleModel.DbCanViewForeignTasks}), " +
+                                    $"({TeamRoleModel.DbCanViewAllTasks})" +
+                                    $"VALUES (@{nameof(TeamRoleModel.Name)}, " +
+                                    $"@{nameof(TeamRoleModel.CanEditAllTasks)}, " +
+                                    $"@{nameof(TeamRoleModel.CanEditCreatedTasks)}, " +
+                                    $"@{nameof(TeamRoleModel.CanAssignTasks)}, " +
+                                    $"@{nameof(TeamRoleModel.CanViewForeignTasks)}, " +
+                                    $"@{nameof(TeamRoleModel.CanViewAllTasks)})";
                     connection.Execute(queryString, teamRole);
 
                     return true;
@@ -447,16 +464,16 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"UPDATE {TaskModel.DbTableName} " +
-                                    $"SET {TaskModel.DbNameCol} = @{nameof(TaskModel.Name)}," +
-                                    $"{TaskModel.DbParentTaskIdCol} = @{nameof(TaskModel.ParentTaskID)}," +
-                                    $"{TaskModel.DbDateCreatedCol} = @{nameof(TaskModel.DateCreated)}," +
-                                    $"{TaskModel.DbDateStartCol} = @{nameof(TaskModel.DateStart)}," +
-                                    $"{TaskModel.DbDateEndCol} = @{nameof(TaskModel.DateEnd)}," +
-                                    $"{TaskModel.DbDescriptionCol} = @{nameof(TaskModel.Description)}," +
-                                    $"{TaskModel.DbIsCompletedCol} = @{nameof(TaskModel.IsCompleted)}," +
-                                    $"{TaskModel.DbPrivateCol} = @{nameof(TaskModel.Private)}," +
-                                    $"{TaskModel.DbCreatorUserIdCol} = @{nameof(TaskModel.CreatorUserId)}," +
-                                    $"{TaskModel.DbUserIdCol} = @{nameof(TaskModel.UserId)}," +
+                                    $"SET {TaskModel.DbNameCol} = @{nameof(TaskModel.Name)}, " +
+                                    $"{TaskModel.DbParentTaskIdCol} = @{nameof(TaskModel.ParentTaskID)}, " +
+                                    $"{TaskModel.DbDateCreatedCol} = @{nameof(TaskModel.DateCreated)}, " +
+                                    $"{TaskModel.DbDateStartCol} = @{nameof(TaskModel.DateStart)}, " +
+                                    $"{TaskModel.DbDateEndCol} = @{nameof(TaskModel.DateEnd)}, " +
+                                    $"{TaskModel.DbDescriptionCol} = @{nameof(TaskModel.Description)}, " +
+                                    $"{TaskModel.DbIsCompletedCol} = @{nameof(TaskModel.IsCompleted)}, " +
+                                    $"{TaskModel.DbPrivateCol} = @{nameof(TaskModel.Private)}, " +
+                                    $"{TaskModel.DbCreatorUserIdCol} = @{nameof(TaskModel.CreatorUserId)}, " +
+                                    $"{TaskModel.DbUserIdCol} = @{nameof(TaskModel.UserId)}, " +
                                     $"{TaskModel.DbTeamIdCol} = @{nameof(TaskModel.TeamId)} " +
                                     $"WHERE {TaskModel.DbIdCol} = @{nameof(TaskModel.Id)}";
                     connection.Execute(queryString, task);
@@ -474,7 +491,12 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"UPDATE {TeamRoleModel.DbTableName} " +
-                                    $"SET {TeamRoleModel.DbNameCol} = @{nameof(TeamRoleModel.Name)} " +
+                                    $"SET {TeamRoleModel.DbNameCol} = @{nameof(TeamRoleModel.Name)}, " +
+                                    $"{TeamRoleModel.DbCanEditAllTasks} = @{nameof(TeamRoleModel.CanEditAllTasks)}, " +
+                                    $"{TeamRoleModel.DbCanEditCreatedTasks} = @{nameof(TeamRoleModel.CanEditCreatedTasks)}, " +
+                                    $"{TeamRoleModel.DbCanAssignTasks} = @{nameof(TeamRoleModel.CanAssignTasks)}, " +
+                                    $"{TeamRoleModel.DbCanViewForeignTasks} = @{nameof(TeamRoleModel.CanViewForeignTasks)}, " +
+                                    $"{TeamRoleModel.DbCanViewAllTasks} = @{nameof(TeamRoleModel.CanViewAllTasks)} " +
                                     $"WHERE {TeamRoleModel.DbIdCol} = @{nameof(TeamRoleModel.Id)}";
                     connection.Execute(queryString, teamRole);
                 }

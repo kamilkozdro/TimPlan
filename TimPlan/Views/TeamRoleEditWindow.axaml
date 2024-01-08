@@ -15,25 +15,34 @@
 		<vm:TeamRoleEditViewModel />
 	</Design.DataContext>
 
-	<StackPanel Orientation="Horizontal">
+	<StackPanel Orientation="Horizontal"
+				Margin="3">
 		<!-- Teams list -->
 		<StackPanel Orientation="Vertical"
-					MinWidth="100">
+					MinWidth="100"
+					Margin="3">
 			<TextBlock Classes="Header1"
 					   Text="Team Roles List:"/>
 			<ListBox ItemsSource="{Binding TeamRoles}"
 					 SelectedItem="{Binding SelectedTeamRole}"
-					 DisplayMemberBinding="{Binding Name}">
+					 DisplayMemberBinding="{Binding Name}"
+					 Margin="3">
 			</ListBox>
 		</StackPanel>
 
-		<StackPanel Orientation="Vertical">
+		<StackPanel Orientation="Vertical"
+					Margin="3">
 			<Grid>
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition MinWidth="50"/>
+					<ColumnDefinition MinWidth="200"/>
 					<ColumnDefinition MinWidth="100"/>
 				</Grid.ColumnDefinitions>
 				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 				<TextBlock Classes="Default"
@@ -44,6 +53,36 @@
 						 Grid.Column="1"
 						 Grid.Row="0"
 						 Text="{Binding RoleName}"/>
+				<TextBlock Classes="Default"
+					   Grid.Row="1" Grid.Column="0"
+					   Text="Can Edit All Tasks"/>
+				<CheckBox Classes="Default"
+						  Grid.Row="1" Grid.Column="1"
+						  IsChecked="{Binding CanEditAllTasks}"/>
+				<TextBlock Classes="Default"
+					   Grid.Row="2" Grid.Column="0"
+					   Text="Can Edit Created Tasks"/>
+				<CheckBox Classes="Default"
+						  Grid.Row="2" Grid.Column="1"
+						  IsChecked="{Binding CanEditCreatedTasks}"/>
+				<TextBlock Classes="Default"
+					   Grid.Row="3" Grid.Column="0"
+					   Text="Can Assign Tasks"/>
+				<CheckBox Classes="Default"
+						  Grid.Row="3" Grid.Column="1"
+						  IsChecked="{Binding CanAssignTasks}"/>
+				<TextBlock Classes="Default"
+					   Grid.Row="4" Grid.Column="0"
+					   Text="Can View Foreign Tasks"/>
+				<CheckBox Classes="Default"
+						  Grid.Row="4" Grid.Column="1"
+						  IsChecked="{Binding CanViewForeignTasks}"/>
+				<TextBlock Classes="Default"
+					   Grid.Row="5" Grid.Column="0"
+					   Text="Can View All Tasks"/>
+				<CheckBox Classes="Default"
+						  Grid.Row="5" Grid.Column="1"
+						  IsChecked="{Binding CanViewAllTasks}"/>
 			</Grid>
 			<!-- Buttons -->
 			<StackPanel Orientation="Horizontal">

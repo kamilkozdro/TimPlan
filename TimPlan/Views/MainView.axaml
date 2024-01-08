@@ -18,10 +18,12 @@
 		<Border DockPanel.Dock="Top"
 				MinHeight="50"
 				Background="LightSkyBlue">
-			<StackPanel Orientation="Vertical">
+			<StackPanel Orientation="Vertical"
+						Margin="3">
 				<!-- Common Tool panel -->
 				<WrapPanel Orientation="Horizontal"
-					   VerticalAlignment="Center">
+						   Margin="3"
+						   VerticalAlignment="Center">
 					<TextBlock Classes="Default"
 							   Text="Logged as:"/>
 					<TextBlock Classes="Default"
@@ -36,15 +38,15 @@
 					<Button Classes="Default"
 							IsVisible="{Binding EditUsersVisibility}"
 							Command="{Binding UserEditCommand}"
-							Content="Edit User"/>
+							Content="Add User"/>
 					<Button Classes="Default"
 							IsVisible="{Binding EditTeamsVisibility}"
 							Command="{Binding TeamEditCommand}"
-							Content="Edit Team"/>
-				<Button Classes="Default"
-							IsVisible="{Binding EditTeamsVisibility}"
-							Command="{Binding TeamRoleEditCommand}"
-							Content="Edit Team Role"/>
+							Content="Add Team"/>
+					<Button Classes="Default"
+								IsVisible="{Binding EditTeamsVisibility}"
+								Command="{Binding TeamRoleEditCommand}"
+								Content="Edit Team Role"/>
 				</WrapPanel>
 			</StackPanel>
 
