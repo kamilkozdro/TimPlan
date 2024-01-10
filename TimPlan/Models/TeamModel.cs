@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TimPlan.Interfaces;
-
+﻿using System.ComponentModel.DataAnnotations.Schema;
 namespace TimPlan.Models
 {
-    public class TeamModel : IDbRecord
+    public class TeamModel : DbRecordBase<TeamModel>
     {
         [Column (DbIdCol)]
         public uint Id { get; set; }
@@ -26,11 +19,6 @@ namespace TimPlan.Models
         public TeamModel()
         {
             
-        }
-
-        public override string ToString()
-        {
-            return $"Id:{Id}, Name:{Name}";
         }
     }
 }

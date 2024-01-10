@@ -166,7 +166,7 @@ namespace TimPlan.ViewModels
             
             newTask.CreatorUserId = _LoggedUser.Id;
 
-           if( SQLAccess.InsertTask(newTask))
+           if( SQLAccess.InsertSingle<TaskModel>(newTask, TaskModel.DbTableName))
             {
                 ResetProperties();
             }

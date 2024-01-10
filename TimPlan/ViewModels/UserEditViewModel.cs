@@ -181,7 +181,7 @@ namespace TimPlan.ViewModels
             newUser.TeamId = SelectedTeam?.Id;
             newUser.TeamRoleId = SelectedTeamRole?.Id;
 
-            SQLAccess.InsertUser(newUser);
+            SQLAccess.InsertSingle<UserModel>(newUser, UserModel.DbTableName);
 
             SelectedUser = null;
             UpdateUsersList();
@@ -218,7 +218,7 @@ namespace TimPlan.ViewModels
             editedUser.TeamId = SelectedTeam?.Id;
             editedUser.TeamRoleId = SelectedTeamRole?.Id;
 
-            SQLAccess.UpdateUser(editedUser);
+            SQLAccess.UpdateSingle<UserModel>(editedUser, UserModel.DbTableName);
 
             SelectedUser = null;
             UpdateUsersList();
@@ -240,7 +240,7 @@ namespace TimPlan.ViewModels
 
         private void DeleteUser()
         {
-            SQLAccess.DeleteUser(SelectedUser.Id);
+            SQLAccess.DeleteSingle(UserModel.DbTableName, SelectedUser.Id);
 
             UpdateUsersList();
             SelectedUser = null;

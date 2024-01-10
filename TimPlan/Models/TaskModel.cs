@@ -1,10 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using TimPlan.Interfaces;
 
 namespace TimPlan.Models
 {
-    public class TaskModel :IDbRecord
+    public class TaskModel : DbRecordBase<TaskModel>
     {
         [Column(DbIdCol)]
         public uint Id { get; set; }
@@ -55,18 +54,6 @@ namespace TimPlan.Models
         public TaskModel()
         {
             
-        }
-
-
-
-        public override string ToString()
-        {
-            return $"Id:{Id}, Name:{Name}, ParentTaskId:{ParentTaskID}," +
-                $" DateCreated:{DateCreated}, DateStart:{DateStart}," +
-                $" DateEnd:{DateEnd}, Description:{Description}," +
-                $" IsCompleted:{IsCompleted}, Private:{Private}," +
-                $" CreatorUserId:{CreatorUserId}, UserId:{UserId}," +
-                $" TeamId:{TeamId}";
         }
 
     }

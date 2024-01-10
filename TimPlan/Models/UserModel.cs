@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using TimPlan.Interfaces;
 using TimPlan.Lib;
 
 namespace TimPlan.Models
 {
-    public class UserModel : IDbRecord
+    public class UserModel : DbRecordBase<UserModel>
     {
         [Column(DbIdCol)]
         public uint Id { get; set; }

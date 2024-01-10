@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using TimPlan.Interfaces;
 
 namespace TimPlan.Models
 {
-    public class SystemRoleModel : IDbRecord
+    public class SystemRoleModel : DbRecordBase<SystemRoleModel>
     {
         [Column(DbIdCol)]
         public uint Id { get; set; }
@@ -32,13 +31,6 @@ namespace TimPlan.Models
         public SystemRoleModel()
         {
             
-        }
-
-        public override string ToString()
-        {
-            return $"Id:{Id}, Name:{Name}, IsAdmin:{IsAdmin}, CanEditUsers:{CanEditUsers}," +
-                $" CanEditUsers:{CanEditUsers}, CanEditSystemRoles:{CanEditSystemRoles}," +
-                $" CanEditTeams:{CanEditTeams}"; ;
         }
     }
 }

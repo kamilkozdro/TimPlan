@@ -104,7 +104,7 @@ namespace TimPlan.ViewModels
             TeamModel newTeam = new TeamModel();
             newTeam.Name = TeamName;
 
-            SQLAccess.InsertTeam(newTeam);
+            SQLAccess.InsertSingle<TeamModel>(newTeam, TeamModel.DbTableName);
 
             SelectedTeam = null;
             UpdateTeamsList();
@@ -133,7 +133,7 @@ namespace TimPlan.ViewModels
             TeamModel editedTeam = SelectedTeam;
             editedTeam.Name = TeamName;
 
-            SQLAccess.UpdateTeam(editedTeam);
+            SQLAccess.UpdateSingle<TeamModel>(editedTeam, TeamModel.DbTableName);
 
             SelectedTeam = null;
             UpdateTeamsList();
@@ -152,7 +152,7 @@ namespace TimPlan.ViewModels
 
         private void DeleteTeam()
         {
-            SQLAccess.DeleteTeam(SelectedTeam.Id);
+            SQLAccess.DeleteSingle(TeamModel.DbTableName, SelectedTeam.Id);
 
             UpdateTeamsList();
             SelectedTeam = null;

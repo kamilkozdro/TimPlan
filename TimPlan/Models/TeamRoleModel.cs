@@ -4,11 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TimPlan.Interfaces;
 
 namespace TimPlan.Models
 {
-    public class TeamRoleModel : IDbRecord
+    public class TeamRoleModel : DbRecordBase<TeamRoleModel>
     {
         [Column(DbIdCol)]
         public uint Id { get; set; }
@@ -42,12 +41,6 @@ namespace TimPlan.Models
         public TeamRoleModel()
         {
             
-        }
-
-        public override string ToString()
-        {
-            return $"Id={Id},Name={Name},CanEditAllTasks={CanEditAllTasks},CanEditCreatedTasks={CanEditCreatedTasks}," +
-                $"CanAssignTasks={CanAssignTasks},CanViewForeignTasks={CanViewForeignTasks},CanViewAllTasks={CanViewAllTasks}";
         }
     }
 }
