@@ -213,7 +213,25 @@ namespace TimPlan.Lib
                 return null;
             }
         }
+        static public IEnumerable<UserModel> SelectTeamMembers(int teamId)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"SELECT * " +
+                                    $"FROM {new UserModel().DbTableName} " +
+                                    $"WHERE {UserModel.DbTeamId}={teamId}";
 
+                    return connection.Query<UserModel>(queryString, new DynamicParameters());
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectTeamRoleByName(string):{e.Message}");
+                return null;
+            }
+        }
         #endregion
 
         #region Insert

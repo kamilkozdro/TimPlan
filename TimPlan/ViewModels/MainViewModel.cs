@@ -17,7 +17,7 @@ namespace TimPlan.ViewModels;
 public class MainViewModel : ViewModelBase
 {
 
-    #region Models
+    #region Properties
     public ObservableCollection<TaskModel> WorkTasks { get; set; }
     public ObservableCollection<TeamModel> Teams { get; set; }
     public ObservableCollection<UserModel> Users { get; set; }
@@ -29,6 +29,7 @@ public class MainViewModel : ViewModelBase
         set { this.RaiseAndSetIfChanged(ref _LoggedUser, value); }
     }
 
+    #region My Tasks Tab
 
     private ObservableCollection<TaskTileViewModel> _myTaskTilesVM;
     public ObservableCollection<TaskTileViewModel> MyTaskTilesVM
@@ -36,6 +37,34 @@ public class MainViewModel : ViewModelBase
         get { return _myTaskTilesVM; }
         set { this.RaiseAndSetIfChanged(ref _myTaskTilesVM, value); }
     }
+
+    #endregion
+
+    #region Team Overview Tab
+
+    private UserModel _selectedTeamMember;
+    public UserModel SelectedTeamMember
+    {
+        get { return _selectedTeamMember; }
+        set { this.RaiseAndSetIfChanged(ref _selectedTeamMember, value); }
+    }
+    private ObservableCollection<UserModel> _teamMembers;
+    public ObservableCollection<UserModel> TeamMembers
+    {
+        get { return _teamMembers; }
+        set { this.RaiseAndSetIfChanged(ref _teamMembers, value); }
+    }
+    private ObservableCollection<TaskTileViewModel> _selectedTeamMemberTaskTiles;
+    public ObservableCollection<TaskTileViewModel> SelectedTeamMemberTaskTiles
+    {
+        get { return _selectedTeamMemberTaskTiles; }
+        set { this.RaiseAndSetIfChanged(ref _selectedTeamMemberTaskTiles, value); }
+    }
+
+    #endregion
+
+    #region Project Owerview Tab
+
 
 
     #endregion
@@ -47,7 +76,6 @@ public class MainViewModel : ViewModelBase
         set { this.RaiseAndSetIfChanged(ref _LoggedUserName, value); }
     }
 
-    public TreeViewNode SelectedNode { get; set; }
     private bool _EditUsersVisibility;
     public bool EditUsersVisibility
     {
@@ -61,6 +89,8 @@ public class MainViewModel : ViewModelBase
         set { this.RaiseAndSetIfChanged(ref _EditTeamsVisibility, value); }
     }
 
+
+    #endregion
 
     #region Commands
 
@@ -77,7 +107,15 @@ public class MainViewModel : ViewModelBase
         this.WhenAnyValue(o => o.LoggedUser)
             .Subscribe(UpdateUserLogged);
 
+        this.WhenAnyValue(o => o.SelectedTeamMember)
+            .Subscribe(UpdateTeamMemberTasks);
+
         MyTaskTilesVM = new ObservableCollection<TaskTileViewModel>();
+        SelectedTeamMemberTaskTiles = new ObservableCollection<TaskTileViewModel>();
+        TeamMembers = new ObservableCollection<UserModel>();
+
+        //PopulateMyTasks();
+        //PopulateTeamMembers();
 
         #region Set Commands
 
@@ -112,22 +150,47 @@ public class MainViewModel : ViewModelBase
     }
 
 
+    private void PopulateMyTasks()
+    {
+        List<TaskModel> myTasks = new List<TaskModel> 
+        {
+            new TaskModel()
+            {
+                Name = "Task 1",
+                DateEnd = DateTime.Now
+            },
+            new TaskModel()
+            {
+                Name = "Task 2",
+                DateEnd = DateTime.Now
+            },
+            new TaskModel()
+            {
+                Name = "Task 3",
+                DateEnd = DateTime.Now
+            }
+        };
 
+        foreach (TaskModel task in myTasks)
+        {
+            MyTaskTilesVM.Add(new TaskTileViewModel(task));
+        }
+    }
+    private void PopulateTeamMembers()
+    {
+        TeamMembers = new ObservableCollection<UserModel> 
+        { 
+            new UserModel() { Name = "User 1" },
+            new UserModel() { Name = "User 2" },
+            new UserModel() { Name = "User 3" },
+            new UserModel() { Name = "User 4" },
+        };
+    }
     private void UpdateUserLogged(UserModel user)
     {
         if(user == null) return;
 
         user.ReadSystemRole();
-        Debug.WriteLine(user);
-
-        if(string.IsNullOrEmpty(user.Name))
-        {
-            LoggedUserName = "Noname";
-        }
-        else
-        {
-            LoggedUserName = user.Name;
-        }
 
         if (user.SystemRole == null)
         {
@@ -141,15 +204,33 @@ public class MainViewModel : ViewModelBase
                                 user.SystemRole.CanEditTeams;
         }
 
-        List<TaskModel> myTasks = SQLAccess.SelectUserTasks(user.Id).ToList();
+        UpdateMyTasks();
+        UpdateTeamMembers((int)user.TeamId);
 
-        Debug.WriteLine($"TASK COUNT: {myTasks.Count}");
+    }    
+    private void UpdateMyTasks()
+    {
+        List<TaskModel> myTasks = SQLAccess.SelectUserTasks(LoggedUser.Id).ToList();
 
         foreach (TaskModel task in myTasks)
         {
             MyTaskTilesVM.Add(new TaskTileViewModel(task));
         }
+    }
+    private void UpdateTeamMemberTasks(UserModel member)
+    {
+        if (member == null) return;
 
-
+        SelectedTeamMemberTaskTiles.Clear();
+        List<TaskModel> teamMemberTasks = SQLAccess.SelectUserTasks(member.Id).ToList();
+        foreach (TaskModel task in teamMemberTasks)
+        {
+            SelectedTeamMemberTaskTiles.Add(new TaskTileViewModel(task));
+        }
+    }
+    private void UpdateTeamMembers(int teamId)
+    {
+        TeamMembers = new ObservableCollection<UserModel>(
+            SQLAccess.SelectTeamMembers(teamId).ToList());
     }
 }

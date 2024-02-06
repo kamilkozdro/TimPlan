@@ -17,8 +17,8 @@
 			BorderBrush="Black"
 			BorderThickness="3"
 			CornerRadius="10"
-			Width="300"
-			Height="200">
+			MinWidth="300"
+			MinHeight="200">
 		<DockPanel>
 			<!-- Task Name -->
 			<TextBlock Classes="Default"
