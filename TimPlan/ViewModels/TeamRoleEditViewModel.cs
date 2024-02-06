@@ -112,7 +112,7 @@ namespace TimPlan.ViewModels
 
         private void UpdateTeamRolesList()
         {
-            TeamRoles = new ObservableCollection<TeamRoleModel>(SQLAccess.SelectAll<TeamRoleModel>(TeamRoleModel.DbTableName));
+            TeamRoles = new ObservableCollection<TeamRoleModel>(SQLAccess.SelectAll<TeamRoleModel>());
         }
         private void UpdateSelectedTeamRole(TeamRoleModel selectedTeamRole)
         {
@@ -143,7 +143,7 @@ namespace TimPlan.ViewModels
             TeamRoleModel newTeamRole = new TeamRoleModel();
             SetSelectedPropertiesToTeamRole(ref newTeamRole);
 
-            SQLAccess.InsertSingle<TeamRoleModel>(newTeamRole, TeamRoleModel.DbTableName);
+            SQLAccess.InsertSingle<TeamRoleModel>(newTeamRole);
 
             SelectedTeamRole = null;
             UpdateTeamRolesList();
@@ -170,7 +170,7 @@ namespace TimPlan.ViewModels
             TeamRoleModel editedTeamRole = SelectedTeamRole;
             SetSelectedPropertiesToTeamRole(ref editedTeamRole);
 
-            SQLAccess.UpdateSingle<TeamRoleModel>(editedTeamRole, TeamRoleModel.DbTableName);
+            SQLAccess.UpdateSingle<TeamRoleModel>(editedTeamRole);
 
             SelectedTeamRole = null;
             UpdateTeamRolesList();
@@ -187,7 +187,7 @@ namespace TimPlan.ViewModels
         }
         private void DeleteTeamRole()
         {
-            SQLAccess.DeleteSingle(TeamRoleModel.DbTableName, SelectedTeamRole.Id);
+            SQLAccess.DeleteSingle<TeamRoleModel>(SelectedTeamRole.Id);
 
             UpdateTeamRolesList();
             SelectedTeamRole = null;

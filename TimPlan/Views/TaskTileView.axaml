@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:TimPlan.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="200"
+             x:Class="TimPlan.Views.TaskTileView"
+			 x:CompileBindings="True"
+			 x:DataType="vm:TaskTileViewModel">
+
+	<Design.DataContext>
+		<vm:TaskTileViewModel/>
+	</Design.DataContext>
+	
+	
+	<Border Background="Beige"
+			BorderBrush="Black"
+			BorderThickness="3"
+			CornerRadius="10"
+			Width="300"
+			Height="200">
+		<DockPanel>
+			<!-- Task Name -->
+			<TextBlock Classes="Default"
+					   DockPanel.Dock="Top"
+					   Text="{Binding TaskName}"/>
+
+			<!-- Days Left -->
+			<StackPanel Orientation="Horizontal"
+						DockPanel.Dock="Top"
+						Margin="3">
+				<TextBlock Classes="Default"
+						   Text="{Binding DaysLeft}"/>
+				<TextBlock Classes="Default"
+						   Text="Days left"/>
+			</StackPanel>
+
+			<Expander DockPanel.Dock="Top"
+					  HorizontalAlignment="Stretch"
+					  Margin="6">
+				<TextBlock Classes="Default"
+						   Text="{Binding Description}"
+						   VerticalAlignment="Top"
+						   TextWrapping="Wrap"/>
+			</Expander>
+
+			<!-- Buttons -->
+			<Grid ColumnDefinitions="*,*,*">
+				<Button Classes="Default"
+						Grid.Column="0"
+						HorizontalAlignment="Stretch"
+						Command="{Binding AcceptTaskCommand}">
+					Take
+				</Button>
+				<Button Classes="Default"
+						Grid.Column="1"
+						HorizontalAlignment="Stretch"
+						Command="{Binding CompleteTaskCommand}">
+					Completed
+				</Button>
+				<Button Classes="Default"
+						Grid.Column="2"
+						HorizontalAlignment="Stretch">
+					3
+				</Button>
+			</Grid>
+		</DockPanel>
+	</Border>
+</UserControl>

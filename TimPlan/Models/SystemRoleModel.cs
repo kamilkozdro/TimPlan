@@ -2,10 +2,10 @@
 
 namespace TimPlan.Models
 {
-    public class SystemRoleModel : DbRecordBase<SystemRoleModel>
+    public class SystemRoleModel : DbModelBase<SystemRoleModel>
     {
         [Column(DbIdCol)]
-        public uint Id { get; set; }
+        public override int Id { get; set; }
         [Column(DbNameCol)]
         public string Name { get; set; }
         [Column(DbIsAdminCol)]
@@ -17,17 +17,15 @@ namespace TimPlan.Models
         [Column(DbCanEditTeamsCol)]
         public bool CanEditTeams { get; set; }
 
-        #region DbNames
+        public override string DbTableName => "system_roles";
 
-        public const string DbTableName = "system_roles";
-        public const string DbIdCol = "id";
         public const string DbNameCol = "name";
         public const string DbIsAdminCol = "is_admin";
         public const string DbCanEditUsersCol = "can_edit_users";
         public const string DbCanEditSystemRolesCol = "can_edit_system_roles";
         public const string DbCanEditTeamsCol = "can_edit_teams";
 
-        #endregion
+
         public SystemRoleModel()
         {
             

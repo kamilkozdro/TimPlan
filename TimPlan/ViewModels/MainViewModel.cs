@@ -7,6 +7,10 @@ using System.Reactive;
 using System.Windows.Input;
 using System.Reactive.Linq;
 using TimPlan.Services;
+using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
+using TimPlan.Lib;
+using System.Linq;
 
 namespace TimPlan.ViewModels;
 
@@ -26,6 +30,14 @@ public class MainViewModel : ViewModelBase
     }
 
 
+    private ObservableCollection<TaskTileViewModel> _myTaskTilesVM;
+    public ObservableCollection<TaskTileViewModel> MyTaskTilesVM
+    {
+        get { return _myTaskTilesVM; }
+        set { this.RaiseAndSetIfChanged(ref _myTaskTilesVM, value); }
+    }
+
+
     #endregion
 
     private string _LoggedUserName;
@@ -35,8 +47,6 @@ public class MainViewModel : ViewModelBase
         set { this.RaiseAndSetIfChanged(ref _LoggedUserName, value); }
     }
 
-
-    public ObservableCollection<TreeViewNode> TreeViewNodes { get; set; }
     public TreeViewNode SelectedNode { get; set; }
     private bool _EditUsersVisibility;
     public bool EditUsersVisibility
@@ -61,50 +71,47 @@ public class MainViewModel : ViewModelBase
 
     #endregion
 
-    private IWindowService _WindowService = new WindowService();
-
     public MainViewModel()
     {
 
         this.WhenAnyValue(o => o.LoggedUser)
             .Subscribe(UpdateUserLogged);
 
+        MyTaskTilesVM = new ObservableCollection<TaskTileViewModel>();
+
         #region Set Commands
 
         TaskEditCommand = ReactiveCommand.Create(() =>
         {
-            _WindowService.OpenTaskEditWindow(LoggedUser);
+            var windowService = App.Current?.Services?.GetService<IWindowService>();
+            windowService.ShowTaskEditWindow(LoggedUser);
         });
 
         TeamEditCommand = ReactiveCommand.Create(() =>
         {
-            _WindowService.OpenTeamEditWindow();
+            var windowService = App.Current?.Services?.GetService<IWindowService>();
+            windowService.ShowTeamEditWindow();
         });
 
         UserEditCommand = ReactiveCommand.Create(() =>
         {
-            _WindowService.OpenUserEditWindow();
+            var windowService = App.Current?.Services?.GetService<IWindowService>();
+            windowService.ShowUserEditWindow();
         });
 
         TeamRoleEditCommand = ReactiveCommand.Create(() =>
         {
-            _WindowService.OpenTeamRoleEditWindow();
+            var windowService = App.Current?.Services?.GetService<IWindowService>();
+            windowService.ShowTeamRoleEditWindow();
         });
 
+        
 
         #endregion
 
-
-        TreeViewNodes = new ObservableCollection<TreeViewNode>()
-        {
-            new TreeViewNode("Node 1", 1,
-                new ObservableCollection<TreeViewNode>()
-                {
-                    new TreeViewNode("Node 1-1", 3)
-                }),
-            new TreeViewNode("Node 2", 2)
-        };
     }
+
+
 
     private void UpdateUserLogged(UserModel user)
     {
@@ -133,18 +140,16 @@ public class MainViewModel : ViewModelBase
             EditTeamsVisibility = user.SystemRole.IsAdmin ||
                                 user.SystemRole.CanEditTeams;
         }
-        
-        
-    }
 
-    private void ClearTreeView()
-    {
-        TreeViewNodes.Clear();
-    }
+        List<TaskModel> myTasks = SQLAccess.SelectUserTasks(user.Id).ToList();
 
-    private void BuildProjectBasedTreeView()
-    {
-        ClearTreeView();
+        Debug.WriteLine($"TASK COUNT: {myTasks.Count}");
+
+        foreach (TaskModel task in myTasks)
+        {
+            MyTaskTilesVM.Add(new TaskTileViewModel(task));
+        }
+
 
     }
 }

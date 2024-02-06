@@ -129,14 +129,14 @@ namespace TimPlan.ViewModels
             DeleteUserCommand = ReactiveCommand.Create(DeleteUser, deleteUserCheck);
 
             UpdateUsersList();
-            SystemRoles = new ObservableCollection<SystemRoleModel>(SQLAccess.SelectAll<SystemRoleModel>(SystemRoleModel.DbTableName));
-            Teams = new ObservableCollection<TeamModel>(SQLAccess.SelectAll<TeamModel>(TeamModel.DbTableName));
-            TeamRoles = new ObservableCollection<TeamRoleModel>(SQLAccess.SelectAll<TeamRoleModel>(TeamRoleModel.DbTableName));
+            SystemRoles = new ObservableCollection<SystemRoleModel>(SQLAccess.SelectAll<SystemRoleModel>());
+            Teams = new ObservableCollection<TeamModel>(SQLAccess.SelectAll<TeamModel>());
+            TeamRoles = new ObservableCollection<TeamRoleModel>(SQLAccess.SelectAll<TeamRoleModel>());
         }
 
         private void UpdateUsersList()
         {
-            Users = new ObservableCollection<UserModel>(SQLAccess.SelectAll<UserModel>(UserModel.DbTableName));
+            Users = new ObservableCollection<UserModel>(SQLAccess.SelectAll<UserModel>());
         }
 
         private void UpdateSelectedUser(UserModel user)
@@ -181,7 +181,7 @@ namespace TimPlan.ViewModels
             newUser.TeamId = SelectedTeam?.Id;
             newUser.TeamRoleId = SelectedTeamRole?.Id;
 
-            SQLAccess.InsertSingle<UserModel>(newUser, UserModel.DbTableName);
+            SQLAccess.InsertSingle<UserModel>(newUser);
 
             SelectedUser = null;
             UpdateUsersList();
@@ -218,7 +218,7 @@ namespace TimPlan.ViewModels
             editedUser.TeamId = SelectedTeam?.Id;
             editedUser.TeamRoleId = SelectedTeamRole?.Id;
 
-            SQLAccess.UpdateSingle<UserModel>(editedUser, UserModel.DbTableName);
+            SQLAccess.UpdateSingle<UserModel>(editedUser);
 
             SelectedUser = null;
             UpdateUsersList();
@@ -240,7 +240,7 @@ namespace TimPlan.ViewModels
 
         private void DeleteUser()
         {
-            SQLAccess.DeleteSingle(UserModel.DbTableName, SelectedUser.Id);
+            SQLAccess.DeleteSingle<UserModel>(SelectedUser.Id);
 
             UpdateUsersList();
             SelectedUser = null;

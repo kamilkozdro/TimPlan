@@ -5,10 +5,10 @@ using TimPlan.Lib;
 
 namespace TimPlan.Models
 {
-    public class UserModel : DbRecordBase<UserModel>
+    public class UserModel : DbModelBase<UserModel>
     {
         [Column(DbIdCol)]
-        public uint Id { get; set; }
+        public override int Id { get; set; }
         [Column(DbNameCol)]
         public string? Name { get; set; }
         [Column(DbLoginCol)]
@@ -16,20 +16,20 @@ namespace TimPlan.Models
         [Column(DbPasswordCol)]
         public string? Password {  get; set; }
         [Column(DbSystemRoleIdCol)]
-        public uint SystemRoleId { get; set; }
+        public int SystemRoleId { get; set; }
         [Column(DbTeamId)]
-        public uint? TeamId { get; set; }
+        public int? TeamId { get; set; }
         [Column(DbTeamRoleId)]
-        public uint? TeamRoleId { get; set; }
+        public int? TeamRoleId { get; set; }
 
         public SystemRoleModel? SystemRole { get; set; } = null;
         public TeamModel? Team { get; set; } = null;
         public TeamRoleModel? TeamRole { get; set; } = null;
 
+        public override string DbTableName => "users";
+
         #region DbNames
 
-        public const string DbTableName = "users";
-        public const string DbIdCol = "id";
         public const string DbNameCol = "name";
         public const string DbLoginCol = "login";
         public const string DbPasswordCol = "password";
@@ -46,14 +46,14 @@ namespace TimPlan.Models
 
         public void ReadSystemRole()
         {
-            SystemRole = SQLAccess.SelectSingle<SystemRoleModel>(SystemRoleModel.DbTableName, SystemRoleId);
+            SystemRole = SQLAccess.SelectSingle<SystemRoleModel>(SystemRoleId);
         }
 
         public void ReadTeam()
         {
             if(TeamId !=  null)
             {
-                Team = SQLAccess.SelectSingle<TeamModel>(TeamModel.DbTableName, (uint)TeamId);
+                Team = SQLAccess.SelectSingle<TeamModel>((int)TeamId);
             }
         }
 
@@ -61,14 +61,8 @@ namespace TimPlan.Models
         {
             if (TeamRoleId != null)
             {
-                TeamRole = SQLAccess.SelectSingle<TeamRoleModel>(TeamRoleModel.DbTableName, (uint)TeamRoleId);
+                TeamRole = SQLAccess.SelectSingle<TeamRoleModel>((int)TeamRoleId);
             }
-        }
-            
-
-        public override string ToString()
-        {
-            return $"Id:{Id}, Name:{Name}, Login:{Login}, SystemRoleID:{SystemRoleId}";
         }
 
     }

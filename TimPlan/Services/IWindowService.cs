@@ -9,9 +9,10 @@ namespace TimPlan.Services
 {
     public interface IWindowService
     {
-        void OpenTaskEditWindow(UserModel loggedUser);
-        void OpenTeamEditWindow();
-        void OpenUserEditWindow();
-        void OpenTeamRoleEditWindow();
+        void ShowTaskEditWindow(UserModel loggedUser);
+        void ShowTeamEditWindow();
+        void ShowUserEditWindow();
+        void ShowTeamRoleEditWindow();
+        public Task<bool> ShowDialogYesNo(string text, string title = "");
     }
 }

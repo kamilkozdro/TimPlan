@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace TimPlan.Models
 {
-    public class TeamRoleModel : DbRecordBase<TeamRoleModel>
+    public class TeamRoleModel : DbModelBase<TeamRoleModel>
     {
         [Column(DbIdCol)]
-        public uint Id { get; set; }
+        public override int Id { get; set; }
         [Column(DbNameCol)]
         public string Name { get; set; }
         [Column(DbCanEditAllTasks)]
@@ -24,11 +24,11 @@ namespace TimPlan.Models
         [Column(DbCanViewAllTasks)]
         public bool CanViewAllTasks { get; set; }
 
+        public override string DbTableName => "team_roles";
+
 
         #region DbNames
 
-        public const string DbTableName = "team_roles";
-        public const string DbIdCol = "id";
         public const string DbNameCol = "name";
         public const string DbCanEditAllTasks = "edit_all_tasks";
         public const string DbCanEditCreatedTasks = "edit_created_tasks";

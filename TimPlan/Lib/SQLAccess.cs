@@ -18,7 +18,8 @@ namespace TimPlan.Lib
 
         static private string _ConnectionString = "Data Source=.\\TimPlanDB.db;Version=3;";
         private static Type[] ClassesToMapAttributes =
-            { typeof(UserModel), typeof(TeamModel), typeof(TeamRoleModel), typeof(TaskModel), typeof(SystemRoleModel) };
+            { typeof(UserModel), typeof(TeamModel), typeof(TeamRoleModel), typeof(TaskModel), typeof(SystemRoleModel),
+            typeof(TaskTypeModel)};
 
         static public void MapClassAttributes()
         {
@@ -29,53 +30,32 @@ namespace TimPlan.Lib
                 (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
                 prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
             }
-            /*
-
-            SqlMapper.SetTypeMap(typeof(UserModel),
-                new CustomPropertyTypeMap(typeof(UserModel),
-                (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
-                prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
-            
-            SqlMapper.SetTypeMap(typeof(TeamModel),
-                new CustomPropertyTypeMap(typeof(TeamModel),
-                (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
-                prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
-            
-            SqlMapper.SetTypeMap(typeof(SystemRoleModel),
-                new CustomPropertyTypeMap(typeof(SystemRoleModel),
-                (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
-                prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
-            
-            SqlMapper.SetTypeMap(typeof(TaskModel),
-                new CustomPropertyTypeMap(typeof(TaskModel),
-                (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
-                prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
-
-            SqlMapper.SetTypeMap(typeof(TeamRoleModel),
-                new CustomPropertyTypeMap(typeof(TeamRoleModel),
-                (type, columnName) => type.GetProperties().FirstOrDefault(prop =>
-                prop.GetCustomAttributes(false).OfType<ColumnAttribute>().Any(attr => attr.Name == columnName))));
-            */
         }
 
         #region Select
 
-        static public List<T> SelectAll<T>(string dbTableName) where T : DbRecordBase<T>
+
+
+
+
+        static public List<T> SelectAll<T>() where T : DbModelBase<T>, new()
         {
             try
             {
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     connection.Open();
+                    string tableName = new T().DbTableName;
+
                     string queryString = $"SELECT * " +
-                                    $"FROM {dbTableName} ";
+                                    $"FROM {tableName} ";
                     List<T> queryResult = connection.Query<T>(queryString, new DynamicParameters()).ToList();
                     return queryResult;
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"SQLAccess:SelectAllRecords<{nameof(T)}>(string):{ex.Message}");
+                Debug.WriteLine($"SQLAccess:SelectAllRecords<{nameof(T)}>():{ex.Message}");
                 /*
                 var box = MessageBoxManager.GetMessageBoxStandard("Błąd",
                     $"SQLAccess:SelectAllRecords():\n{ex.Message}", MsBox.Avalonia.Enums.ButtonEnum.Ok);
@@ -84,15 +64,18 @@ namespace TimPlan.Lib
                 return null;
             }
         }
-        static public T SelectSingle<T>(string dbTableName, uint id) where T : DbRecordBase<T>
+        static public T SelectSingle<T>(int id) where T : DbModelBase<T>, new()
         {
             try
             {
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     connection.Open();
+
+                    string tableName = new T().DbTableName;
+
                     string queryString = $"SELECT * " +
-                                    $"FROM {dbTableName} " +
+                                    $"FROM {tableName} " +
                                     $"WHERE id={id}";
                     T queryOutput = connection.QuerySingleOrDefault<T>(queryString, new DynamicParameters());
 
@@ -101,7 +84,7 @@ namespace TimPlan.Lib
             }
             catch (Exception e)
             {
-                Debug.WriteLine($"SelectSingle<{nameof(T)}>(string, uint):{e.Message}");
+                Debug.WriteLine($"SelectSingle<{nameof(T)}>():{e.Message}");
                 return default(T);
             }
         }
@@ -112,7 +95,7 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"SELECT * " +
-                                    $"FROM {UserModel.DbTableName} " +
+                                    $"FROM {new UserModel().DbTableName} " +
                                     $"WHERE {UserModel.DbLoginCol}='{login}' " +
                                     $"AND {UserModel.DbPasswordCol}='{password}'";
 
@@ -134,7 +117,7 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"SELECT * " +
-                                    $"FROM {UserModel.DbTableName} " +
+                                    $"FROM {new UserModel().DbTableName} " +
                                     $"WHERE {UserModel.DbLoginCol}='{login}'";
 
                     UserModel queryOutput = connection.QuerySingleOrDefault<UserModel>(queryString, new DynamicParameters());
@@ -155,7 +138,7 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"SELECT * " +
-                                    $"FROM {TeamModel.DbTableName} " +
+                                    $"FROM {new TeamModel().DbTableName} " +
                                     $"WHERE {TeamModel.DbNameCol}='{name}'";
 
                     TeamModel queryOutput = connection.QuerySingleOrDefault<TeamModel>(queryString, new DynamicParameters());
@@ -169,14 +152,14 @@ namespace TimPlan.Lib
                 return null;
             }
         }
-        static public List<TaskModel> SelectAllTasksWithoutForeignPrivate(uint userId)
+        static public List<TaskModel> SelectAllTasksWithoutForeignPrivate(int userId)
         {
             try
             {
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"SELECT * " +
-                                    $"FROM {TaskModel.DbTableName} " +
+                                    $"FROM {new TaskModel().DbTableName} " +
                                     $"WHERE NOT ({TaskModel.DbCreatorUserIdCol} <> {userId} " +
                                     $"AND {TaskModel.DbPrivateCol} = true)";
                     List<TaskModel> queryOutput = connection.Query<TaskModel>(queryString, new DynamicParameters()).ToList();
@@ -186,7 +169,7 @@ namespace TimPlan.Lib
             }
             catch (Exception e)
             {
-                Debug.WriteLine($"SelectAllTasksWithoutForeignPrivate(uint):{e.Message}");
+                Debug.WriteLine($"SelectAllTasksWithoutForeignPrivate(int):{e.Message}");
                 return null;
             }
         }
@@ -197,7 +180,7 @@ namespace TimPlan.Lib
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
                     string queryString = $"SELECT * " +
-                                    $"FROM {TeamRoleModel.DbTableName} " +
+                                    $"FROM {new TeamRoleModel().DbTableName} " +
                                     $"WHERE {TeamRoleModel.DbNameCol}='{roleName}'";
 
                     TeamRoleModel queryOutput = connection.QuerySingleOrDefault<TeamRoleModel>(queryString, new DynamicParameters());
@@ -211,12 +194,30 @@ namespace TimPlan.Lib
                 return null;
             }
         }
+        static public IEnumerable<TaskModel> SelectUserTasks(int userId)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"SELECT * " +
+                                    $"FROM {new TaskModel().DbTableName} " +
+                                    $"WHERE {TaskModel.DbUserIdCol}='{userId}'";
 
+                    return connection.Query<TaskModel>(queryString, new DynamicParameters());
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectUserTasks(int):{e.Message}");
+                return null;
+            }
+        }
 
         #endregion
 
         #region Insert
-        static public bool InsertSingle<T>(DbRecordBase<T> insertModel, string dbTableName)
+        static public bool InsertSingle<T>(DbModelBase<T> insertModel)
         {
             try
             {
@@ -224,20 +225,19 @@ namespace TimPlan.Lib
                 {
                     connection.Open();
 
-                    List<PropertyInfo> properties = AnnotationHelper.GetPropertiesWithColumnAnnotation<T>();
+                    List<PropertyInfo> properties = AnnotationHelper.GetPropertiesWithColumnAnnotation(typeof(T));
                     StringBuilder queryColNames = new StringBuilder();
 
-                    // TODO: Hardcoded id property name "Id" in LINQ Where statements
-                    // Find better solution
-
-                    queryColNames.AppendJoin(',', properties.Where(p => p.Name != "Id")
+                    // Get Properties ColumnAnnotation except ID column
+                    queryColNames.AppendJoin(',', properties.Where(p => p.Name != nameof(DbModelBase<T>.Id))
                                                             .Select(p => AnnotationHelper.GetColumnAnnotationValue(p)));
 
+                    // Get Properties Values except ID column
                     StringBuilder queryValues = new StringBuilder();
-                    queryValues.AppendJoin(',', properties.Where(p => p.Name != "Id")
+                    queryValues.AppendJoin(',', properties.Where(p => p.Name != nameof(DbModelBase<T>.Id))
                                                             .Select(p => "@" + p.Name));
 
-                    string query = $"INSERT INTO {dbTableName} " +
+                    string query = $"INSERT INTO {insertModel.DbTableName} " +
                                     $"({queryColNames}) " +
                                     $"VALUES ({queryValues})";
 
@@ -255,7 +255,7 @@ namespace TimPlan.Lib
 
         #region Update
 
-        static public bool UpdateSingle<T>(DbRecordBase<T> updateModel, string dbTableName)
+        static public bool UpdateSingle<T>(DbModelBase<T> updateModel)
         {
             try
             {
@@ -263,21 +263,16 @@ namespace TimPlan.Lib
                 {
                     connection.Open();
 
-                    List<PropertyInfo> properties = AnnotationHelper.GetPropertiesWithColumnAnnotation<T>();
+                    List<PropertyInfo> properties = AnnotationHelper.GetPropertiesWithColumnAnnotation(typeof(T));
                     StringBuilder querySet = new StringBuilder();
 
-                    // TODO: Hardcoded id property name "Id" in LINQ Where statements
-                    // Find better solution
-
-                    querySet.AppendJoin(',', properties.Where(p => p.Name != "Id")
+                    // Get Properties ColumnAnnotation except ID column
+                    querySet.AppendJoin(',', properties.Where(p => p.Name != nameof(DbModelBase<T>.Id))
                                                         .Select(p => $"{AnnotationHelper.GetColumnAnnotationValue(p)}" +
                                                                     $"=@{p.Name}"));
-                    string query = $"UPDATE {dbTableName} " +
+                    string query = $"UPDATE {updateModel.DbTableName} " +
                                     $"SET {querySet} " +
-                                    $"WHERE {properties.Where(p => p.Name == "Id")
-                                                        .Select(p => AnnotationHelper.GetColumnAnnotationValue(p) +
-                                                                    "=@" + p.Name)
-                                                        .FirstOrDefault()}";
+                                    $"WHERE {DbModelBase<T>.DbIdCol}=@{nameof(DbModelBase<T>.Id)}";
 
                     connection.Execute(query, updateModel);
                     return true;
@@ -285,7 +280,7 @@ namespace TimPlan.Lib
             }
             catch (Exception e)
             {
-                Debug.WriteLine($"UpdateSingle<{nameof(T)}>(DbRecordBase, string):{e.Message}");
+                Debug.WriteLine($"UpdateSingle<{nameof(T)}>(DbRecordBase):{e.Message}");
                 return false;
             }
         }
@@ -294,21 +289,27 @@ namespace TimPlan.Lib
 
         #region Delete
 
-        static public void DeleteSingle(string dbTableName, uint id)
+        static public bool DeleteSingle<T>(int id) where T : DbModelBase<T>, new()
         {
             try
             {
                 using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
                 {
+                    connection.Open();
+
+                    string tableName = new T().DbTableName;
+
                     string queryString = $"DELETE " +
-                                    $"FROM {UserModel.DbTableName} " +
+                                    $"FROM {tableName} " +
                                     $"WHERE id = {id}";
                     connection.Execute(queryString);
+                    return true;
                 }
             }
             catch (Exception e)
             {
-                Debug.WriteLine($"DeleteUser(string, uint):{e.Message}");
+                Debug.WriteLine($"DeleteUser<{nameof(T)}>(int):{e.Message}");
+                return false;
             }
         }
 

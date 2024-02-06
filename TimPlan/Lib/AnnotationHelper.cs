@@ -10,23 +10,21 @@ namespace TimPlan.Lib
 {
     public static class AnnotationHelper
     {
-        static public List<PropertyInfo> GetPropertiesInfo<T>()
+        static public List<PropertyInfo> GetPropertiesInfo(Type type)
         {
-            List<PropertyInfo> properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance).ToList();
-            return properties;
-
+            return type.GetProperties(BindingFlags.Public | BindingFlags.Instance).ToList();
         }
-
-        static public List<PropertyInfo> GetPropertiesWithColumnAnnotation<T>()
+        static public List<FieldInfo> GetFieldsInfo(Type type)
         {
-            return typeof(T)
+            return type.GetFields(BindingFlags.Public | BindingFlags.Instance).ToList();
+        }
+        static public List<PropertyInfo> GetPropertiesWithColumnAnnotation(Type type)
+        {
+            return type
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(prop => Attribute.IsDefined(prop, typeof(ColumnAttribute)))
             .ToList();
         }
-
-
-
         public static string GetColumnAnnotationValue(PropertyInfo propertyInfo)
         {
             if (propertyInfo == null)

@@ -3,20 +3,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TimPlan.Models
 {
-    public class TaskModel : DbRecordBase<TaskModel>
+    public class TaskModel : DbModelBase<TaskModel>
     {
         [Column(DbIdCol)]
-        public uint Id { get; set; }
+        public override int Id { get; set; }
         [Column(DbNameCol)]
         public string? Name { get; set; }
         [Column(DbParentTaskIdCol)]
-        public uint? ParentTaskID { get; set; }
+        public int? ParentTaskID { get; set; }
         [Column(DbDateCreatedCol)]
         public DateTime? DateCreated { get; set; }
         [Column(DbDateStartCol)]
         public DateTime? DateStart { get; set; }
         [Column(DbDateEndCol)]
-        public DateTime? DateEnd { get; set; }
+        public DateTime DateEnd { get; set; }
         [Column(DbDescriptionCol)]
         public string? Description { get; set; }
         [Column(DbIsCompletedCol)]
@@ -24,19 +24,19 @@ namespace TimPlan.Models
         [Column(DbPrivateCol)]
         public bool Private { get; set; }
         [Column(DbCreatorUserIdCol)]
-        public uint CreatorUserId { get; set; }
+        public int CreatorUserId { get; set; }
         [Column(DbUserIdCol)]
-        public uint UserId { get; set; }
+        public int UserId { get; set; }
 
         [Column(DbTeamIdCol)]
-        public uint? TeamId { get; set; }
+        public int? TeamId { get; set; }
+
+        public override string DbTableName => "tasks";
 
 
 
         #region DbNames
 
-        public const string DbTableName = "tasks";
-        public const string DbIdCol = "id";
         public const string DbNameCol = "name";
         public const string DbParentTaskIdCol = "parent_task_id";
         public const string DbDateCreatedCol = "date_created";

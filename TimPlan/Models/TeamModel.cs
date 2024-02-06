@@ -1,17 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 namespace TimPlan.Models
 {
-    public class TeamModel : DbRecordBase<TeamModel>
+    public class TeamModel : DbModelBase<TeamModel>
     {
         [Column (DbIdCol)]
-        public uint Id { get; set; }
+        public override int Id { get; set; }
         [Column(DbNameCol)]
         public string? Name { get; set; }
 
+        public override string DbTableName => "teams";
+
+
+
         #region DbNames
 
-        public const string DbTableName = "teams";
-        public const string DbIdCol = "id";
         public const string DbNameCol = "name";
 
         #endregion

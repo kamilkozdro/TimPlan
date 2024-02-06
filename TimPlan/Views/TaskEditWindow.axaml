@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:TimPlan.ViewModels"
-		mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="450"
+		mc:Ignorable="d" d:DesignWidth="550" d:DesignHeight="450"
         x:Class="TimPlan.Views.TaskEditWindow"
 		x:DataType="vm:TaskEditViewModel"
 	    x:CompileBindings="True"
@@ -13,9 +13,8 @@
 	<StackPanel Orientation="Vertical">
 		<Grid Margin="3">
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto"
-								  MinWidth="100"/>
-				<ColumnDefinition MinWidth="150"/>
+				<ColumnDefinition Width="120"/>
+				<ColumnDefinition Width="302"/>
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
@@ -33,9 +32,8 @@
 					   Text="Name"/>
 			<TextBox Classes="Default"
 					 Grid.Row="0" Grid.Column="1"
-					 HorizontalAlignment="Left"
+					 HorizontalAlignment="Stretch"
 					 HorizontalContentAlignment="Left"
-					 Width="250"
 					 Text="{Binding Name}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="1" Grid.Column="0"
@@ -61,8 +59,7 @@
 					   Text="Team"/>
 			<ComboBox Classes="Default"
 					  Grid.Row="4" Grid.Column="1"
-					  MinWidth="150"
-					  MaxWidth="250"
+					  HorizontalAlignment="Stretch"
 					  ItemsSource="{Binding Teams}"
 					  DisplayMemberBinding="{Binding Name}"
 					  SelectedItem="{Binding SelectedTeam}"
@@ -72,19 +69,17 @@
 					   Text="User"/>
 			<ComboBox Classes="Default"
 					  Grid.Row="5" Grid.Column="1"
-					  MinWidth="150"
-					  MaxWidth="250"
+					  HorizontalAlignment="Stretch"
 					  ItemsSource="{Binding Users}"
 					  DisplayMemberBinding="{Binding Name}"
 					  SelectedItem="{Binding SelectedUser}"
-				  IsEnabled="{Binding ElementName=CheckBoxPrivate, Path=!IsChecked}"/>
+					  IsEnabled="{Binding ElementName=CheckBoxPrivate, Path=!IsChecked}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="6" Grid.Column="0"
 					   Text="Parent Task"/>
 			<ComboBox Classes="Default"
 					  Grid.Row="6" Grid.Column="1"
-					  MinWidth="150"
-					  MaxWidth="250"
+					  HorizontalAlignment="Stretch"
 					  ItemsSource="{Binding Tasks}"
 					  DisplayMemberBinding="{Binding Name}"
 					  SelectedItem="{Binding SelectedParentTask}"/>
@@ -94,11 +89,10 @@
 			<TextBox Classes="Default"
 					 Grid.Row="7" Grid.Column="1"
 					 Grid.RowSpan="2"
-					 HorizontalAlignment="Left"
+					 HorizontalAlignment="Stretch"
 					 HorizontalContentAlignment="Left"
 					 VerticalContentAlignment="Top"
 					 Height="100"
-					 Width="250"
 					 AcceptsReturn="True"
 					 TextWrapping="Wrap"
 					 Text="{Binding Description}"/>
@@ -107,7 +101,7 @@
 		<WrapPanel>
 			<Button Classes="Default"
 					Content="Create"
-					Command="{Binding CreateTaskCommand}"/>
+					Command="{Binding AddItemCommand}"/>
 		</WrapPanel>
 	</StackPanel>
 </Window>

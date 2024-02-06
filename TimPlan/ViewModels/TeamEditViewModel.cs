@@ -3,17 +3,16 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using TimPlan.Lib;
 using TimPlan.Models;
 
 namespace TimPlan.ViewModels
 {
-    public class TeamEditViewModel : ViewModelBase
+    public class TeamEditViewModel : ModelEditViewModel<TeamModel>
     {
 
-        #region Bound Properties
+        #region Properties
 
         private string _TeamName;
         public string TeamName
@@ -22,76 +21,29 @@ namespace TimPlan.ViewModels
             set { this.RaiseAndSetIfChanged(ref _TeamName, value); }
         }
 
-        private ObservableCollection<TeamModel> _Teams;
-        public ObservableCollection<TeamModel> Teams
-        {
-            get { return _Teams; }
-            set { this.RaiseAndSetIfChanged(ref _Teams, value); }
-        }
-
-        private TeamModel _SelectedTeam;
-        public TeamModel SelectedTeam
-        {
-            get { return _SelectedTeam; }
-            set { this.RaiseAndSetIfChanged(ref _SelectedTeam, value); }
-        }
-
-
-
         #endregion
-
-        #region Commands
-
-        public ReactiveCommand<Unit, Unit> CreateTeamCommand { get; }
-        public ReactiveCommand<Unit, Unit> EditTeamCommand { get; }
-        public ReactiveCommand<Unit, Unit> DeleteTeamCommand { get; }
-
-        #endregion
-
 
         public TeamEditViewModel()
         {
-            this.WhenAnyValue(o => o.SelectedTeam)
-                .Subscribe(UpdateSelectedTeam);
-
-            IObservable<bool> createTeamCheck = this.WhenAnyValue(
-                x => x.TeamName)
-                .Select(_ => CheckCreateTeam());
-
-            IObservable<bool> editTeamCheck = this.WhenAnyValue(
-                x => x.TeamName,
-                x => x.SelectedTeam)
-                .Select(_ => CheckEditTeam());
-
-            IObservable<bool> deleteTeamCheck = this.WhenAnyValue(
-                x => x.SelectedTeam)
-                .Select(_ => CheckEditTeam());
-
-            CreateTeamCommand = ReactiveCommand.Create(CreateTeam, createTeamCheck);
-            EditTeamCommand = ReactiveCommand.Create(EditTeam, editTeamCheck);
-            DeleteTeamCommand = ReactiveCommand.Create(DeleteTeam, deleteTeamCheck);
-
-            UpdateTeamsList();
+            
         }
 
-        private void UpdateTeamsList()
+        protected override void OnItemSelection(TeamModel selectedItem)
         {
-            Teams = new ObservableCollection<TeamModel>(SQLAccess.SelectAll<TeamModel>(TeamModel.DbTableName));
-        }
-
-        private void UpdateSelectedTeam(TeamModel team)
-        {
-            if(team == null ||
-                string.IsNullOrEmpty(team.Name))
+            if (selectedItem == null)
             {
-                TeamName = string.Empty;
+                ClearForm();
                 return;
             }
 
-            TeamName = team.Name;
+            TeamName = selectedItem.Name;
+        }
+        protected override bool AddItemCheck()
+        {
+            return !string.IsNullOrEmpty(TeamName);
         }
 
-        private void CreateTeam()
+        protected override void AddItem()
         {
             TeamModel checkTeamName = SQLAccess.SelectTeamByName(TeamName);
 
@@ -101,72 +53,78 @@ namespace TimPlan.ViewModels
                 return;
             }
 
+            base.AddItem();
+        }
+
+        protected override void ClearForm()
+        {
+            TeamName = string.Empty;
+        }
+
+        protected override bool DeleteItemCheck()
+        {
+            return SelectedItem != null;
+        }
+
+        protected override void EditItem()
+        {
+            TeamModel checkTeamName = SQLAccess.SelectTeamByName(TeamName);
+
+            if (checkTeamName != null)
+            {
+                Debug.WriteLine($"Team with that name already exists");
+                return;
+            }
+
+            base.EditItem();
+        }
+
+        protected override bool EditItemCheck()
+        {
+            return !string.IsNullOrEmpty(TeamName) &&
+                    SelectedItem != null;
+        }
+
+        protected override void FilterItemList(string filterText)
+        {
+            if (string.IsNullOrEmpty(filterText))
+            {
+                Items = new ObservableCollection<TeamModel>(_loadedItems
+                    .OrderByDescending(Item => Item.Name));
+            }
+            else
+            {
+                Items = new ObservableCollection<TeamModel>(_loadedItems
+                                .Where(o => o.Name.Contains(filterText, StringComparison.OrdinalIgnoreCase))
+                                .OrderByDescending(Item => Item.Name));
+            }
+        }
+
+        protected override TeamModel GetNewItemFromForm()
+        {
             TeamModel newTeam = new TeamModel();
+
+            if (SelectedItem != null)
+                newTeam = SelectedItem;
             newTeam.Name = TeamName;
 
-            SQLAccess.InsertSingle<TeamModel>(newTeam, TeamModel.DbTableName);
-
-            SelectedTeam = null;
-            UpdateTeamsList();
+            return newTeam;
         }
 
-        private bool CheckCreateTeam()
+        protected override void SetupCommandsCanExecute()
         {
-            if (string.IsNullOrEmpty(TeamName))
-            {
-                return false;
-            }
+            addItemCheck = this.WhenAnyValue(
+                x => x.TeamName)
+                .Select(_ => AddItemCheck());
 
-            return true;
+            editItemCheck = this.WhenAnyValue(
+                x => x.TeamName,
+                x => x.SelectedItem)
+                .Select(_ => EditItemCheck());
+
+            deleteItemCheck = this.WhenAnyValue(
+                x => x.SelectedItem)
+                .Select(_ => DeleteItemCheck());
         }
-
-        private void EditTeam()
-        {
-            TeamModel checkTeamName = SQLAccess.SelectTeamByName(TeamName);
-
-            if (checkTeamName != null)
-            {
-                Debug.WriteLine($"Team with that name already exists");
-                return;
-            }
-
-            TeamModel editedTeam = SelectedTeam;
-            editedTeam.Name = TeamName;
-
-            SQLAccess.UpdateSingle<TeamModel>(editedTeam, TeamModel.DbTableName);
-
-            SelectedTeam = null;
-            UpdateTeamsList();
-        }
-
-        private bool CheckEditTeam()
-        {
-            if (SelectedTeam == null ||
-                string.IsNullOrEmpty(TeamName))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        private void DeleteTeam()
-        {
-            SQLAccess.DeleteSingle(TeamModel.DbTableName, SelectedTeam.Id);
-
-            UpdateTeamsList();
-            SelectedTeam = null;
-        }
-
-        private bool CheckDeleteTeam()
-        {
-            if (SelectedTeam == null)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
     }
 }

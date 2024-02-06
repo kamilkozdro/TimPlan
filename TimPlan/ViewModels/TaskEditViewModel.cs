@@ -14,7 +14,7 @@ using TimPlan.Models;
 
 namespace TimPlan.ViewModels
 {
-    public class TaskEditViewModel : ViewModelBase
+    public class TaskEditViewModel : ModelEditViewModel<TaskModel>
     {
         #region Bound Properties
 
@@ -32,8 +32,8 @@ namespace TimPlan.ViewModels
             set { this.RaiseAndSetIfChanged(ref _StartDate, value); }
         }
 
-        private DateTimeOffset? _EndDate;
-        public DateTimeOffset? EndDate
+        private DateTimeOffset _EndDate;
+        public DateTimeOffset EndDate
         {
             get { return _EndDate; }
             set { this.RaiseAndSetIfChanged(ref _EndDate, value); }
@@ -68,28 +68,30 @@ namespace TimPlan.ViewModels
             get { return _Users; }
             set { this.RaiseAndSetIfChanged(ref _Users, value); }
         }
-
-        private ObservableCollection<TaskModel> _Tasks;
+        private ObservableCollection<TaskModel> _tasks;
         public ObservableCollection<TaskModel> Tasks
         {
-            get { return _Tasks; }
-            set { this.RaiseAndSetIfChanged(ref _Tasks, value); }
+            get { return _tasks; }
+            set { this.RaiseAndSetIfChanged(ref _tasks, value); }
         }
-
+        private ObservableCollection<TaskModel> _parentTasks;
+        public ObservableCollection<TaskModel> ParentTasks
+        {
+            get { return _parentTasks; }
+            set { this.RaiseAndSetIfChanged(ref _parentTasks, value); }
+        }
         private TeamModel _SelectedTeam;
         public TeamModel SelectedTeam
         {
             get { return _SelectedTeam; }
             set { this.RaiseAndSetIfChanged(ref _SelectedTeam, value); }
         }
-
         private UserModel _SelectedUser;
         public UserModel SelectedUser
         {
             get { return _SelectedUser; }
             set { this.RaiseAndSetIfChanged(ref _SelectedUser, value); }
         }
-
         private TaskModel _SelectedParentTask;
         public TaskModel SelectedParentTask
         {
@@ -99,11 +101,8 @@ namespace TimPlan.ViewModels
 
         private UserModel _LoggedUser;
 
-        #region Commands
-
-        public ReactiveCommand<Unit, Unit> CreateTaskCommand { get; }
-
-        #endregion
+        private ReadOnlyCollection<UserModel> _loadedUsers;
+        private ReadOnlyCollection<TeamModel> _loadedTeams;
 
         public TaskEditViewModel(UserModel loggedUser)
         {
@@ -121,74 +120,121 @@ namespace TimPlan.ViewModels
                         SelectedUser = _LoggedUser;
                     }
                 });
+
+            _loadedTeams = new ReadOnlyCollection<TeamModel>(
+                SQLAccess.SelectAll<TeamModel>());
+
+            _loadedUsers = new ReadOnlyCollection<UserModel>(
+                SQLAccess.SelectAll<UserModel>());
             
-            IObservable<bool> createTaskCheck = this.WhenAnyValue
-                (x => x.Name,
-                x => x.SelectedUser)
-                .Select(_ => CheckCreateTask());
-
-            CreateTaskCommand = ReactiveCommand.Create(CreateTask, createTaskCheck);
-
             UpdateTeams();
-            UpdateUsers(null);
+            UpdateParentTasks();
 
-            ResetProperties();
-
-        }
-
-        private void UpdateTeams()
-        {
-            Teams = new ObservableCollection<TeamModel>(SQLAccess.SelectAll<TeamModel>(TeamModel.DbTableName));
         }
 
         private void UpdateUsers(TeamModel selectedTeam)
         {
-            Users = new ObservableCollection<UserModel>(SQLAccess.SelectAll<UserModel>(UserModel.DbTableName));
+            if (selectedTeam == null)
+                return;
+
+            Users = new ObservableCollection<UserModel>(
+                _loadedUsers.Where(user => user.TeamId == selectedTeam?.Id)
+                            .ToList());
         }
 
-        private void UpdateTasks()
+        private void UpdateTeams()
         {
-            Tasks = new ObservableCollection<TaskModel>(SQLAccess.SelectAllTasksWithoutForeignPrivate(_LoggedUser.Id));
+            Teams = new ObservableCollection<TeamModel>(
+                _loadedTeams);
         }
 
-        private void CreateTask()
+        private void UpdateParentTasks()
         {
-            TaskModel newTask = new TaskModel();
+            ParentTasks = new ObservableCollection<TaskModel>(
+                _loadedItems);
+        }
+
+        protected override void SetupCommandsCanExecute()
+        {
+            addItemCheck = this.WhenAnyValue
+                (x => x.Name,
+                x => x.SelectedUser)
+                .Select(_ => AddItemCheck());
+
+            editItemCheck = this.WhenAnyValue
+                (x => x.Name,
+                x => x.SelectedUser,
+                x => x.SelectedItem)
+                .Select(_ => EditItemCheck());
+
+            deleteItemCheck = this.WhenAnyValue
+                (x => x.SelectedItem)
+                .Select(_ => DeleteItemCheck());
+        }
+
+        protected override TaskModel GetNewItemFromForm()
+        {
+
+            TaskModel newTask;
+
+            if (SelectedItem != null)
+                newTask = SelectedItem;
+            else
+                newTask = new TaskModel();
+
             newTask.Name = Name;
             newTask.DateCreated = DateTime.Now.Date;
             newTask.DateStart = StartDate?.DateTime.Date;
-            newTask.DateEnd = EndDate?.DateTime.Date;
+            newTask.DateEnd = EndDate.DateTime.Date;
             newTask.Private = Private;
             newTask.ParentTaskID = SelectedParentTask?.Id;
             newTask.TeamId = SelectedTeam?.Id;
             newTask.UserId = SelectedUser.Id;
             newTask.Description = Description;
-            
-            newTask.CreatorUserId = _LoggedUser.Id;
 
-           if( SQLAccess.InsertSingle<TaskModel>(newTask, TaskModel.DbTableName))
-            {
-                ResetProperties();
-            }
-           else
-            {
-                Debug.WriteLine("Creating task failed. Could not insert task into database.");
-            }
-
+            return newTask;
         }
 
-        private bool CheckCreateTask()
+        protected override void OnItemSelection(TaskModel selectedItem)
         {
-            if (string.IsNullOrEmpty(Name) ||
-                SelectedUser == null)
+            if (selectedItem == null)
             {
-                return false;
+                ClearForm();
+                return;
             }
 
-            return true;
+            Name = SelectedItem.Name;
+            StartDate = SelectedItem?.DateStart;
+            EndDate = SelectedItem.DateEnd;
+            Private = SelectedItem.Private;
+            SelectedParentTask = _loadedItems.Where(task => task.Id == selectedItem.ParentTaskID)
+                                             .SingleOrDefault();
+            SelectedTeam = Teams.Where(team => team.Id == SelectedItem.TeamId)
+                                .SingleOrDefault();
+            SelectedUser = Users.Where(user => user.Id == SelectedItem.UserId)
+                                .SingleOrDefault();
+            Description = SelectedItem.Description;
         }
 
-        private void ResetProperties()
+        protected override bool AddItemCheck()
+        {
+            return !string.IsNullOrEmpty(Name) &&
+                    SelectedUser != null;
+        }
+
+        protected override bool EditItemCheck()
+        {
+            return !string.IsNullOrEmpty(Name) &&
+                    SelectedUser != null &&
+                    SelectedItem != null;
+        }
+
+        protected override bool DeleteItemCheck()
+        {
+            return SelectedItem != null;
+        }
+
+        protected override void ClearForm()
         {
             Name = string.Empty;
             StartDate = DateTime.Now;
@@ -196,10 +242,23 @@ namespace TimPlan.ViewModels
             Private = false;
             SelectedParentTask = null;
             SelectedTeam = null;
-            SelectedUser = _LoggedUser;
+            SelectedUser = null;
             Description = string.Empty;
+        }
 
-            UpdateTasks();
+        protected override void FilterItemList(string filterText)
+        {
+            if (string.IsNullOrEmpty(filterText))
+            {
+                Tasks = new ObservableCollection<TaskModel>(_loadedItems
+                    .OrderByDescending(Task => Task.Name));
+            }
+            else
+            {
+                Tasks = new ObservableCollection<TaskModel>(_loadedItems
+                                .Where(o => o.Name.Contains(filterText, StringComparison.OrdinalIgnoreCase))
+                                .OrderByDescending(Task => Task.Name));
+            }
         }
     }
 }

@@ -12,20 +12,24 @@
         Title="TeamEditWindow">
 
 	<Design.DataContext>
-		<vm:TeamEditViewModel />
+		<vm:TeamEditViewModel/>
 	</Design.DataContext>
+
 
 	<StackPanel Orientation="Horizontal">
 		<!-- Teams list -->
-		<StackPanel Orientation="Vertical"
-					MinWidth="100">
-			<TextBlock Classes="Header1"
-					   Text="Teams List:"/>
-			<ListBox ItemsSource="{Binding Teams}"
-					 SelectedItem="{Binding SelectedTeam}"
-					 DisplayMemberBinding="{Binding Name}">
+		<DockPanel>
+			<!-- Item search TextBox -->
+			<TextBox DockPanel.Dock="Top"
+					 Text="{Binding SearchItemText}"
+					 Watermark="Szukaj..."/>
+			<ListBox Margin="3"
+				 SelectionMode="Single"
+				 ItemsSource="{Binding Items}"
+				 DisplayMemberBinding="{Binding Name}"
+				 SelectedItem="{Binding SelectedItem}">
 			</ListBox>
-		</StackPanel>
+		</DockPanel>
 
 		<StackPanel Orientation="Vertical">
 			<Grid>
@@ -49,13 +53,13 @@
 			<StackPanel Orientation="Horizontal">
 				<Button Classes="Default"
 						Content="Add"
-						Command="{Binding CreateTeamCommand}"/>
+						Command="{Binding AddItemCommand}"/>
 				<Button Classes="Default"
 						Content="Edit"
-						Command="{Binding EditTeamCommand}"/>
+						Command="{Binding EditItemCommand}"/>
 				<Button Classes="Default"
 						Content="Delete"
-						Command="{Binding DeleteTeamCommand}"/>
+						Command="{Binding DeleteItemCommand}"/>
 			</StackPanel>
 		</StackPanel>
 

@@ -1,10 +1,15 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="TimPlan.App"
+             xmlns:local="using:TimPlan"
              RequestedThemeVariant="Light">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-    
-    <Application.Styles>
+
+	<Application.DataTemplates>
+		<local:ViewLocator />
+	</Application.DataTemplates>
+
+	<Application.Styles>
 		<StyleInclude Source="/Style.axaml"/>
 		<FluentTheme DensityStyle="Normal">
 		</FluentTheme>

@@ -53,41 +53,22 @@
 		</Border>
 
 		<!-- Main view -->
-		<SplitView IsPaneOpen="True"
-				   DisplayMode="Inline"
-				   OpenPaneLength="300">
-			<SplitView.Pane>
-				<!-- Navigate/select Panel -->
-				<DockPanel>
-					<Border DockPanel.Dock="Top"
-							Height="40"
-							Background="Turquoise">
-						<StackPanel Orientation="Horizontal">
 
+		<TabControl>
+			<TabItem Header="My Tasks">
+				<ItemsControl ItemsSource="{Binding MyTaskTilesVM}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<WrapPanel>
+								<UserControl Content="{Binding}"/>
+							</WrapPanel>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</TabItem>
+			<TabItem Header="Team Overview">
 
-						</StackPanel>
-					</Border>
-					<!-- TreeView Panel -->
-					<Border Background="PaleTurquoise">
-						<TreeView ItemsSource="{Binding TreeViewNodes}"
-								  SelectionMode="Single">
-							<TreeView.ItemTemplate>
-								<TreeDataTemplate ItemsSource="{Binding SubNodes}">
-									<TextBlock Text="{Binding Title}"/>
-								</TreeDataTemplate>
-							</TreeView.ItemTemplate>
-						</TreeView>
-					</Border>
-				</DockPanel>
-			</SplitView.Pane>
-
-			<!--  Main right Panel -->
-			<Grid>
-				<TextBlock Text="Content"
-						   FontSize="24"
-						   VerticalAlignment="Center"
-						   HorizontalAlignment="Center"/>
-			</Grid>
-		</SplitView>
+			</TabItem>
+		</TabControl>
 	</DockPanel>
 </UserControl>
