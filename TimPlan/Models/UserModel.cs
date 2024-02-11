@@ -5,7 +5,7 @@ using TimPlan.Lib;
 
 namespace TimPlan.Models
 {
-    public class UserModel : DbModelBase<UserModel>
+    public class UserModel : DbModelBase
     {
         [Column(DbIdCol)]
         public override int Id { get; set; }

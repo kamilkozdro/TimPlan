@@ -3,8 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TimPlan.Models
 {
-    public class TaskModel : DbModelBase<TaskModel>
+    public class TaskModel : DbModelBase
     {
+
+        public enum TaskState { Suspended, Accepted, Completed }
+
         [Column(DbIdCol)]
         public override int Id { get; set; }
         [Column(DbNameCol)]
@@ -19,8 +22,8 @@ namespace TimPlan.Models
         public DateTime DateEnd { get; set; }
         [Column(DbDescriptionCol)]
         public string? Description { get; set; }
-        [Column(DbIsCompletedCol)]
-        public bool IsCompleted { get; set; }
+        [Column(DbStateCol)]
+        public TaskState State { get; set; } = TaskState.Suspended;
         [Column(DbPrivateCol)]
         public bool Private { get; set; }
         [Column(DbCreatorUserIdCol)]
@@ -43,7 +46,7 @@ namespace TimPlan.Models
         public const string DbDateStartCol = "date_start";
         public const string DbDateEndCol = "date_end";
         public const string DbDescriptionCol = "description";
-        public const string DbIsCompletedCol = "is_completed";
+        public const string DbStateCol = "state";
         public const string DbPrivateCol = "private";
         public const string DbCreatorUserIdCol = "creator_user_id";
         public const string DbUserIdCol = "user_id";

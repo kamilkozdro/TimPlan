@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 namespace TimPlan.Models
 {
-    public class TeamModel : DbModelBase<TeamModel>
+    public class TeamModel : DbModelBase
     {
         [Column (DbIdCol)]
         public override int Id { get; set; }

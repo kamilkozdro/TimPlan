@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TimPlan.Models
 {
-    public class TeamRoleModel : DbModelBase<TeamRoleModel>
+    public class TeamRoleModel : DbModelBase
     {
         [Column(DbIdCol)]
         public override int Id { get; set; }

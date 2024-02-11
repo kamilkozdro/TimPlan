@@ -225,7 +225,7 @@ public class MainViewModel : ViewModelBase
         List<TaskModel> teamMemberTasks = SQLAccess.SelectUserTasks(member.Id).ToList();
         foreach (TaskModel task in teamMemberTasks)
         {
-            SelectedTeamMemberTaskTiles.Add(new TaskTileViewModel(task));
+            SelectedTeamMemberTaskTiles.Add(new TaskTileViewModel(task) { ReadOnlyTask = true }); ;
         }
     }
     private void UpdateTeamMembers(int teamId)
