@@ -11,7 +11,7 @@ using TimPlan.Services;
 
 namespace TimPlan.ViewModels
 {
-    public abstract class ModelEditViewModel<T> : ViewModelBase where T : DbModelBase<T>, new()
+    public abstract class ModelEditViewModel<T> : ViewModelBase where T : DbModelBase, new()
     {
         #region Properties
 

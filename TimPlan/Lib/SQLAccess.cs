@@ -38,7 +38,7 @@ namespace TimPlan.Lib
 
 
 
-        static public List<T> SelectAll<T>() where T : DbModelBase<T>, new()
+        static public List<T> SelectAll<T>() where T : DbModelBase, new()
         {
             try
             {
@@ -64,7 +64,7 @@ namespace TimPlan.Lib
                 return null;
             }
         }
-        static public T SelectSingle<T>(int id) where T : DbModelBase<T>, new()
+        static public T SelectSingle<T>(int id) where T : DbModelBase, new()
         {
             try
             {
@@ -213,11 +213,29 @@ namespace TimPlan.Lib
                 return null;
             }
         }
+        static public IEnumerable<UserModel> SelectTeamMembers(int teamId)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    string queryString = $"SELECT * " +
+                                    $"FROM {new UserModel().DbTableName} " +
+                                    $"WHERE {UserModel.DbTeamId}={teamId}";
 
+                    return connection.Query<UserModel>(queryString, new DynamicParameters());
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"SelectTeamRoleByName(string):{e.Message}");
+                return null;
+            }
+        }
         #endregion
 
         #region Insert
-        static public bool InsertSingle<T>(DbModelBase<T> insertModel)
+        static public bool InsertSingle<T>(T insertModel) where T : DbModelBase
         {
             try
             {
@@ -229,12 +247,12 @@ namespace TimPlan.Lib
                     StringBuilder queryColNames = new StringBuilder();
 
                     // Get Properties ColumnAnnotation except ID column
-                    queryColNames.AppendJoin(',', properties.Where(p => p.Name != nameof(DbModelBase<T>.Id))
+                    queryColNames.AppendJoin(',', properties.Where(p => p.Name != nameof(DbModelBase.Id))
                                                             .Select(p => AnnotationHelper.GetColumnAnnotationValue(p)));
 
                     // Get Properties Values except ID column
                     StringBuilder queryValues = new StringBuilder();
-                    queryValues.AppendJoin(',', properties.Where(p => p.Name != nameof(DbModelBase<T>.Id))
+                    queryValues.AppendJoin(',', properties.Where(p => p.Name != nameof(DbModelBase.Id))
                                                             .Select(p => "@" + p.Name));
 
                     string query = $"INSERT INTO {insertModel.DbTableName} " +
@@ -255,7 +273,7 @@ namespace TimPlan.Lib
 
         #region Update
 
-        static public bool UpdateSingle<T>(DbModelBase<T> updateModel)
+        static public bool UpdateSingle<T>(T updateModel) where T : DbModelBase
         {
             try
             {
@@ -267,12 +285,12 @@ namespace TimPlan.Lib
                     StringBuilder querySet = new StringBuilder();
 
                     // Get Properties ColumnAnnotation except ID column
-                    querySet.AppendJoin(',', properties.Where(p => p.Name != nameof(DbModelBase<T>.Id))
+                    querySet.AppendJoin(',', properties.Where(p => p.Name != nameof(DbModelBase.Id))
                                                         .Select(p => $"{AnnotationHelper.GetColumnAnnotationValue(p)}" +
                                                                     $"=@{p.Name}"));
                     string query = $"UPDATE {updateModel.DbTableName} " +
                                     $"SET {querySet} " +
-                                    $"WHERE {DbModelBase<T>.DbIdCol}=@{nameof(DbModelBase<T>.Id)}";
+                                    $"WHERE {DbModelBase.DbIdCol}=@{nameof(DbModelBase.Id)}";
 
                     connection.Execute(query, updateModel);
                     return true;
@@ -284,12 +302,36 @@ namespace TimPlan.Lib
                 return false;
             }
         }
+        static public bool UpdateTaskState(int taskID, TaskModel.TaskState newState)
+        {
+            try
+            {
+                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
+                {
+                    connection.Open();
 
+                    var parameters = new { NewState = newState };
+
+                    string query = $"UPDATE {new TaskModel().DbTableName} " +
+                                    $"SET {TaskModel.DbStateCol}=@NewState " +
+                                    $"WHERE {DbModelBase.DbIdCol}={taskID}";
+
+                    connection.Execute(query, parameters);
+
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"UpdateTaskState(int, TaskState):{e.Message}");
+                return false;
+            }
+        }
         #endregion
 
         #region Delete
 
-        static public bool DeleteSingle<T>(int id) where T : DbModelBase<T>, new()
+        static public bool DeleteSingle<T>(int id) where T : DbModelBase, new()
         {
             try
             {

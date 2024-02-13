@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="using:TimPlan.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="200"
+			 xmlns:conv="using:TimPlan.Converters"
              x:Class="TimPlan.Views.TaskTileView"
 			 x:CompileBindings="True"
 			 x:DataType="vm:TaskTileViewModel">
@@ -11,19 +11,36 @@
 	<Design.DataContext>
 		<vm:TaskTileViewModel/>
 	</Design.DataContext>
+
+	<UserControl.Resources>
+		<conv:TaskStateToColorConverter x:Key="TaskStateColorConv"/>
+	</UserControl.Resources>
 	
-	
-	<Border Background="Beige"
+	<Border Background="{Binding TaskState, Mode=OneWay, Converter={StaticResource TaskStateColorConv}}"
 			BorderBrush="Black"
 			BorderThickness="3"
 			CornerRadius="10"
-			Width="300"
-			Height="200">
+			MinWidth="300"
+			MinHeight="70">
+		<ToolTip.Tip>
+			<TextBlock Classes="Default"
+						   Text="{Binding Task.Description}"
+						   VerticalAlignment="Top"
+						   TextWrapping="Wrap"/>
+		</ToolTip.Tip>
 		<DockPanel>
 			<!-- Task Name -->
-			<TextBlock Classes="Default"
-					   DockPanel.Dock="Top"
-					   Text="{Binding TaskName}"/>
+			<DockPanel DockPanel.Dock="Top">
+				<TextBlock Classes="Default"
+					   DockPanel.Dock="Left"
+					   Text="{Binding Task.Name}"/>
+				<Button DockPanel.Dock="Right"
+						Content="E"
+						Command="{Binding EditTaskCommand}"
+						IsVisible="{Binding CanEditTask}"/>
+				<Separator/>
+			</DockPanel>
+			
 
 			<!-- Days Left -->
 			<StackPanel Orientation="Horizontal"
@@ -35,22 +52,14 @@
 						   Text="Days left"/>
 			</StackPanel>
 
-			<Expander DockPanel.Dock="Top"
-					  HorizontalAlignment="Stretch"
-					  Margin="6">
-				<TextBlock Classes="Default"
-						   Text="{Binding Description}"
-						   VerticalAlignment="Top"
-						   TextWrapping="Wrap"/>
-			</Expander>
-
 			<!-- Buttons -->
-			<Grid ColumnDefinitions="*,*,*">
+			<Grid ColumnDefinitions="*,*,*"
+				  IsVisible="{Binding !ReadOnlyTask}">
 				<Button Classes="Default"
 						Grid.Column="0"
 						HorizontalAlignment="Stretch"
 						Command="{Binding AcceptTaskCommand}">
-					Take
+					Accept
 				</Button>
 				<Button Classes="Default"
 						Grid.Column="1"
@@ -60,8 +69,9 @@
 				</Button>
 				<Button Classes="Default"
 						Grid.Column="2"
-						HorizontalAlignment="Stretch">
-					3
+						HorizontalAlignment="Stretch"
+						Command="{Binding SuspendTaskCommand}">
+					Suspend
 				</Button>
 			</Grid>
 		</DockPanel>

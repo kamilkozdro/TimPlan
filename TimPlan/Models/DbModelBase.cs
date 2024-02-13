@@ -1,8 +1,9 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace TimPlan.Models
 {
-    public abstract class DbModelBase<T>
+    public abstract class DbModelBase
     {
         public abstract string DbTableName { get; }
         public abstract int Id { get; set; }
@@ -10,7 +11,7 @@ namespace TimPlan.Models
 
         public override string ToString()
         {
-            PropertyInfo[] properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            PropertyInfo[] properties = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             string returnString = "Property Names: ";
 
             foreach (PropertyInfo property in properties)

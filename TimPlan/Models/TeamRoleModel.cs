@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TimPlan.Models
 {
-    public class TeamRoleModel : DbModelBase<TeamRoleModel>
+    public class TeamRoleModel : DbModelBase
     {
         [Column(DbIdCol)]
         public override int Id { get; set; }

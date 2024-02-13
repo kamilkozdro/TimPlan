@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TimPlan.Models
 {
-    public class TaskTypeModel : DbModelBase<TaskTypeModel>
+    public class TaskTypeModel : DbModelBase
     {
         [Column(DbIdCol)]
         public override int Id { get; set; }

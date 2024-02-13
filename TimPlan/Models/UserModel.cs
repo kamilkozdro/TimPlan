@@ -5,7 +5,7 @@ using TimPlan.Lib;
 
 namespace TimPlan.Models
 {
-    public class UserModel : DbModelBase<UserModel>
+    public class UserModel : DbModelBase
     {
         [Column(DbIdCol)]
         public override int Id { get; set; }
@@ -22,7 +22,7 @@ namespace TimPlan.Models
         [Column(DbTeamRoleId)]
         public int? TeamRoleId { get; set; }
 
-        public SystemRoleModel? SystemRole { get; set; } = null;
+        public SystemRoleModel SystemRole { get; set; }
         public TeamModel? Team { get; set; } = null;
         public TeamRoleModel? TeamRole { get; set; } = null;
 

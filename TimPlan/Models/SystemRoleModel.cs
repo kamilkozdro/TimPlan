@@ -2,7 +2,7 @@
 
 namespace TimPlan.Models
 {
-    public class SystemRoleModel : DbModelBase<SystemRoleModel>
+    public class SystemRoleModel : DbModelBase
     {
         [Column(DbIdCol)]
         public override int Id { get; set; }
