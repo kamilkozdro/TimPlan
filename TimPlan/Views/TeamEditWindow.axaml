@@ -21,7 +21,7 @@
 			<!-- Item search TextBox -->
 			<TextBox DockPanel.Dock="Top"
 					 Text="{Binding SearchModelText}"
-					 Watermark="Szukaj..."/>
+					 Watermark="Search..."/>
 			<ListBox Margin="3"
 				 SelectionMode="Single"
 				 ItemsSource="{Binding FilteredModelCollection, Mode=OneWay}"

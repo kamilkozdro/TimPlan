@@ -34,11 +34,7 @@ namespace TimPlan.Lib
 
         #region Select
 
-
-
-
-
-        static public List<T> SelectAll<T>() where T : DbModelBase, new()
+        static public IEnumerable<T> SelectAll<T>() where T : DbModelBase, new()
         {
             try
             {
@@ -49,7 +45,7 @@ namespace TimPlan.Lib
 
                     string queryString = $"SELECT * " +
                                     $"FROM {tableName} ";
-                    List<T> queryResult = connection.Query<T>(queryString, new DynamicParameters()).ToList();
+                    IEnumerable<T> queryResult = connection.Query<T>(queryString, new DynamicParameters());
                     return queryResult;
                 }
             }
