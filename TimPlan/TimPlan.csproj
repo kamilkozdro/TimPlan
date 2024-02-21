@@ -39,6 +39,5 @@
 
   <ItemGroup>
     <Folder Include="CustomControls\" />
-    <Folder Include="Interfaces\" />
   </ItemGroup>
 </Project>

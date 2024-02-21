@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using TimPlan.Lib;
 using TimPlan.Models;
 using TimPlan.Services;
-using static TimPlan.Models.TaskModel;
 
 namespace TimPlan.ViewModels
 {

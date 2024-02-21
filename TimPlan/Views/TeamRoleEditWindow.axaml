@@ -3,7 +3,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:TimPlan.ViewModels"
-		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="TimPlan.Views.TeamRoleEditWindow"
         x:DataType="vm:TeamRoleEditViewModel"
 	    x:CompileBindings="True"
@@ -23,8 +22,8 @@
 					Margin="3">
 			<TextBlock Classes="Header1"
 					   Text="Team Roles List:"/>
-			<ListBox ItemsSource="{Binding TeamRoles}"
-					 SelectedItem="{Binding SelectedTeamRole}"
+			<ListBox ItemsSource="{Binding FilteredModelCollection, Mode=OneWay}"
+					 SelectedItem="{Binding EditedModel}"
 					 DisplayMemberBinding="{Binding Name}"
 					 Margin="3">
 			</ListBox>
@@ -32,19 +31,8 @@
 
 		<StackPanel Orientation="Vertical"
 					Margin="3">
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition MinWidth="200"/>
-					<ColumnDefinition MinWidth="100"/>
-				</Grid.ColumnDefinitions>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-				</Grid.RowDefinitions>
+			<Grid ColumnDefinitions="200, *"
+				  RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto">
 				<TextBlock Classes="Default"
 						   Grid.Column="0"
 						   Grid.Row="0"
@@ -52,49 +40,53 @@
 				<TextBox Classes="Default"
 						 Grid.Column="1"
 						 Grid.Row="0"
-						 Text="{Binding RoleName}"/>
+						 Text="{Binding FormModel.Name}"/>
 				<TextBlock Classes="Default"
 					   Grid.Row="1" Grid.Column="0"
 					   Text="Can Edit All Tasks"/>
 				<CheckBox Classes="Default"
 						  Grid.Row="1" Grid.Column="1"
-						  IsChecked="{Binding CanEditAllTasks}"/>
+						  IsChecked="{Binding FormModel.CanEditAllTasks}"/>
 				<TextBlock Classes="Default"
 					   Grid.Row="2" Grid.Column="0"
 					   Text="Can Edit Created Tasks"/>
 				<CheckBox Classes="Default"
 						  Grid.Row="2" Grid.Column="1"
-						  IsChecked="{Binding CanEditCreatedTasks}"/>
+						  IsChecked="{Binding FormModel.CanEditCreatedTasks}"/>
 				<TextBlock Classes="Default"
 					   Grid.Row="3" Grid.Column="0"
 					   Text="Can Assign Tasks"/>
 				<CheckBox Classes="Default"
 						  Grid.Row="3" Grid.Column="1"
-						  IsChecked="{Binding CanAssignTasks}"/>
+						  IsChecked="{Binding FormModel.CanAssignTasks}"/>
 				<TextBlock Classes="Default"
 					   Grid.Row="4" Grid.Column="0"
 					   Text="Can View Foreign Tasks"/>
 				<CheckBox Classes="Default"
 						  Grid.Row="4" Grid.Column="1"
-						  IsChecked="{Binding CanViewForeignTasks}"/>
+						  IsChecked="{Binding FormModel.CanViewForeignTasks}"/>
 				<TextBlock Classes="Default"
 					   Grid.Row="5" Grid.Column="0"
 					   Text="Can View All Tasks"/>
 				<CheckBox Classes="Default"
 						  Grid.Row="5" Grid.Column="1"
-						  IsChecked="{Binding CanViewAllTasks}"/>
+						  IsChecked="{Binding FormModel.CanViewAllTasks}"/>
 			</Grid>
+
+			<TextBlock Classes="Default"
+					   Text="{Binding ErrorText}"/>
+
 			<!-- Buttons -->
 			<StackPanel Orientation="Horizontal">
 				<Button Classes="Default"
 						Content="Add"
-						Command="{Binding CreateTeamRoleCommand}"/>
+						Command="{Binding AddModelCommand}"/>
 				<Button Classes="Default"
 						Content="Edit"
-						Command="{Binding EditTeamRoleCommand}"/>
+						Command="{Binding EditModelCommand}"/>
 				<Button Classes="Default"
 						Content="Delete"
-						Command="{Binding DeleteTeamRoleCommand}"/>
+						Command="{Binding DeleteModelCommand}"/>
 			</StackPanel>
 		</StackPanel>
 

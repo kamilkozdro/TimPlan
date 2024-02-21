@@ -3,7 +3,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:TimPlan.ViewModels"
-		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="TimPlan.Views.TeamEditWindow"
         x:DataType="vm:TeamEditViewModel"
 	    x:CompileBindings="True"
@@ -21,25 +20,19 @@
 		<DockPanel>
 			<!-- Item search TextBox -->
 			<TextBox DockPanel.Dock="Top"
-					 Text="{Binding SearchItemText}"
+					 Text="{Binding SearchModelText}"
 					 Watermark="Szukaj..."/>
 			<ListBox Margin="3"
 				 SelectionMode="Single"
-				 ItemsSource="{Binding Items}"
+				 ItemsSource="{Binding FilteredModelCollection, Mode=OneWay}"
 				 DisplayMemberBinding="{Binding Name}"
-				 SelectedItem="{Binding SelectedItem}">
+				 SelectedItem="{Binding EditedModel}">
 			</ListBox>
 		</DockPanel>
 
 		<StackPanel Orientation="Vertical">
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition MinWidth="50"/>
-					<ColumnDefinition MinWidth="100"/>
-				</Grid.ColumnDefinitions>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto"/>
-				</Grid.RowDefinitions>
+			<Grid ColumnDefinitions="100, *"
+				  RowDefinitions="Auto">
 				<TextBlock Classes="Default"
 						   Grid.Column="0"
 						   Grid.Row="0"
@@ -47,19 +40,23 @@
 				<TextBox Classes="Default"
 						 Grid.Column="1"
 						 Grid.Row="0"
-						 Text="{Binding TeamName}"/>
+						 Text="{Binding FormModel.Name}"/>
 			</Grid>
+			
+			<TextBlock Classes="Default"
+					   Text="{Binding ErrorText}"/>
+			
 			<!-- Buttons -->
 			<StackPanel Orientation="Horizontal">
 				<Button Classes="Default"
 						Content="Add"
-						Command="{Binding AddItemCommand}"/>
+						Command="{Binding AddModelCommand}"/>
 				<Button Classes="Default"
 						Content="Edit"
-						Command="{Binding EditItemCommand}"/>
+						Command="{Binding EditModelCommand}"/>
 				<Button Classes="Default"
 						Content="Delete"
-						Command="{Binding DeleteItemCommand}"/>
+						Command="{Binding DeleteModelCommand}"/>
 			</StackPanel>
 		</StackPanel>
 

@@ -101,7 +101,7 @@
 		<WrapPanel>
 			<Button Classes="Default"
 					Content="Create"
-					Command="{Binding AddItemCommand}"/>
+					Command=""/>
 		</WrapPanel>
 	</StackPanel>
 </Window>

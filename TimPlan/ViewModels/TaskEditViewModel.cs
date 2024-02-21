@@ -14,8 +14,15 @@ using TimPlan.Models;
 
 namespace TimPlan.ViewModels
 {
-    public class TaskEditViewModel : ModelEditViewModel<TaskModel>
+    public class TaskEditViewModel : ViewModelBase //ModelEditBase<TaskModel>
     {
+
+        public TaskEditViewModel(UserModel aasds)
+        {
+            
+        }
+        
+
         #region Bound Properties
 
         private string _Name;
@@ -104,6 +111,8 @@ namespace TimPlan.ViewModels
         private ReadOnlyCollection<UserModel> _loadedUsers;
         private ReadOnlyCollection<TeamModel> _loadedTeams;
 
+        /*
+
         public TaskEditViewModel(UserModel loggedUser)
         {
             _LoggedUser = loggedUser;
@@ -164,11 +173,11 @@ namespace TimPlan.ViewModels
             editItemCheck = this.WhenAnyValue
                 (x => x.Name,
                 x => x.SelectedUser,
-                x => x.SelectedItem)
+                x => x.EditedModel)
                 .Select(_ => EditItemCheck());
 
             deleteItemCheck = this.WhenAnyValue
-                (x => x.SelectedItem)
+                (x => x.EditedModel)
                 .Select(_ => DeleteItemCheck());
         }
 
@@ -177,8 +186,8 @@ namespace TimPlan.ViewModels
 
             TaskModel newTask;
 
-            if (SelectedItem != null)
-                newTask = SelectedItem;
+            if (EditedModel != null)
+                newTask = EditedModel;
             else
                 newTask = new TaskModel();
 
@@ -203,17 +212,17 @@ namespace TimPlan.ViewModels
                 return;
             }
 
-            Name = SelectedItem.Name;
-            StartDate = SelectedItem?.DateStart;
-            EndDate = SelectedItem.DateEnd;
-            Private = SelectedItem.Private;
+            Name = EditedModel.Name;
+            StartDate = EditedModel?.DateStart;
+            EndDate = EditedModel.DateEnd;
+            Private = EditedModel.Private;
             SelectedParentTask = _loadedItems.Where(task => task.Id == selectedItem.ParentTaskID)
                                              .SingleOrDefault();
-            SelectedTeam = Teams.Where(team => team.Id == SelectedItem.TeamId)
+            SelectedTeam = Teams.Where(team => team.Id == EditedModel.TeamId)
                                 .SingleOrDefault();
-            SelectedUser = Users.Where(user => user.Id == SelectedItem.UserId)
+            SelectedUser = Users.Where(user => user.Id == EditedModel.UserId)
                                 .SingleOrDefault();
-            Description = SelectedItem.Description;
+            Description = EditedModel.Description;
         }
 
         protected override bool AddItemCheck()
@@ -226,12 +235,12 @@ namespace TimPlan.ViewModels
         {
             return !string.IsNullOrEmpty(Name) &&
                     SelectedUser != null &&
-                    SelectedItem != null;
+                    EditedModel != null;
         }
 
         protected override bool DeleteItemCheck()
         {
-            return SelectedItem != null;
+            return EditedModel != null;
         }
 
         protected override void ClearForm()
@@ -260,5 +269,7 @@ namespace TimPlan.ViewModels
                                 .OrderByDescending(Task => Task.Name));
             }
         }
+
+        */
     }
 }

@@ -1,5 +1,7 @@
-﻿using ReactiveUI;
+﻿using DynamicData.Binding;
+using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -9,17 +11,10 @@ using TimPlan.Models;
 
 namespace TimPlan.ViewModels
 {
-    public class TeamEditViewModel : ModelEditViewModel<TeamModel>
+    public class TeamEditViewModel : ModelSearchEditBase<TeamModel>
     {
 
         #region Properties
-
-        private string _TeamName;
-        public string TeamName
-        {
-            get { return _TeamName; }
-            set { this.RaiseAndSetIfChanged(ref _TeamName, value); }
-        }
 
         #endregion
 
@@ -28,103 +23,58 @@ namespace TimPlan.ViewModels
             
         }
 
-        protected override void OnItemSelection(TeamModel selectedItem)
+        protected override string AddModelCheck()
         {
-            if (selectedItem == null)
-            {
-                ClearForm();
-                return;
-            }
+            if (!string.IsNullOrEmpty(FormModel.Name))
+                return "Enter team name";
 
-            TeamName = selectedItem.Name;
-        }
-        protected override bool AddItemCheck()
-        {
-            return !string.IsNullOrEmpty(TeamName);
-        }
-
-        protected override void AddItem()
-        {
-            TeamModel checkTeamName = SQLAccess.SelectTeamByName(TeamName);
-
+            TeamModel checkTeamName = SQLAccess.SelectTeamByName(FormModel.Name);
             if (checkTeamName != null)
-            {
-                Debug.WriteLine($"Team with that name already exists");
-                return;
-            }
+                return "Team with that name already exists";
 
-            base.AddItem();
+            return string.Empty;
         }
 
         protected override void ClearForm()
         {
-            TeamName = string.Empty;
+            FormModel = new TeamModel();
         }
 
-        protected override bool DeleteItemCheck()
+        protected override string DeleteModelCheck()
         {
-            return SelectedItem != null;
+            return string.Empty;
         }
 
-        protected override void EditItem()
+        protected override string EditModelCheck()
         {
-            TeamModel checkTeamName = SQLAccess.SelectTeamByName(TeamName);
+            if (!string.IsNullOrEmpty(FormModel.Name))
+                return "Enter team name";
 
-            if (checkTeamName != null)
-            {
-                Debug.WriteLine($"Team with that name already exists");
-                return;
-            }
+            TeamModel checkTeamName = SQLAccess.SelectTeamByName(FormModel.Name);
+            if (checkTeamName != null && checkTeamName.Id != EditedModel.Id)
+                return "Team with that name already exists";
 
-            base.EditItem();
+            return string.Empty;
         }
 
-        protected override bool EditItemCheck()
+        protected override void LoadSources()
         {
-            return !string.IsNullOrEmpty(TeamName) &&
-                    SelectedItem != null;
+            
         }
 
-        protected override void FilterItemList(string filterText)
+        protected override Func<TeamModel, bool> SearchModelFilter(string text) => team =>
         {
-            if (string.IsNullOrEmpty(filterText))
-            {
-                Items = new ObservableCollection<TeamModel>(_loadedItems
-                    .OrderByDescending(Item => Item.Name));
-            }
-            else
-            {
-                Items = new ObservableCollection<TeamModel>(_loadedItems
-                                .Where(o => o.Name.Contains(filterText, StringComparison.OrdinalIgnoreCase))
-                                .OrderByDescending(Item => Item.Name));
-            }
+            return string.IsNullOrEmpty(text) || team.Name.Contains(text);
+        };
+
+        protected override IComparer<TeamModel> SearchModelSort()
+        {
+            return SortExpressionComparer<TeamModel>.Ascending(team => team.Name);
         }
 
-        protected override TeamModel GetNewItemFromForm()
+        protected override void SetFormFromModel(TeamModel model)
         {
-            TeamModel newTeam = new TeamModel();
-
-            if (SelectedItem != null)
-                newTeam = SelectedItem;
-            newTeam.Name = TeamName;
-
-            return newTeam;
-        }
-
-        protected override void SetupCommandsCanExecute()
-        {
-            addItemCheck = this.WhenAnyValue(
-                x => x.TeamName)
-                .Select(_ => AddItemCheck());
-
-            editItemCheck = this.WhenAnyValue(
-                x => x.TeamName,
-                x => x.SelectedItem)
-                .Select(_ => EditItemCheck());
-
-            deleteItemCheck = this.WhenAnyValue(
-                x => x.SelectedItem)
-                .Select(_ => DeleteItemCheck());
+            
         }
     }
 }
