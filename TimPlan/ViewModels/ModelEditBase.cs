@@ -11,10 +11,12 @@ using TimPlan.Services;
 
 namespace TimPlan.ViewModels
 {
+
+    public enum AccessType { Add, Edit, View };
     public abstract class ModelEditBase<T> : ViewModelBase where T : DbModelBase, new()
     {
         #region Properties
-
+                
         private T _editedModel = null;
         public T EditedModel
         {
@@ -36,7 +38,37 @@ namespace TimPlan.ViewModels
             set { this.RaiseAndSetIfChanged(ref _errorText, value); }
         }
 
+        #endregion
 
+        #region Access Properties
+
+        private bool _canEditForm = false;
+        public bool CanEditForm
+        {
+            get { return _canEditForm; }
+            set { this.RaiseAndSetIfChanged(ref _canEditForm, value); }
+        }
+
+        private bool _canAddModel = false;
+        public bool CanAddModel
+        {
+            get { return _canAddModel; }
+            set { this.RaiseAndSetIfChanged(ref _canAddModel, value); }
+        }
+
+        private bool _canEditModel = false;
+        public bool CanEditModel
+        {
+            get { return _canEditModel; }
+            set { this.RaiseAndSetIfChanged(ref _canEditModel, value); }
+        }
+
+        private bool _canDeleteModel = false;
+        public bool CanDeleteModel
+        {
+            get { return _canDeleteModel; }
+            set { this.RaiseAndSetIfChanged(ref _canDeleteModel, value); }
+        }
 
         #endregion
 
@@ -59,6 +91,37 @@ namespace TimPlan.ViewModels
             DeleteModelCommand = ReactiveCommand.Create(DeleteModel, editModelCanExecute);
 
             LoadSources();
+            SetEditType(AccessType.View);
+        }
+        public void SetEditType(AccessType accessType)
+        {
+            switch (accessType)
+            {
+                case AccessType.Add:
+                    {
+                        CanEditForm = true;
+                        CanAddModel = true;
+                        CanEditModel = false;
+                        CanDeleteModel = false;
+                        break;
+                    }
+                case AccessType.Edit:
+                    {
+                        CanEditForm = true;
+                        CanAddModel = false;
+                        CanEditModel = true;
+                        CanDeleteModel = true;
+                        break;
+                    }
+                case AccessType.View:
+                    {
+                        CanEditForm = false;
+                        CanAddModel = false;
+                        CanEditModel = false;
+                        CanDeleteModel = false;
+                        break;
+                    }
+            }
         }
         protected abstract void LoadSources();
         public void SetEditedModel(T model)

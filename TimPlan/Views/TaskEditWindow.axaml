@@ -3,7 +3,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:TimPlan.ViewModels"
-		mc:Ignorable="d" d:DesignWidth="550" d:DesignHeight="450"
         x:Class="TimPlan.Views.TaskEditWindow"
 		x:DataType="vm:TaskEditViewModel"
 	    x:CompileBindings="True"
@@ -11,21 +10,11 @@
 		SizeToContent="WidthAndHeight"
         Title="TaskEditWindow">
 	<StackPanel Orientation="Vertical">
-		<Grid Margin="3">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="120"/>
-				<ColumnDefinition Width="302"/>
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-			</Grid.RowDefinitions>
+		<Grid Margin="3"
+			  ColumnDefinitions=" 120, *"
+			  RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto,
+								Auto, Auto"
+			  IsEnabled="{Binding CanEditForm}">
 			
 			<TextBlock Classes="Default"
 					   Grid.Row="0" Grid.Column="0"
@@ -34,26 +23,26 @@
 					 Grid.Row="0" Grid.Column="1"
 					 HorizontalAlignment="Stretch"
 					 HorizontalContentAlignment="Left"
-					 Text="{Binding Name}"/>
+					 Text="{Binding FormModel.Name}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="1" Grid.Column="0"
 					   Text="Start Date"/>
 			<DatePicker Classes="Default"
 						Grid.Row="1" Grid.Column="1"
-						SelectedDate="{Binding StartDate}"/>
+						SelectedDate="{Binding FormModel.DateStart}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="2" Grid.Column="0"
 					   Text="End Date"/>
 			<DatePicker Classes="Default"
 						Grid.Row="2" Grid.Column="1"
-						SelectedDate="{Binding EndDate}"/>
+						SelectedDate="{Binding FormModel.DateEnd}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="3" Grid.Column="0"
 					   Text="Private"/>
 			<CheckBox Classes="Default"
 					  Name="CheckBoxPrivate"
 					  Grid.Row="3" Grid.Column="1"
-					  IsChecked="{Binding Private}"/>
+					  IsChecked="{Binding FormModel.Private}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="4" Grid.Column="0"
 					   Text="Team"/>
@@ -80,7 +69,7 @@
 			<ComboBox Classes="Default"
 					  Grid.Row="6" Grid.Column="1"
 					  HorizontalAlignment="Stretch"
-					  ItemsSource="{Binding Tasks}"
+					  ItemsSource="{Binding ParentTasks}"
 					  DisplayMemberBinding="{Binding Name}"
 					  SelectedItem="{Binding SelectedParentTask}"/>
 			<TextBlock Classes="Default"
@@ -95,13 +84,28 @@
 					 Height="100"
 					 AcceptsReturn="True"
 					 TextWrapping="Wrap"
-					 Text="{Binding Description}"/>
+					 Text="{Binding FormModel.Description}"/>
 			
 		</Grid>
-		<WrapPanel>
+		
+		<TextBlock Classes="Default"
+					   Text="{Binding ErrorText}"/>
+
+		<!-- Buttons -->
+		<StackPanel Orientation="Horizontal"
+						HorizontalAlignment="Center">
 			<Button Classes="Default"
-					Content="Create"
-					Command=""/>
-		</WrapPanel>
+					Content="Add"
+					Command="{Binding AddModelCommand}"
+					IsVisible="{Binding CanAddModel}"/>
+			<Button Classes="Default"
+					Content="Edit"
+					Command="{Binding EditModelCommand}"
+					IsVisible="{Binding CanEditModel}"/>
+			<Button Classes="Default"
+					Content="Delete"
+					Command="{Binding DeleteModelCommand}"
+					IsVisible="{Binding CanDeleteModel}"/>
+		</StackPanel>
 	</StackPanel>
 </Window>

@@ -96,10 +96,15 @@ namespace TimPlan.ViewModels
             EditTaskCommand = ReactiveCommand.Create(() =>
             {
                 var windowService = App.Current?.Services?.GetService<IWindowService>();
-                windowService.ShowTaskEditWindow(_loggedUser);
+                AccessType taskEditType;
+                if (_loggedUser.TeamRole.CanEditAllTasks || (_loggedUser.TeamRole.CanEditAllTasks && Task.CreatorUserId == _loggedUser.Id))
+                    taskEditType = AccessType.Edit;
+                else
+                    taskEditType = AccessType.View;
+                windowService.ShowTaskEditWindow(_loggedUser, Task, taskEditType);
             });
 
-            CanEditTask = CheckCanEditTask(_loggedUser);
+            //CanEditTask = CheckCanEditTask(_loggedUser);
         }
         private void SuspendTask()
         {

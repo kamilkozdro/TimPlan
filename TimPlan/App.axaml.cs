@@ -66,6 +66,7 @@ public partial class App : Application
 
             ServiceCollection services = new ServiceCollection();
             services.AddSingleton<IWindowService>(x => new WindowService(desktop.MainWindow));
+            services.AddSingleton<ILoggedUserService>(x => new LoggedUserService(usernameResult));
             Services = services.BuildServiceProvider();
 
         }

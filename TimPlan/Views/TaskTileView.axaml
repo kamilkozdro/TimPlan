@@ -35,9 +35,8 @@
 					   DockPanel.Dock="Left"
 					   Text="{Binding Task.Name}"/>
 				<Button DockPanel.Dock="Right"
-						Content="E"
-						Command="{Binding EditTaskCommand}"
-						IsVisible="{Binding CanEditTask}"/>
+						Content="i"
+						Command="{Binding EditTaskCommand}"/>
 				<Separator/>
 			</DockPanel>
 			
