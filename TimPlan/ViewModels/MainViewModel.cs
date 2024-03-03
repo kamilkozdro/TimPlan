@@ -69,13 +69,6 @@ public class MainViewModel : ViewModelBase
 
     #endregion
 
-    private string _LoggedUserName;
-    public string LoggedUserName
-    {
-        get { return _LoggedUserName; }
-        set { this.RaiseAndSetIfChanged(ref _LoggedUserName, value); }
-    }
-
     private bool _EditUsersVisibility;
     public bool EditUsersVisibility
     {
@@ -94,7 +87,7 @@ public class MainViewModel : ViewModelBase
 
     #region Commands
 
-    public ReactiveCommand<Unit, Unit> TaskEditCommand { get; }
+    public ReactiveCommand<Unit, Unit> TaskAddCommand { get; }
     public ReactiveCommand<Unit, Unit> TeamEditCommand { get; }
     public ReactiveCommand<Unit, Unit> UserEditCommand { get; }
     public ReactiveCommand<Unit, Unit> TeamRoleEditCommand { get; }
@@ -103,6 +96,11 @@ public class MainViewModel : ViewModelBase
 
     public MainViewModel()
     {
+        MyTaskTilesVM = new ObservableCollection<TaskTileViewModel>();
+        SelectedTeamMemberTaskTiles = new ObservableCollection<TaskTileViewModel>();
+        TeamMembers = new ObservableCollection<UserModel>();
+
+        LoggedUser = LoggedUserManager.GetUser();
 
         this.WhenAnyValue(o => o.LoggedUser)
             .Subscribe(UpdateUserLogged);
@@ -110,19 +108,15 @@ public class MainViewModel : ViewModelBase
         this.WhenAnyValue(o => o.SelectedTeamMember)
             .Subscribe(UpdateTeamMemberTasks);
 
-        MyTaskTilesVM = new ObservableCollection<TaskTileViewModel>();
-        SelectedTeamMemberTaskTiles = new ObservableCollection<TaskTileViewModel>();
-        TeamMembers = new ObservableCollection<UserModel>();
-
         //PopulateMyTasks();
         //PopulateTeamMembers();
 
         #region Set Commands
 
-        TaskEditCommand = ReactiveCommand.Create(() =>
+        TaskAddCommand = ReactiveCommand.Create(() =>
         {
             var windowService = App.Current?.Services?.GetService<IWindowService>();
-            windowService.ShowTaskEditWindow(LoggedUser);
+            windowService.ShowTaskEditWindow(accessType:AccessType.Add);
         });
 
         TeamEditCommand = ReactiveCommand.Create(() =>
@@ -173,7 +167,7 @@ public class MainViewModel : ViewModelBase
 
         foreach (TaskModel task in myTasks)
         {
-            MyTaskTilesVM.Add(new TaskTileViewModel(task, LoggedUser));
+            MyTaskTilesVM.Add(new TaskTileViewModel(task));
         }
     }
     private void PopulateTeamMembers()
@@ -215,8 +209,8 @@ public class MainViewModel : ViewModelBase
 
         foreach (TaskModel task in myTasks)
         {
-            TaskTileViewModel newTaskTileVM = new TaskTileViewModel(task, LoggedUser);
-            newTaskTileVM.CheckCanEditTask(LoggedUser);
+            TaskTileViewModel newTaskTileVM = new TaskTileViewModel(task);
+            //newTaskTileVM.CheckCanEditTask(LoggedUser);
             MyTaskTilesVM.Add(newTaskTileVM);
         }
     }
@@ -228,8 +222,8 @@ public class MainViewModel : ViewModelBase
         List<TaskModel> teamMemberTasks = SQLAccess.SelectUserTasks(member.Id).ToList();
         foreach (TaskModel task in teamMemberTasks)
         {
-            TaskTileViewModel newTaskTileVM = new TaskTileViewModel(task, LoggedUser);
-            newTaskTileVM.CheckCanEditTask(LoggedUser);
+            TaskTileViewModel newTaskTileVM = new TaskTileViewModel(task);
+            //newTaskTileVM.CheckCanEditTask(LoggedUser);
             newTaskTileVM.ReadOnlyTask = true;
             SelectedTeamMemberTaskTiles.Add(newTaskTileVM);
         }

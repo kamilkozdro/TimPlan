@@ -52,6 +52,7 @@ public partial class App : Application
 
             // Wait for the login to complete
             UserModel usernameResult = await loginCompletionSource.Task;
+            LoggedUserManager.Login(usernameResult);
 
             MainViewModel mainViewModel = new MainViewModel();
             MainWindow mainWindow = new MainWindow();
@@ -62,11 +63,8 @@ public partial class App : Application
             mainWindow.Show();
             loginWindow.Close();
 
-            mainViewModel.LoggedUser = usernameResult;
-
             ServiceCollection services = new ServiceCollection();
             services.AddSingleton<IWindowService>(x => new WindowService(desktop.MainWindow));
-            services.AddSingleton<ILoggedUserService>(x => new LoggedUserService(usernameResult));
             Services = services.BuildServiceProvider();
 
         }

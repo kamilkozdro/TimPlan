@@ -69,9 +69,9 @@ namespace TimPlan.ViewModels
         {
             
         }
-        public TaskTileViewModel(TaskModel task, UserModel loggedUser)
+        public TaskTileViewModel(TaskModel task)
         {
-            _loggedUser = loggedUser;
+            _loggedUser = LoggedUserManager.GetUser();
 
             Task = task;
             TaskState = Task.State;
@@ -101,10 +101,10 @@ namespace TimPlan.ViewModels
                     taskEditType = AccessType.Edit;
                 else
                     taskEditType = AccessType.View;
-                windowService.ShowTaskEditWindow(_loggedUser, Task, taskEditType);
+                windowService.ShowTaskEditWindow(taskEditType, Task);
             });
 
-            //CanEditTask = CheckCanEditTask(_loggedUser);
+            CanEditTask = CheckCanEditTask(_loggedUser);
         }
         private void SuspendTask()
         {
@@ -140,6 +140,7 @@ namespace TimPlan.ViewModels
         {
 
         }
+                
         public bool CheckCanEditTask(UserModel loggedUser)
         {
             if (loggedUser == null || loggedUser?.TeamRole == null)
@@ -152,5 +153,6 @@ namespace TimPlan.ViewModels
                 return false;
                 
         }
+        
     }
 }

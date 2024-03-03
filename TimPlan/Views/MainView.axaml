@@ -30,7 +30,7 @@
 							   Text="{Binding LoggedUser.Name}"/>
 					<Button Classes="Default"
 							Content="Add Task"
-							Command="{Binding TaskEditCommand}"/>
+							Command="{Binding TaskAddCommand}"/>
 				</WrapPanel>
 
 				<!-- Admin Tool panel -->

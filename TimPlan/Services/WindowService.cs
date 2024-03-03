@@ -20,11 +20,9 @@ namespace TimPlan.Services
             _target = target;
         }
 
-        public void ShowTaskEditWindow(UserModel loggedUser, TaskModel editedTask = null, 
-            AccessType accessType = AccessType.View)
+        public void ShowTaskEditWindow(AccessType accessType = AccessType.View, TaskModel editedTask = null)
         {
-            //TODO: Create service to get current loggedUser instead of passing it as parameter everywhere
-            TaskEditViewModel taskEditVM = new TaskEditViewModel(loggedUser);
+            TaskEditViewModel taskEditVM = new TaskEditViewModel();
             taskEditVM.SetEditType(accessType);
             taskEditVM.SetEditedModel(editedTask);
             TaskEditWindow taskEditWindow = new TaskEditWindow();

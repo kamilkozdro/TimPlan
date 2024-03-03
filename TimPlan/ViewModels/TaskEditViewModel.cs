@@ -55,14 +55,14 @@ namespace TimPlan.ViewModels
             set { this.RaiseAndSetIfChanged(ref _SelectedParentTask, value); }
         }
 
-        private UserModel _LoggedUser;
+        private UserModel _loggedUser;
 
         private ReadOnlyCollection<UserModel> _loadedUsers;
 
 
-        public TaskEditViewModel(UserModel loggedUser)
+        public TaskEditViewModel()
         {
-            _LoggedUser = loggedUser;
+            _loggedUser = LoggedUserManager.GetUser();
 
             this.WhenAnyValue(o => o.SelectedTeam)
                 .Subscribe(UpdateUsers);
@@ -73,7 +73,7 @@ namespace TimPlan.ViewModels
                     if(FormModel.Private)
                     {
                         SelectedTeam = null;
-                        SelectedUser = _LoggedUser;
+                        SelectedUser = _loggedUser;
                     }
                 });
 

@@ -10,8 +10,7 @@ namespace TimPlan.Services
 {
     public interface IWindowService
     {
-        void ShowTaskEditWindow(UserModel loggedUser, TaskModel editedTask = null,
-            AccessType accessType = AccessType.View);
+        void ShowTaskEditWindow(AccessType accessType = AccessType.View, TaskModel editedTask = null);
         void ShowTeamEditWindow();
         void ShowUserEditWindow();
         void ShowTeamRoleEditWindow();
