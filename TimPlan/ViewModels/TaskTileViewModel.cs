@@ -104,7 +104,7 @@ namespace TimPlan.ViewModels
                 windowService.ShowTaskEditWindow(taskEditType, Task);
             });
 
-            CanEditTask = CheckCanEditTask(_loggedUser);
+            //CanEditTask = CheckCanEditTask(_loggedUser);
         }
         private void SuspendTask()
         {

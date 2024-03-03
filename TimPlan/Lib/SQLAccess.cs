@@ -190,7 +190,7 @@ namespace TimPlan.Lib
                 return null;
             }
         }
-        static public IEnumerable<TaskModel> SelectUserTasks(int userId)
+        static public IEnumerable<TaskModel> SelectUserTasks(int userId, bool includePrivate = false)
         {
             try
             {
@@ -198,7 +198,9 @@ namespace TimPlan.Lib
                 {
                     string queryString = $"SELECT * " +
                                     $"FROM {new TaskModel().DbTableName} " +
-                                    $"WHERE {TaskModel.DbUserIdCol}='{userId}'";
+                                    $"WHERE {TaskModel.DbUserIdCol}='{userId}' ";
+                    if (!includePrivate)
+                        queryString += $"AND {TaskModel.DbPrivateCol}=0 ";
 
                     return connection.Query<TaskModel>(queryString, new DynamicParameters());
                 }

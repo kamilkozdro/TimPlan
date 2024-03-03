@@ -205,12 +205,11 @@ public class MainViewModel : ViewModelBase
     }    
     private void UpdateMyTasks()
     {
-        List<TaskModel> myTasks = SQLAccess.SelectUserTasks(LoggedUser.Id).ToList();
+        List<TaskModel> myTasks = SQLAccess.SelectUserTasks(LoggedUser.Id, true).ToList();
 
         foreach (TaskModel task in myTasks)
         {
             TaskTileViewModel newTaskTileVM = new TaskTileViewModel(task);
-            //newTaskTileVM.CheckCanEditTask(LoggedUser);
             MyTaskTilesVM.Add(newTaskTileVM);
         }
     }
@@ -223,7 +222,6 @@ public class MainViewModel : ViewModelBase
         foreach (TaskModel task in teamMemberTasks)
         {
             TaskTileViewModel newTaskTileVM = new TaskTileViewModel(task);
-            //newTaskTileVM.CheckCanEditTask(LoggedUser);
             newTaskTileVM.ReadOnlyTask = true;
             SelectedTeamMemberTaskTiles.Add(newTaskTileVM);
         }
