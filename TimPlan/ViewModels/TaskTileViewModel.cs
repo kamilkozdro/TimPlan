@@ -75,6 +75,7 @@ namespace TimPlan.ViewModels
 
             Task = task;
             TaskState = Task.State;
+
             TimeSpan daysLeft = Task.DateEnd - DateTime.Now;
             DaysLeft = (int)daysLeft.TotalDays;
 
@@ -140,7 +141,8 @@ namespace TimPlan.ViewModels
         {
 
         }
-                
+
+
         public bool CheckCanEditTask(UserModel loggedUser)
         {
             if (loggedUser == null || loggedUser?.TeamRole == null)

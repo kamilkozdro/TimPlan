@@ -8,6 +8,7 @@ using TimPlan.ViewModels;
 using TimPlan.Views;
 using MsBox.Avalonia;
 using Avalonia.Controls;
+using System.Diagnostics;
 
 namespace TimPlan.Services
 {
@@ -20,38 +21,43 @@ namespace TimPlan.Services
             _target = target;
         }
 
-        public void ShowTaskEditWindow(AccessType accessType = AccessType.View, TaskModel editedTask = null)
+        public async Task<TaskModel> ShowTaskEditWindow(AccessType accessType = AccessType.View, TaskModel editedTask = null, UserModel selectedUser = null)
         {
             TaskEditViewModel taskEditVM = new TaskEditViewModel();
             taskEditVM.SetEditType(accessType);
             taskEditVM.SetEditedModel(editedTask);
+            if(selectedUser != null)
+            {
+                taskEditVM.SelectedTeam = taskEditVM.Teams.FirstOrDefault(team => team.Id == selectedUser.TeamId);
+                taskEditVM.SelectedUser = taskEditVM.Users.FirstOrDefault(user => user.Id == selectedUser.Id);
+            }
             TaskEditWindow taskEditWindow = new TaskEditWindow();
             taskEditWindow.DataContext = taskEditVM;
-            taskEditWindow.Show();
+            return await taskEditWindow.ShowDialog<TaskModel>(_target);
         }
 
-        public void ShowTeamEditWindow()
+        public async Task<TeamModel> ShowTeamEditWindow()
         {
             TeamEditViewModel teamEditVM = new TeamEditViewModel();
             TeamEditWindow teamEditWindow = new TeamEditWindow();
             teamEditWindow.DataContext = teamEditVM;
-            teamEditWindow.Show();
+            return await teamEditWindow.ShowDialog<TeamModel>(_target);
         }
 
-        public void ShowTeamRoleEditWindow()
+        public async Task<TeamRoleModel> ShowTeamRoleEditWindow()
         {
             TeamRoleEditViewModel teamRoleEditVM = new TeamRoleEditViewModel();
             TeamRoleEditWindow teamRoleEditWindow = new TeamRoleEditWindow();
             teamRoleEditWindow.DataContext = teamRoleEditVM;
-            teamRoleEditWindow.Show();
+            return await teamRoleEditWindow.ShowDialog<TeamRoleModel>(_target);
         }
 
-        public void ShowUserEditWindow()
+        public async Task<UserModel> ShowUserEditWindow()
         {
             UserEditViewModel userEditWindowVM = new UserEditViewModel();
             UserEditWindow userEditWindow = new UserEditWindow();
             userEditWindow.DataContext = userEditWindowVM;
-            userEditWindow.Show();
+            return await userEditWindow.ShowDialog<UserModel>(_target);
         }
 
         public async Task<bool> ShowDialogYesNo(string text, string title = "")

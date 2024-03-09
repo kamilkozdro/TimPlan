@@ -24,7 +24,7 @@ namespace TimPlan.ViewModels
             set { this.RaiseAndSetIfChanged(ref _editedModel, value); }
         }
 
-        private T _formModel = null;
+        private T _formModel = new T();
         public T FormModel
         {
             get { return _formModel; }
@@ -77,6 +77,7 @@ namespace TimPlan.ViewModels
         public ReactiveCommand<Unit, Unit> AddModelCommand { get; }
         public ReactiveCommand<Unit, Unit> EditModelCommand { get; }
         public ReactiveCommand<Unit, Unit> DeleteModelCommand { get; }
+        public ReactiveCommand<T, T> ReturnResultCommand { get; }
 
         #endregion
 
@@ -89,6 +90,10 @@ namespace TimPlan.ViewModels
             AddModelCommand = ReactiveCommand.Create(AddModel);
             EditModelCommand = ReactiveCommand.Create(EditModel, editModelCanExecute);
             DeleteModelCommand = ReactiveCommand.Create(DeleteModel, editModelCanExecute);
+            ReturnResultCommand = ReactiveCommand.Create<T, T>(model =>
+            {
+                return model;
+            });
 
             LoadSources();
             SetEditType(AccessType.View);
@@ -128,6 +133,7 @@ namespace TimPlan.ViewModels
         {
             if (model != null)
             {
+                EditedModel = model;
                 FormModel = AnnotationHelper.DeepCopyReflection(model);
                 SetFormFromModel(model);
             }
@@ -156,8 +162,14 @@ namespace TimPlan.ViewModels
 
             T newModel = GetModelFromForm();
 
-            if (!SQLAccess.InsertSingle(newModel))
+            int newModelId = SQLAccess.InsertSingle(newModel);
+
+            if (newModelId < 1)
                 return;
+
+            newModel.Id = newModelId;
+
+            ReturnResultCommand.Execute(newModel).Subscribe();
         }
         protected virtual bool EditModelAdditionalAction()
         { 

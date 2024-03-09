@@ -8,7 +8,8 @@
 	    x:CompileBindings="True"
         Title="UserEditWindow"
 		Background="LightCyan"
-		SizeToContent="WidthAndHeight">
+		SizeToContent="WidthAndHeight"
+		WindowStartupLocation="CenterOwner">
 	<Design.DataContext>
 		<vm:UserEditViewModel />
 	</Design.DataContext>

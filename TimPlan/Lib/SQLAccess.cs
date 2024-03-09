@@ -10,6 +10,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Text;
+using MsBox.Avalonia.Enums;
 
 namespace TimPlan.Lib
 {
@@ -18,8 +19,7 @@ namespace TimPlan.Lib
 
         static private string _ConnectionString = "Data Source=.\\TimPlanDB.db;Version=3;";
         private static Type[] ClassesToMapAttributes =
-            { typeof(UserModel), typeof(TeamModel), typeof(TeamRoleModel), typeof(TaskModel), typeof(SystemRoleModel),
-            typeof(TaskTypeModel)};
+            { typeof(UserModel), typeof(TeamModel), typeof(TeamRoleModel), typeof(TaskModel), typeof(SystemRoleModel) };
 
         static public void MapClassAttributes()
         {
@@ -233,7 +233,7 @@ namespace TimPlan.Lib
         #endregion
 
         #region Insert
-        static public bool InsertSingle<T>(T insertModel) where T : DbModelBase
+        static public int InsertSingle<T>(T insertModel) where T : DbModelBase
         {
             try
             {
@@ -255,16 +255,17 @@ namespace TimPlan.Lib
 
                     string query = $"INSERT INTO {insertModel.DbTableName} " +
                                     $"({queryColNames}) " +
-                                    $"VALUES ({queryValues})";
+                                    $"VALUES ({queryValues}) " +
+                                    $"RETURNING {DbModelBase.DbIdCol}";
 
-                    connection.Execute(query, insertModel);
-                    return true;
+                    int newModelId = connection.QuerySingle<int>(query, insertModel);
+                    return newModelId;
                 }
             }
             catch (Exception e)
             {
                 Debug.WriteLine($"InsertSingle<{nameof(T)}>(DbRecordBase, string):{e.Message}");
-                return false;
+                return 0;
             }
         }
         #endregion

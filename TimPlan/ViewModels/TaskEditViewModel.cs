@@ -30,30 +30,67 @@ namespace TimPlan.ViewModels
             get { return _Users; }
             set { this.RaiseAndSetIfChanged(ref _Users, value); }
         }
+
         private ObservableCollection<TaskModel> _parentTasks;
         public ObservableCollection<TaskModel> ParentTasks
         {
             get { return _parentTasks; }
             set { this.RaiseAndSetIfChanged(ref _parentTasks, value); }
         }
-        private TeamModel _SelectedTeam;
-        public TeamModel SelectedTeam
+
+        private TeamModel? _SelectedTeam;
+        public TeamModel? SelectedTeam
         {
             get { return _SelectedTeam; }
             set { this.RaiseAndSetIfChanged(ref _SelectedTeam, value); }
         }
-        private UserModel _SelectedUser;
-        public UserModel SelectedUser
+
+        private UserModel? _SelectedUser;
+        public UserModel? SelectedUser
         {
             get { return _SelectedUser; }
             set { this.RaiseAndSetIfChanged(ref _SelectedUser, value); }
         }
-        private TaskModel _SelectedParentTask;
-        public TaskModel SelectedParentTask
+
+        private TaskModel? _SelectedParentTask;
+        public TaskModel? SelectedParentTask
         {
             get { return _SelectedParentTask; }
             set { this.RaiseAndSetIfChanged(ref _SelectedParentTask, value); }
         }
+
+        private DateTime _dateStart;
+
+        public DateTime DateStart
+        {
+            get { return _dateStart; }
+            set { this.RaiseAndSetIfChanged(ref _dateStart, value); }
+        }
+
+        private DateTime _dateEnd;
+
+        public DateTime DateEnd
+        {
+            get { return _dateEnd; }
+            set { this.RaiseAndSetIfChanged(ref _dateEnd, value); }
+        }
+
+        private DateTime _dateCreated;
+
+        public DateTime DateCreated
+        {
+            get { return _dateCreated; }
+            set { this.RaiseAndSetIfChanged(ref _dateCreated, value); }
+        }
+
+        private bool _private;
+
+        public bool Private
+        {
+            get { return _private; }
+            set { this.RaiseAndSetIfChanged(ref _private, value); }
+        }
+
 
         private UserModel _loggedUser;
 
@@ -64,22 +101,26 @@ namespace TimPlan.ViewModels
         {
             _loggedUser = LoggedUserManager.GetUser();
 
+            FormModel.CreatorUserId = _loggedUser.Id;
+            DateStart = DateTime.Now;
+            DateEnd = DateTime.Now;
+            DateCreated = DateTime.Now;
+
             this.WhenAnyValue(o => o.SelectedTeam)
                 .Subscribe(UpdateUsers);
             
-            this.WhenAnyValue(o => o.FormModel.Private)
+            this.WhenAnyValue(o => o.Private)
                 .Subscribe(o =>
                 {
-                    if(FormModel.Private)
+                    if(Private)
                     {
                         SelectedTeam = null;
-                        SelectedUser = _loggedUser;
+                        SelectedUser = _loadedUsers.FirstOrDefault(user => user.Id == _loggedUser.Id);
                     }
                 });
-
         }
 
-        private void UpdateUsers(TeamModel model)
+        private void UpdateUsers(TeamModel? model)
         {
             if (model == null)
                 Users = null;
@@ -102,19 +143,43 @@ namespace TimPlan.ViewModels
 
         protected override void SetFormFromModel(TaskModel model)
         {
+            if (model == null)
+                ClearForm();
+            
+            FormModel.DateStart = model.DateStart;
+            FormModel.DateEnd = model.DateEnd;
+            FormModel.DateCreated = model.DateCreated;
+            FormModel.Private = model.Private;
+
             SelectedTeam = Teams.SingleOrDefault(team => team.Id == model.TeamId);
             SelectedParentTask = ParentTasks.SingleOrDefault(parentTask => parentTask.Id == model.ParentTaskID);
             SelectedUser = _loadedUsers.SingleOrDefault(user => user.Id == model.UserId);
+        }
+
+        protected override TaskModel GetModelFromForm()
+        {
+
+            FormModel.DateStart = DateStart;
+            FormModel.DateEnd = DateEnd;
+            FormModel.Private = Private;
+
+            FormModel.DateCreated = DateTime.Now.Date;
+
+            FormModel.UserId = SelectedUser.Id;
+            FormModel.ParentTaskID = SelectedParentTask?.Id;
+            FormModel.TeamId = SelectedTeam?.Id;
+
+            return base.GetModelFromForm();
         }
 
         protected override string AddModelCheck()
         {
             if (string.IsNullOrEmpty(FormModel.Name))
                 return "Enter task name";
-            if (FormModel.DateEnd == null)
-                return "Set task end date";
             if (SelectedUser == null)
                 return "Set user for task";
+            if( DateEnd < DateStart)
+                return "Start date must be set earlier than end date";
 
             return string.Empty;
         }
@@ -123,10 +188,10 @@ namespace TimPlan.ViewModels
         {
             if (string.IsNullOrEmpty(FormModel.Name))
                 return "Enter task name";
-            if (FormModel.DateEnd == null)
-                return "Set task end date";
             if (SelectedUser == null)
                 return "Set user for task";
+            if (DateEnd < DateStart)
+                return "Start date must be set earlier than end date";
 
             return string.Empty;
         }

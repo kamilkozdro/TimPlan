@@ -8,12 +8,13 @@
 	    x:CompileBindings="True"
 		Background="LightCyan"
 		SizeToContent="WidthAndHeight"
+		WindowStartupLocation="CenterOwner"
         Title="TaskEditWindow">
 	<StackPanel Orientation="Vertical">
 		<Grid Margin="3"
 			  ColumnDefinitions=" 120, *"
 			  RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto,
-								Auto, Auto"
+								Auto, Auto, Auto"
 			  IsEnabled="{Binding CanEditForm}">
 			
 			<TextBlock Classes="Default"
@@ -21,62 +22,89 @@
 					   Text="Name"/>
 			<TextBox Classes="Default"
 					 Grid.Row="0" Grid.Column="1"
+					 MinWidth="150"
 					 HorizontalAlignment="Stretch"
 					 HorizontalContentAlignment="Left"
 					 Text="{Binding FormModel.Name}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="1" Grid.Column="0"
 					   Text="Start Date"/>
-			<DatePicker Classes="Default"
-						Grid.Row="1" Grid.Column="1"
-						SelectedDate="{Binding FormModel.DateStart}"/>
+			<CalendarDatePicker Classes="Default"
+								Grid.Row="1" Grid.Column="1"
+								Margin="3"
+								HorizontalAlignment="Stretch"
+								HorizontalContentAlignment="Left"
+								SelectedDate="{Binding DateStart}"
+								SelectedDateFormat="Custom"
+								CustomDateFormatString="dd-MM-yyy"
+								IsTodayHighlighted="True"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="2" Grid.Column="0"
 					   Text="End Date"/>
-			<DatePicker Classes="Default"
-						Grid.Row="2" Grid.Column="1"
-						SelectedDate="{Binding FormModel.DateEnd}"/>
+			<CalendarDatePicker Classes="Default"
+								Grid.Row="2" Grid.Column="1"
+								Margin="3"
+								HorizontalAlignment="Stretch"
+								HorizontalContentAlignment="Left"
+								SelectedDate="{Binding DateEnd}"
+								SelectedDateFormat="Custom"
+								CustomDateFormatString="dd-MM-yyy"
+								IsTodayHighlighted="True"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="3" Grid.Column="0"
+					   Text="Created Date"/>
+			<CalendarDatePicker Classes="Default"
+								Grid.Row="3" Grid.Column="1"
+								Margin="3"
+								HorizontalAlignment="Stretch"
+								HorizontalContentAlignment="Left"
+								SelectedDate="{Binding DateCreated}"
+								SelectedDateFormat="Custom"
+								CustomDateFormatString="dd-MM-yyy"
+								IsTodayHighlighted="True"
+								IsDropDownOpen="False"
+								IsEnabled="False"/>
+			<TextBlock Classes="Default"
+					   Grid.Row="4" Grid.Column="0"
 					   Text="Private"/>
 			<CheckBox Classes="Default"
 					  Name="CheckBoxPrivate"
-					  Grid.Row="3" Grid.Column="1"
-					  IsChecked="{Binding FormModel.Private}"/>
+					  Grid.Row="4" Grid.Column="1"
+					  IsChecked="{Binding Private}"/>
 			<TextBlock Classes="Default"
-					   Grid.Row="4" Grid.Column="0"
+					   Grid.Row="5" Grid.Column="0"
 					   Text="Team"/>
 			<ComboBox Classes="Default"
-					  Grid.Row="4" Grid.Column="1"
+					  Grid.Row="5" Grid.Column="1"
 					  HorizontalAlignment="Stretch"
 					  ItemsSource="{Binding Teams}"
 					  DisplayMemberBinding="{Binding Name}"
 					  SelectedItem="{Binding SelectedTeam}"
 					  IsEnabled="{Binding ElementName=CheckBoxPrivate, Path=!IsChecked}"/>
 			<TextBlock Classes="Default"
-					   Grid.Row="5" Grid.Column="0"
+					   Grid.Row="6" Grid.Column="0"
 					   Text="User"/>
 			<ComboBox Classes="Default"
-					  Grid.Row="5" Grid.Column="1"
+					  Grid.Row="6" Grid.Column="1"
 					  HorizontalAlignment="Stretch"
 					  ItemsSource="{Binding Users}"
 					  DisplayMemberBinding="{Binding Name}"
 					  SelectedItem="{Binding SelectedUser}"
 					  IsEnabled="{Binding ElementName=CheckBoxPrivate, Path=!IsChecked}"/>
 			<TextBlock Classes="Default"
-					   Grid.Row="6" Grid.Column="0"
+					   Grid.Row="7" Grid.Column="0"
 					   Text="Parent Task"/>
 			<ComboBox Classes="Default"
-					  Grid.Row="6" Grid.Column="1"
+					  Grid.Row="7" Grid.Column="1"
 					  HorizontalAlignment="Stretch"
 					  ItemsSource="{Binding ParentTasks}"
 					  DisplayMemberBinding="{Binding Name}"
 					  SelectedItem="{Binding SelectedParentTask}"/>
 			<TextBlock Classes="Default"
-					   Grid.Row="7" Grid.Column="0"
+					   Grid.Row="8" Grid.Column="0"
 					   Text="Description"/>
 			<TextBox Classes="Default"
-					 Grid.Row="7" Grid.Column="1"
+					 Grid.Row="8" Grid.Column="1"
 					 Grid.RowSpan="2"
 					 HorizontalAlignment="Stretch"
 					 HorizontalContentAlignment="Left"

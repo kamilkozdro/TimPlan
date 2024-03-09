@@ -8,6 +8,7 @@
 	    x:CompileBindings="True"
 		Background="LightCyan"
 		SizeToContent="WidthAndHeight"
+		WindowStartupLocation="CenterOwner"
         Title="TeamRoleEditWindow">
 
 	<Design.DataContext>

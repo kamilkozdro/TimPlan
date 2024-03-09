@@ -113,28 +113,28 @@ public class MainViewModel : ViewModelBase
 
         #region Set Commands
 
-        TaskAddCommand = ReactiveCommand.Create(() =>
+        TaskAddCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             var windowService = App.Current?.Services?.GetService<IWindowService>();
-            windowService.ShowTaskEditWindow(accessType:AccessType.Add);
+            TaskModel returnedTask = await windowService.ShowTaskEditWindow(accessType: AccessType.Add);
         });
 
-        TeamEditCommand = ReactiveCommand.Create(() =>
+        TeamEditCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             var windowService = App.Current?.Services?.GetService<IWindowService>();
-            windowService.ShowTeamEditWindow();
+            TeamModel returnedTeam = await windowService.ShowTeamEditWindow();
         });
 
-        UserEditCommand = ReactiveCommand.Create(() =>
+        UserEditCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             var windowService = App.Current?.Services?.GetService<IWindowService>();
-            windowService.ShowUserEditWindow();
+            UserModel returnedUser = await windowService.ShowUserEditWindow();
         });
 
-        TeamRoleEditCommand = ReactiveCommand.Create(() =>
+        TeamRoleEditCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             var windowService = App.Current?.Services?.GetService<IWindowService>();
-            windowService.ShowTeamRoleEditWindow();
+            TeamRoleModel returnedTeamRole = await windowService.ShowTeamRoleEditWindow();
         });
 
         
@@ -143,10 +143,9 @@ public class MainViewModel : ViewModelBase
 
     }
 
-
     private void PopulateMyTasks()
     {
-        List<TaskModel> myTasks = new List<TaskModel> 
+        List<TaskModel> myTasks = new List<TaskModel>
         {
             new TaskModel()
             {

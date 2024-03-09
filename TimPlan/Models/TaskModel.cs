@@ -56,7 +56,7 @@ namespace TimPlan.Models
 
         public TaskModel()
         {
-            
+
         }
 
     }

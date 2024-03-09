@@ -10,7 +10,7 @@ using TimPlan.Models;
 
 namespace TimPlan.ViewModels
 {
-    public abstract class ModelSearchEditBase<TModel> : ModelEditBase<TModel> where TModel : DbModelBase, new()
+    public abstract class ModelSearchEditBase<T> : ModelEditBase<T> where T : DbModelBase, new()
     {
         #region Properties
 
@@ -20,12 +20,12 @@ namespace TimPlan.ViewModels
             get { return _searchModelText; }
             set { this.RaiseAndSetIfChanged(ref _searchModelText, value); }
         }
-        private readonly ReadOnlyObservableCollection<TModel> _filteredModelCollection;
-        public ReadOnlyObservableCollection<TModel> FilteredModelCollection
+        private readonly ReadOnlyObservableCollection<T> _filteredModelCollection;
+        public ReadOnlyObservableCollection<T> FilteredModelCollection
         {
             get { return _filteredModelCollection; }
         }
-        private SourceCache<TModel, int> _sourceCache = new(x => x.Id);
+        private SourceCache<T, int> _sourceCache = new(x => x.Id);
 
         #endregion
 
@@ -56,18 +56,18 @@ namespace TimPlan.ViewModels
             this.WhenAnyValue(o => o.EditedModel)
                 .Subscribe(OnItemSelection);
         }
-        protected abstract Func<TModel, bool> SearchModelFilter(string text);
-        protected abstract IComparer<TModel> SearchModelSort();
+        protected abstract Func<T, bool> SearchModelFilter(string text);
+        protected abstract IComparer<T> SearchModelSort();
         private void UpdateItemsSource()
         {
-            IEnumerable<TModel> modelSource = SQLAccess.SelectAll<TModel>();
+            IEnumerable<T> modelSource = SQLAccess.SelectAll<T>();
 
-            foreach (TModel model in modelSource)
+            foreach (T model in modelSource)
             {
                 _sourceCache.AddOrUpdate(model);
             }
         }
-        private void OnItemSelection(TModel selectedItem)
+        private void OnItemSelection(T selectedItem)
         {
             SetEditedModel(selectedItem);
         }
