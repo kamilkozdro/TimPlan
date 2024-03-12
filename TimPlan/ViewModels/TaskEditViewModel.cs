@@ -80,13 +80,6 @@ namespace TimPlan.ViewModels
             set { this.RaiseAndSetIfChanged(ref _dateCreated, value); }
         }
 
-        private bool _private;
-        public bool Private
-        {
-            get { return _private; }
-            set { this.RaiseAndSetIfChanged(ref _private, value); }
-        }
-
 
         private bool _canSelectTeam;
         public bool CanSelectTeam
@@ -101,7 +94,6 @@ namespace TimPlan.ViewModels
             get { return _canSelectUser; }
             set { this.RaiseAndSetIfChanged(ref _canSelectUser, value); }
         }
-
 
 
         private UserModel _loggedUser;
@@ -122,20 +114,7 @@ namespace TimPlan.ViewModels
 
             this.WhenAnyValue(o => o.SelectedTeam)
                 .Subscribe(UpdateUsers);
-            
-            this.WhenAnyValue(o => o.Private)
-                .Subscribe(o =>
-                {
-                    if(Private)
-                    {
-                        SelectedTeam = null;
-                        SelectedUser = _loadedUsers.FirstOrDefault(user => user.Id == _loggedUser.Id);
-                    }
-                    else
-                    {
-                        SelectedTeam = Teams.FirstOrDefault(team => team.Id == _loggedUser.TeamId);
-                    }
-                });
+
         }
 
         private void SetupPrivileges(UserModel loggedUser)
@@ -176,7 +155,6 @@ namespace TimPlan.ViewModels
             FormModel.DateStart = model.DateStart;
             FormModel.DateEnd = model.DateEnd;
             FormModel.DateCreated = model.DateCreated;
-            FormModel.Private = model.Private;
 
             SelectedTeam = Teams.SingleOrDefault(team => team.Id == model.TeamId);
             SelectedParentTask = ParentTasks.SingleOrDefault(parentTask => parentTask.Id == model.ParentTaskID);
@@ -188,7 +166,6 @@ namespace TimPlan.ViewModels
 
             FormModel.DateStart = DateStart;
             FormModel.DateEnd = DateEnd;
-            FormModel.Private = Private;
 
             FormModel.DateCreated = DateTime.Now.Date;
 

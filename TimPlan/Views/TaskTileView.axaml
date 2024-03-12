@@ -18,7 +18,7 @@
 	
 	<Border Background="{Binding TaskState, Mode=OneWay, Converter={StaticResource TaskStateColorConv}}"
 			BorderBrush="Black"
-			BorderThickness="3"
+			BorderThickness="2"
 			CornerRadius="10"
 			MinWidth="300"
 			MinHeight="70">

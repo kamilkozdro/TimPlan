@@ -24,8 +24,6 @@ namespace TimPlan.Models
         public string? Description { get; set; }
         [Column(DbStateCol)]
         public TaskState State { get; set; } = TaskState.Suspended;
-        [Column(DbPrivateCol)]
-        public bool Private { get; set; }
         [Column(DbCreatorUserIdCol)]
         public int CreatorUserId { get; set; }
         [Column(DbUserIdCol)]
@@ -47,7 +45,6 @@ namespace TimPlan.Models
         public const string DbDateEndCol = "date_end";
         public const string DbDescriptionCol = "description";
         public const string DbStateCol = "state";
-        public const string DbPrivateCol = "private";
         public const string DbCreatorUserIdCol = "creator_user_id";
         public const string DbUserIdCol = "user_id";
         public const string DbTeamIdCol = "team_id";

@@ -15,37 +15,32 @@
 
 		<!-- Tool Panel -->
 		<Border DockPanel.Dock="Top"
-				MinHeight="50"
 				Background="LightSkyBlue">
 			<StackPanel Orientation="Vertical"
-						Margin="3">
-				<!-- Common Tool panel -->
-				<WrapPanel Orientation="Horizontal"
-						   Margin="3"
-						   VerticalAlignment="Center">
+						Margin="9">
+
+				<!-- Admin Tool panel -->
+				<WrapPanel>
 					<TextBlock Classes="Default"
 							   Text="Logged as:"/>
 					<TextBlock Classes="Default"
 							   Text="{Binding LoggedUser.Name}"/>
 					<Button Classes="Default"
-							Content="Add Task"
-							Command="{Binding TaskAddCommand}"/>
-				</WrapPanel>
-
-				<!-- Admin Tool panel -->
-				<WrapPanel>
+							IsVisible="{Binding EditTaskVisiblity}"
+							Command="{Binding TaskAddCommand}"
+							Content="Edit Task"/>
 					<Button Classes="Default"
 							IsVisible="{Binding EditUsersVisibility}"
 							Command="{Binding UserEditCommand}"
-							Content="Add User"/>
+							Content="Edit User"/>
 					<Button Classes="Default"
 							IsVisible="{Binding EditTeamsVisibility}"
 							Command="{Binding TeamEditCommand}"
-							Content="Add Team"/>
+							Content="Edit Team"/>
 					<Button Classes="Default"
-								IsVisible="{Binding EditTeamsVisibility}"
-								Command="{Binding TeamRoleEditCommand}"
-								Content="Edit Team Role"/>
+							IsVisible="{Binding EditTeamRolesVisibility}"
+							Command="{Binding TeamRoleEditCommand}"
+							Content="Edit Team Role"/>
 				</WrapPanel>
 			</StackPanel>
 
@@ -55,10 +50,6 @@
 
 		<TabControl>
 			<TabItem Header="My Tasks">
-				<WrapPanel>
-					<Button Classes="Tile"
-							Content="+"
-							Command="{Binding TaskAddCommand}"/>
 					<ItemsControl ItemsSource="{Binding MyTaskTilesVM}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
@@ -72,7 +63,6 @@
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>
-				</WrapPanel>
 			</TabItem>
 			<TabItem Header="Team Overview">
 				<SplitView IsPaneOpen="True"

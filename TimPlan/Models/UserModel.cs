@@ -17,9 +17,9 @@ namespace TimPlan.Models
         public string? Password {  get; set; }
         [Column(DbSystemRoleIdCol)]
         public int SystemRoleId { get; set; }
-        [Column(DbTeamId)]
+        [Column(DbTeamIdCol)]
         public int? TeamId { get; set; }
-        [Column(DbTeamRoleId)]
+        [Column(DbTeamRoleIdCol)]
         public int? TeamRoleId { get; set; }
 
         public SystemRoleModel SystemRole { get; set; }
@@ -34,8 +34,8 @@ namespace TimPlan.Models
         public const string DbLoginCol = "login";
         public const string DbPasswordCol = "password";
         public const string DbSystemRoleIdCol = "system_role_id";
-        public const string DbTeamId = "team_id";
-        public const string DbTeamRoleId = "team_role_id";
+        public const string DbTeamIdCol = "team_id";
+        public const string DbTeamRoleIdCol = "team_role_id";
 
         #endregion
 

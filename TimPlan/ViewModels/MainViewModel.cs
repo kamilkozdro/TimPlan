@@ -68,19 +68,32 @@ public class MainViewModel : ViewModelBase
 
 
     #endregion
-
-    private bool _EditUsersVisibility;
-    public bool EditUsersVisibility
+    private bool _editTaskVisiblity;
+    public bool EditTaskVisiblity
     {
-        get { return _EditUsersVisibility; }
-        set { this.RaiseAndSetIfChanged(ref _EditUsersVisibility, value); }
+        get { return _editTaskVisiblity; }
+        set { this.RaiseAndSetIfChanged(ref _editTaskVisiblity, value); }
     }
 
-    private bool _EditTeamsVisibility;
+    private bool _editUsersVisibility;
+    public bool EditUsersVisibility
+    {
+        get { return _editUsersVisibility; }
+        set { this.RaiseAndSetIfChanged(ref _editUsersVisibility, value); }
+    }
+
+    private bool _editTeamRolesVisibility;
+    public bool EditTeamRolesVisibility
+    {
+        get { return _editTeamsVisibility; }
+        set { this.RaiseAndSetIfChanged(ref _editTeamsVisibility, value); }
+    }
+
+    private bool _editTeamsVisibility;
     public bool EditTeamsVisibility
     {
-        get { return _EditTeamsVisibility; }
-        set { this.RaiseAndSetIfChanged(ref _EditTeamsVisibility, value); }
+        get { return _editTeamsVisibility; }
+        set { this.RaiseAndSetIfChanged(ref _editTeamsVisibility, value); }
     }
 
     private bool _addTeamMemberTaskVisibility;
@@ -214,10 +227,13 @@ public class MainViewModel : ViewModelBase
         }
         else
         {
+            EditTaskVisiblity = user.SystemRole.IsAdmin;
             EditUsersVisibility = user.SystemRole.IsAdmin ||
                                   user.SystemRole.CanEditUsers;
             EditTeamsVisibility = user.SystemRole.IsAdmin ||
                                   user.SystemRole.CanEditTeams;
+            EditTeamRolesVisibility = user.SystemRole.IsAdmin ||
+                                      user.SystemRole.CanEditTeamRoles;
             AddTeamMemberTaskVisibility = user.SystemRole.IsAdmin ||
                                           user.TeamRole.CanAddTeamMemberTask;
         }
@@ -228,7 +244,7 @@ public class MainViewModel : ViewModelBase
     }    
     private void UpdateMyTasks()
     {
-        List<TaskModel> myTasks = SQLAccess.SelectUserTasks(LoggedUser.Id, true).ToList();
+        List<TaskModel> myTasks = SQLAccess.SelectUserTasks(LoggedUser.Id).ToList();
 
         foreach (TaskModel task in myTasks)
         {

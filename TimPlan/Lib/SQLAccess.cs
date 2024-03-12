@@ -148,27 +148,6 @@ namespace TimPlan.Lib
                 return null;
             }
         }
-        static public List<TaskModel> SelectAllTasksWithoutForeignPrivate(int userId)
-        {
-            try
-            {
-                using (IDbConnection connection = new SQLiteConnection(_ConnectionString))
-                {
-                    string queryString = $"SELECT * " +
-                                    $"FROM {new TaskModel().DbTableName} " +
-                                    $"WHERE NOT ({TaskModel.DbCreatorUserIdCol} <> {userId} " +
-                                    $"AND {TaskModel.DbPrivateCol} = true)";
-                    List<TaskModel> queryOutput = connection.Query<TaskModel>(queryString, new DynamicParameters()).ToList();
-
-                    return queryOutput;
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine($"SelectAllTasksWithoutForeignPrivate(int):{e.Message}");
-                return null;
-            }
-        }
         static public TeamRoleModel SelectTeamRoleByName(string roleName)
         {
             try
@@ -190,7 +169,7 @@ namespace TimPlan.Lib
                 return null;
             }
         }
-        static public IEnumerable<TaskModel> SelectUserTasks(int userId, bool includePrivate = false)
+        static public IEnumerable<TaskModel> SelectUserTasks(int userId)
         {
             try
             {
@@ -199,9 +178,6 @@ namespace TimPlan.Lib
                     string queryString = $"SELECT * " +
                                     $"FROM {new TaskModel().DbTableName} " +
                                     $"WHERE {TaskModel.DbUserIdCol}='{userId}' ";
-                    if (!includePrivate)
-                        queryString += $"AND {TaskModel.DbPrivateCol}=0 ";
-
                     return connection.Query<TaskModel>(queryString, new DynamicParameters());
                 }
             }
@@ -219,7 +195,7 @@ namespace TimPlan.Lib
                 {
                     string queryString = $"SELECT * " +
                                     $"FROM {new UserModel().DbTableName} " +
-                                    $"WHERE {UserModel.DbTeamId}={teamId}";
+                                    $"WHERE {UserModel.DbTeamIdCol}={teamId}";
 
                     return connection.Query<UserModel>(queryString, new DynamicParameters());
                 }

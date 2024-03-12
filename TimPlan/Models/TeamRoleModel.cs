@@ -10,22 +10,22 @@ namespace TimPlan.Models
         [Column(DbNameCol)]
         public string Name { get; set; }
 
-        [Column(DbCanViewForeignTeamTask)]
+        [Column(DbCanViewForeignTeamTaskCol)]
         public bool CanViewForeignTeamTask { get; set; }
 
-        [Column(DbCanAddForeignTeamTask)]
+        [Column(DbCanAddForeignTeamTaskcol)]
         public bool CanAddForeignTeamTask { get; set; }
 
-        [Column(DbCanEditForeignTeamTask)]
+        [Column(DbCanEditForeignTeamTaskCol)]
         public bool CanEditForeignTeamTask { get; set; }
 
-        [Column(DbCanViewTeamMemberTask)]
+        [Column(DbCanViewTeamMemberTaskCol)]
         public bool CanViewTeamMemberTask { get; set; }
 
-        [Column(DbCanAddTeamMemberTask)]
+        [Column(DbCanAddTeamMemberTaskCol)]
         public bool CanAddTeamMemberTask { get; set; }
 
-        [Column(DbCanEditTeamMemberTask)]
+        [Column(DbCanEditTeamMemberTaskCol)]
         public bool CanEditTeamMemberTask { get; set; }
 
 
@@ -35,12 +35,12 @@ namespace TimPlan.Models
         #region DbNames
 
         public const string DbNameCol = "name";
-        public const string DbCanViewForeignTeamTask = "view_foreign_team_task";
-        public const string DbCanAddForeignTeamTask = "add_foreign_team_task";
-        public const string DbCanEditForeignTeamTask = "edit_foreign_team_task";
-        public const string DbCanViewTeamMemberTask = "view_team_member_task";
-        public const string DbCanAddTeamMemberTask = "add_team_member_task";
-        public const string DbCanEditTeamMemberTask = "edit_team_member_task";
+        public const string DbCanViewForeignTeamTaskCol = "view_foreign_team_task";
+        public const string DbCanAddForeignTeamTaskcol = "add_foreign_team_task";
+        public const string DbCanEditForeignTeamTaskCol = "edit_foreign_team_task";
+        public const string DbCanViewTeamMemberTaskCol = "view_team_member_task";
+        public const string DbCanAddTeamMemberTaskCol = "add_team_member_task";
+        public const string DbCanEditTeamMemberTaskCol = "edit_team_member_task";
 
         #endregion
 
