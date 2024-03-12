@@ -3,9 +3,9 @@
     <Design.PreviewWith>
         <Border Padding="20">
             <!-- Add Controls for Previewer Here -->
-			<TextBlock Classes="Default">
-				Hello test block
-			</TextBlock>
+			<Button Classes="Tile">
+				+
+			</Button>
         </Border>
     </Design.PreviewWith>
 
@@ -30,7 +30,7 @@
 	<Style Selector="TextBox.Default">
 		<Setter Property="Margin" Value="3"/>
 		<Setter Property="VerticalContentAlignment" Value="Center"/>
-		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="HorizontalContentAlignment" Value="Left"/>
 	</Style>
 	
 	<!-- Button Styles -->
@@ -57,6 +57,31 @@
 		<Setter Property="BorderBrush" Value="Black"/>
 	</Style>
 
+	<Style Selector="Button.Tile">
+		<Setter Property="Width" Value="50"/>
+		<Setter Property="MinHeight" Value="100"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="BorderThickness" Value="2"/>
+		<Setter Property="BorderBrush" Value="Black"/>
+		<Setter Property="Margin" Value="3"/>
+		<Setter Property="Background" Value="PaleGreen"/>
+		<Setter Property="FontSize" Value="45"/>
+	</Style>
+	<Style Selector="Button.Tile:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Background" Value="PaleGreen"/>
+		<Setter Property="BorderThickness" Value="2"/>
+		<Setter Property="BorderBrush" Value="Black"/>
+	</Style>
+	<Style Selector="Button.Tile:pressed /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Background" Value="LimeGreen"/>
+		<Setter Property="BorderThickness" Value="2"/>
+		<Setter Property="BorderBrush" Value="Black"/>
+	</Style>
+	
+	
 	<!--  TextBlock Styles -->
 	<Style Selector="TextBlock.Default">
 		<Setter Property="Margin" Value="3"/>

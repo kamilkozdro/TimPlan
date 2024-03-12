@@ -21,10 +21,10 @@ namespace TimPlan.Services
             _target = target;
         }
 
-        public async Task<TaskModel> ShowTaskEditWindow(AccessType accessType = AccessType.View, TaskModel editedTask = null, UserModel selectedUser = null)
+        public async Task<TaskModel> ShowTaskEditWindow(EditWindowType editWindowType = EditWindowType.View, TaskModel editedTask = null, UserModel selectedUser = null)
         {
             TaskEditViewModel taskEditVM = new TaskEditViewModel();
-            taskEditVM.SetEditType(accessType);
+            taskEditVM.SetEditWindowType(editWindowType);
             taskEditVM.SetEditedModel(editedTask);
             if(selectedUser != null)
             {

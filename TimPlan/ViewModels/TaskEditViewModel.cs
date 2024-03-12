@@ -60,7 +60,6 @@ namespace TimPlan.ViewModels
         }
 
         private DateTime _dateStart;
-
         public DateTime DateStart
         {
             get { return _dateStart; }
@@ -68,7 +67,6 @@ namespace TimPlan.ViewModels
         }
 
         private DateTime _dateEnd;
-
         public DateTime DateEnd
         {
             get { return _dateEnd; }
@@ -76,7 +74,6 @@ namespace TimPlan.ViewModels
         }
 
         private DateTime _dateCreated;
-
         public DateTime DateCreated
         {
             get { return _dateCreated; }
@@ -84,12 +81,27 @@ namespace TimPlan.ViewModels
         }
 
         private bool _private;
-
         public bool Private
         {
             get { return _private; }
             set { this.RaiseAndSetIfChanged(ref _private, value); }
         }
+
+
+        private bool _canSelectTeam;
+        public bool CanSelectTeam
+        {
+            get { return _canSelectTeam; }
+            set { this.RaiseAndSetIfChanged(ref _canSelectTeam, value); }
+        }
+
+        private bool _canSelectUser;
+        public bool CanSelectUser
+        {
+            get { return _canSelectUser; }
+            set { this.RaiseAndSetIfChanged(ref _canSelectUser, value); }
+        }
+
 
 
         private UserModel _loggedUser;
@@ -106,6 +118,8 @@ namespace TimPlan.ViewModels
             DateEnd = DateTime.Now;
             DateCreated = DateTime.Now;
 
+            SetupPrivileges(_loggedUser);
+
             this.WhenAnyValue(o => o.SelectedTeam)
                 .Subscribe(UpdateUsers);
             
@@ -117,7 +131,20 @@ namespace TimPlan.ViewModels
                         SelectedTeam = null;
                         SelectedUser = _loadedUsers.FirstOrDefault(user => user.Id == _loggedUser.Id);
                     }
+                    else
+                    {
+                        SelectedTeam = Teams.FirstOrDefault(team => team.Id == _loggedUser.TeamId);
+                    }
                 });
+        }
+
+        private void SetupPrivileges(UserModel loggedUser)
+        {
+            CanSelectTeam = loggedUser.SystemRole.IsAdmin ||
+                            loggedUser.TeamRole.CanAddForeignTeamTask;
+            CanSelectUser = loggedUser.SystemRole.IsAdmin ||
+                            loggedUser.TeamRole.CanAddForeignTeamTask ||
+                            loggedUser.TeamRole.CanAddTeamMemberTask;
         }
 
         private void UpdateUsers(TeamModel? model)

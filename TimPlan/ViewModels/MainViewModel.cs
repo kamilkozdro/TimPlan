@@ -75,6 +75,7 @@ public class MainViewModel : ViewModelBase
         get { return _EditUsersVisibility; }
         set { this.RaiseAndSetIfChanged(ref _EditUsersVisibility, value); }
     }
+
     private bool _EditTeamsVisibility;
     public bool EditTeamsVisibility
     {
@@ -82,12 +83,18 @@ public class MainViewModel : ViewModelBase
         set { this.RaiseAndSetIfChanged(ref _EditTeamsVisibility, value); }
     }
 
-
+    private bool _addTeamMemberTaskVisibility;
+    public bool AddTeamMemberTaskVisibility
+    {
+        get { return _addTeamMemberTaskVisibility; }
+        set { this.RaiseAndSetIfChanged(ref _addTeamMemberTaskVisibility, value); }
+    }
     #endregion
 
     #region Commands
 
-    public ReactiveCommand<Unit, Unit> TaskAddCommand { get; }
+    public ReactiveCommand<Unit, Unit> TaskEditCommand { get; }
+    public ReactiveCommand<UserModel, Unit> TaskAddCommand { get; }
     public ReactiveCommand<Unit, Unit> TeamEditCommand { get; }
     public ReactiveCommand<Unit, Unit> UserEditCommand { get; }
     public ReactiveCommand<Unit, Unit> TeamRoleEditCommand { get; }
@@ -113,11 +120,13 @@ public class MainViewModel : ViewModelBase
 
         #region Set Commands
 
-        TaskAddCommand = ReactiveCommand.CreateFromTask(async () =>
+        TaskEditCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             var windowService = App.Current?.Services?.GetService<IWindowService>();
-            TaskModel returnedTask = await windowService.ShowTaskEditWindow(accessType: AccessType.Add);
+            TaskModel returnedTask = await windowService.ShowTaskEditWindow(accessType: EditWindowType.Add);
         });
+
+        TaskAddCommand = ReactiveCommand.Create<UserModel>(AddTask);
 
         TeamEditCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -143,6 +152,19 @@ public class MainViewModel : ViewModelBase
 
     }
 
+    private async void AddTask(UserModel selectedTeamMember)
+    {
+        if (selectedTeamMember == null)
+        {
+            var windowService = App.Current?.Services?.GetService<IWindowService>();
+            TaskModel returnedTask = await windowService.ShowTaskEditWindow(EditWindowType.Add, null, LoggedUser);
+        }
+        else
+        {
+            var windowService = App.Current?.Services?.GetService<IWindowService>();
+            TaskModel returnedTask = await windowService.ShowTaskEditWindow(EditWindowType.Add, null, SelectedTeamMember);
+        }
+    }
     private void PopulateMyTasks()
     {
         List<TaskModel> myTasks = new List<TaskModel>
@@ -193,9 +215,11 @@ public class MainViewModel : ViewModelBase
         else
         {
             EditUsersVisibility = user.SystemRole.IsAdmin ||
-                                user.SystemRole.CanEditUsers;
+                                  user.SystemRole.CanEditUsers;
             EditTeamsVisibility = user.SystemRole.IsAdmin ||
-                                user.SystemRole.CanEditTeams;
+                                  user.SystemRole.CanEditTeams;
+            AddTeamMemberTaskVisibility = user.SystemRole.IsAdmin ||
+                                          user.TeamRole.CanAddTeamMemberTask;
         }
 
         UpdateMyTasks();

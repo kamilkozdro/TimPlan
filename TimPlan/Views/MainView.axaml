@@ -55,40 +55,11 @@
 
 		<TabControl>
 			<TabItem Header="My Tasks">
-				<ItemsControl ItemsSource="{Binding MyTaskTilesVM}">
-					<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<WrapPanel />
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-								<UserControl Content="{Binding}"
-											 Margin="6"/>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
-			</TabItem>
-			<TabItem Header="Team Overview">
-				<SplitView IsPaneOpen="True"
-						   DisplayMode="CompactInline"
-						   OpenPaneLength="100">
-					<!-- Team Members -->
-					<SplitView.Pane>
-						<ListBox ItemsSource="{Binding TeamMembers}"
-								 SelectedItem="{Binding SelectedTeamMember}">
-							<ListBox.ItemTemplate>
-								<DataTemplate>
-									<Border BorderBrush="Blue" BorderThickness="1"
-											CornerRadius="4" Padding="4">
-										<TextBlock Text="{Binding Name}"/>
-									</Border>
-								</DataTemplate>
-							</ListBox.ItemTemplate>
-						</ListBox>
-					</SplitView.Pane>
-					<!-- Team member tasks -->
-					<ItemsControl ItemsSource="{Binding SelectedTeamMemberTaskTiles}">
+				<WrapPanel>
+					<Button Classes="Tile"
+							Content="+"
+							Command="{Binding TaskAddCommand}"/>
+					<ItemsControl ItemsSource="{Binding MyTaskTilesVM}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
 								<WrapPanel />
@@ -101,6 +72,49 @@
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>
+				</WrapPanel>
+			</TabItem>
+			<TabItem Header="Team Overview">
+				<SplitView IsPaneOpen="True"
+						   DisplayMode="CompactInline"
+						   OpenPaneLength="100">
+					<!-- Team Members -->
+					<SplitView.Pane>
+						<ListBox Background="LightCyan"
+								 ItemsSource="{Binding TeamMembers}"
+								 SelectedItem="{Binding SelectedTeamMember}">
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<Border BorderBrush="Blue" BorderThickness="1"
+											CornerRadius="4" Padding="4">
+										<TextBlock Text="{Binding Name}"/>
+									</Border>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+					</SplitView.Pane>
+					<!-- Team member tasks -->
+					<WrapPanel>
+						<Button Classes="Tile"
+								Content="+"
+								Command="{Binding TaskAddCommand}"
+								CommandParameter="{Binding SelectedTeamMember}"
+								IsVisible="{Binding AddTeamMemberTaskVisibility}"/>
+						<ItemsControl ItemsSource="{Binding SelectedTeamMemberTaskTiles}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<WrapPanel />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<UserControl Content="{Binding}"
+												 Margin="6"/>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</WrapPanel>
+
 				</SplitView>
 			</TabItem>
 		</TabControl>

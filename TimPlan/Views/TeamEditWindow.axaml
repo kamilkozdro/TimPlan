@@ -32,8 +32,12 @@
 		</DockPanel>
 
 		<StackPanel Orientation="Vertical">
-			<Grid ColumnDefinitions="100, *"
-				  RowDefinitions="Auto">
+			<Grid RowDefinitions="Auto">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="100"/>
+					<ColumnDefinition Width="*" MinWidth="150"/>
+				</Grid.ColumnDefinitions>
+				
 				<TextBlock Classes="Default"
 						   Grid.Column="0"
 						   Grid.Row="0"

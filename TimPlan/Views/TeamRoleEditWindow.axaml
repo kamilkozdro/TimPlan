@@ -32,8 +32,11 @@
 
 		<StackPanel Orientation="Vertical"
 					Margin="3">
-			<Grid ColumnDefinitions="200, *"
-				  RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto">
+			<Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="180"/>
+					<ColumnDefinition Width="*" MinWidth="150"/>
+				</Grid.ColumnDefinitions>
 				<TextBlock Classes="Default"
 						   Grid.Column="0"
 						   Grid.Row="0"
@@ -44,34 +47,40 @@
 						 Text="{Binding FormModel.Name}"/>
 				<TextBlock Classes="Default"
 					   Grid.Row="1" Grid.Column="0"
-					   Text="Can Edit All Tasks"/>
+					   Text="View team member task"/>
 				<CheckBox Classes="Default"
 						  Grid.Row="1" Grid.Column="1"
-						  IsChecked="{Binding FormModel.CanEditAllTasks}"/>
+						  IsChecked="{Binding FormModel.CanViewTeamMemberTask}"/>
 				<TextBlock Classes="Default"
 					   Grid.Row="2" Grid.Column="0"
-					   Text="Can Edit Created Tasks"/>
+					   Text="Add team member task"/>
 				<CheckBox Classes="Default"
 						  Grid.Row="2" Grid.Column="1"
-						  IsChecked="{Binding FormModel.CanEditCreatedTasks}"/>
+						  IsChecked="{Binding FormModel.CanAddTeamMemberTask}"/>
 				<TextBlock Classes="Default"
 					   Grid.Row="3" Grid.Column="0"
-					   Text="Can Assign Tasks"/>
+					   Text="Edit team member task"/>
 				<CheckBox Classes="Default"
 						  Grid.Row="3" Grid.Column="1"
-						  IsChecked="{Binding FormModel.CanAssignTasks}"/>
+						  IsChecked="{Binding FormModel.CanEditTeamMemberTask}"/>
 				<TextBlock Classes="Default"
 					   Grid.Row="4" Grid.Column="0"
-					   Text="Can View Foreign Tasks"/>
+					   Text="View foreign team task"/>
 				<CheckBox Classes="Default"
 						  Grid.Row="4" Grid.Column="1"
-						  IsChecked="{Binding FormModel.CanViewForeignTasks}"/>
+						  IsChecked="{Binding FormModel.CanViewForeignTeamTask}"/>
 				<TextBlock Classes="Default"
 					   Grid.Row="5" Grid.Column="0"
-					   Text="Can View All Tasks"/>
+					   Text="Add foreign team task"/>
 				<CheckBox Classes="Default"
 						  Grid.Row="5" Grid.Column="1"
-						  IsChecked="{Binding FormModel.CanViewAllTasks}"/>
+						  IsChecked="{Binding FormModel.CanAddForeignTeamTask}"/>
+				<TextBlock Classes="Default"
+					   Grid.Row="6" Grid.Column="0"
+					   Text="Edit foreign team task"/>
+				<CheckBox Classes="Default"
+						  Grid.Row="6" Grid.Column="1"
+						  IsChecked="{Binding FormModel.CanEditForeignTeamTask}"/>
 			</Grid>
 
 			<TextBlock Classes="Default"

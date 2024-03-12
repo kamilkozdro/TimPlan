@@ -6,6 +6,7 @@
         xmlns:views="clr-namespace:TimPlan.Views"
         x:Class="TimPlan.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
+		SizeToContent="WidthAndHeight"
         Title="TimPlan">
         <views:MainView />
 </Window>

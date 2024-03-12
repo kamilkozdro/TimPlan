@@ -12,7 +12,7 @@ using TimPlan.Services;
 namespace TimPlan.ViewModels
 {
 
-    public enum AccessType { Add, Edit, View };
+    public enum EditWindowType { Add, Edit, View };
     public abstract class ModelEditBase<T> : ViewModelBase where T : DbModelBase, new()
     {
         #region Properties
@@ -96,13 +96,13 @@ namespace TimPlan.ViewModels
             });
 
             LoadSources();
-            SetEditType(AccessType.View);
+            SetEditWindowType(EditWindowType.View);
         }
-        public void SetEditType(AccessType accessType)
+        public void SetEditWindowType(EditWindowType accessType)
         {
             switch (accessType)
             {
-                case AccessType.Add:
+                case EditWindowType.Add:
                     {
                         CanEditForm = true;
                         CanAddModel = true;
@@ -110,7 +110,7 @@ namespace TimPlan.ViewModels
                         CanDeleteModel = false;
                         break;
                     }
-                case AccessType.Edit:
+                case EditWindowType.Edit:
                     {
                         CanEditForm = true;
                         CanAddModel = false;
@@ -118,7 +118,7 @@ namespace TimPlan.ViewModels
                         CanDeleteModel = true;
                         break;
                     }
-                case AccessType.View:
+                case EditWindowType.View:
                     {
                         CanEditForm = false;
                         CanAddModel = false;

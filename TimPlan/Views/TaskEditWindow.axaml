@@ -11,11 +11,13 @@
 		WindowStartupLocation="CenterOwner"
         Title="TaskEditWindow">
 	<StackPanel Orientation="Vertical">
-		<Grid Margin="3"
-			  ColumnDefinitions=" 120, *"
-			  RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto,
-								Auto, Auto, Auto"
+		<Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto"
+			  Margin="3"
 			  IsEnabled="{Binding CanEditForm}">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="120"/>
+				<ColumnDefinition Width="*" MinWidth="150"/>
+			</Grid.ColumnDefinitions>
 			
 			<TextBlock Classes="Default"
 					   Grid.Row="0" Grid.Column="0"
@@ -73,24 +75,28 @@
 					  IsChecked="{Binding Private}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="5" Grid.Column="0"
-					   Text="Team"/>
+					   Text="Team"
+					  IsVisible="{Binding ElementName=CheckBoxPrivate, Path=!IsChecked}"/>
 			<ComboBox Classes="Default"
 					  Grid.Row="5" Grid.Column="1"
 					  HorizontalAlignment="Stretch"
 					  ItemsSource="{Binding Teams}"
 					  DisplayMemberBinding="{Binding Name}"
 					  SelectedItem="{Binding SelectedTeam}"
-					  IsEnabled="{Binding ElementName=CheckBoxPrivate, Path=!IsChecked}"/>
+					  IsVisible="{Binding ElementName=CheckBoxPrivate, Path=!IsChecked}"
+					  IsEnabled="{Binding CanSelectTeam}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="6" Grid.Column="0"
-					   Text="User"/>
+					   Text="User"
+					  IsVisible="{Binding ElementName=CheckBoxPrivate, Path=!IsChecked}"/>
 			<ComboBox Classes="Default"
 					  Grid.Row="6" Grid.Column="1"
 					  HorizontalAlignment="Stretch"
 					  ItemsSource="{Binding Users}"
 					  DisplayMemberBinding="{Binding Name}"
 					  SelectedItem="{Binding SelectedUser}"
-					  IsEnabled="{Binding ElementName=CheckBoxPrivate, Path=!IsChecked}"/>
+					  IsVisible="{Binding ElementName=CheckBoxPrivate, Path=!IsChecked}"
+					  IsEnabled="{Binding CanSelectUser}"/>
 			<TextBlock Classes="Default"
 					   Grid.Row="7" Grid.Column="0"
 					   Text="Parent Task"/>

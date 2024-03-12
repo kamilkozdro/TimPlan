@@ -97,11 +97,12 @@ namespace TimPlan.ViewModels
             EditTaskCommand = ReactiveCommand.Create(() =>
             {
                 var windowService = App.Current?.Services?.GetService<IWindowService>();
-                AccessType taskEditType;
-                if (_loggedUser.TeamRole.CanEditAllTasks || (_loggedUser.TeamRole.CanEditAllTasks && Task.CreatorUserId == _loggedUser.Id))
-                    taskEditType = AccessType.Edit;
+                EditWindowType taskEditType;
+                if (_loggedUser.TeamRole.CanEditForeignTeamTask
+                    || (_loggedUser.TeamRole.CanEditTeamMemberTask && Task.TeamId == _loggedUser.TeamId))
+                    taskEditType = EditWindowType.Edit;
                 else
-                    taskEditType = AccessType.View;
+                    taskEditType = EditWindowType.View;
                 windowService.ShowTaskEditWindow(taskEditType, Task);
             });
 
@@ -142,7 +143,7 @@ namespace TimPlan.ViewModels
 
         }
 
-
+        /*
         public bool CheckCanEditTask(UserModel loggedUser)
         {
             if (loggedUser == null || loggedUser?.TeamRole == null)
@@ -155,6 +156,6 @@ namespace TimPlan.ViewModels
                 return false;
                 
         }
-        
+        */
     }
 }

@@ -53,7 +53,7 @@ namespace TimPlan.ViewModels
 
         protected override string AddModelCheck()
         {
-            if (!string.IsNullOrEmpty(FormModel.Name))
+            if (string.IsNullOrEmpty(FormModel.Name))
                 return "Enter team role name";
 
             TeamRoleModel checkTeamRoleName = SQLAccess.SelectTeamRoleByName(FormModel.Name);
@@ -65,7 +65,7 @@ namespace TimPlan.ViewModels
 
         protected override string EditModelCheck()
         {
-            if(!string.IsNullOrEmpty(FormModel.Name))
+            if(string.IsNullOrEmpty(FormModel.Name))
                 return "Enter team role name";
 
             TeamRoleModel checkTeamRoleName = SQLAccess.SelectTeamRoleByName(FormModel.Name);
