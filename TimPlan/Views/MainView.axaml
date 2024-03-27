@@ -26,6 +26,9 @@
 					<TextBlock Classes="Default"
 							   Text="{Binding LoggedUser.Name}"/>
 					<Button Classes="Default"
+							Command="{Binding LogoutCommand}"
+							Content="Logout"/>
+					<Button Classes="Default"
 							IsVisible="{Binding EditTaskVisiblity}"
 							Command="{Binding TaskAddCommand}"
 							Content="Edit Task"/>

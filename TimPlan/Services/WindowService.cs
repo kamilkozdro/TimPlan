@@ -71,5 +71,13 @@ namespace TimPlan.Services
             else
                 return false;
         }
+
+        public async Task<UserModel> ShowLoginWindow()
+        {
+            LoginWindowViewModel loginWindowVM = new LoginWindowViewModel();
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.DataContext = loginWindowVM;
+            return await loginWindow.ShowDialog<UserModel>(_target);
+        }
     }
 }

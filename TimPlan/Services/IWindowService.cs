@@ -15,5 +15,6 @@ namespace TimPlan.Services
         public Task<UserModel> ShowUserEditWindow();
         public Task<TeamRoleModel> ShowTeamRoleEditWindow();
         public Task<bool> ShowDialogYesNo(string text, string title = "");
+        public Task<UserModel> ShowLoginWindow();
     }
 }

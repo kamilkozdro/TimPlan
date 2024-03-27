@@ -34,38 +34,21 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             
-            LoginWindowViewModel loginWindowVM = new LoginWindowViewModel();
-            LoginWindow loginWindow = new LoginWindow();
-            loginWindow.DataContext = loginWindowVM;
-            desktop.MainWindow = loginWindow;
-            desktop.MainWindow.SizeToContent = SizeToContent.WidthAndHeight;
 
-            // Use TaskCompletionSource to await for the login to complete
-            var loginCompletionSource = new TaskCompletionSource<UserModel>();
-
-            // Set up the event handler for successful login
-            loginWindowVM.LoginSuccessful += user =>
-            {
-                // Set the result of the TaskCompletionSource
-                loginCompletionSource.SetResult(user);
-            };
-
-            // Wait for the login to complete
-            UserModel usernameResult = await loginCompletionSource.Task;
-            LoggedUserManager.Login(usernameResult);
-
-            MainViewModel mainViewModel = new MainViewModel();
+            
             MainWindow mainWindow = new MainWindow();
+            MainViewModel mainViewModel = new MainViewModel();
             mainWindow.DataContext = mainViewModel;
-
             desktop.MainWindow = mainWindow;
-
-            mainWindow.Show();
-            loginWindow.Close();
 
             ServiceCollection services = new ServiceCollection();
             services.AddSingleton<IWindowService>(x => new WindowService(desktop.MainWindow));
             Services = services.BuildServiceProvider();
+
+            mainWindow.Show();
+
+            mainViewModel.Login();
+            
 
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)

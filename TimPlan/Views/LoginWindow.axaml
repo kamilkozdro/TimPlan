@@ -3,34 +3,50 @@
         xmlns:vm="using:TimPlan.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
         x:DataType="vm:LoginWindowViewModel"
         x:CompileBindings="True"
         x:Class="TimPlan.Views.LoginWindow"
         Title="LoginWindow"
-		Background="LightCyan"
+		Background="Transparent"
 		SystemDecorations="None"
-		WindowStartupLocation="CenterScreen">
+		WindowStartupLocation="CenterScreen"
+		SizeToContent="WidthAndHeight">
 
 	<Design.DataContext>
 		<vm:LoginWindowViewModel/>
 	</Design.DataContext>
 
 	<Border BorderBrush="Black"
+			Background="SkyBlue"
 			BorderThickness="2"
-			Width="400"
-			Height="200">
-		<StackPanel Classes="VerticalCenter">
+			CornerRadius="6"
+			Width="300"
+			Height="180">
+		<StackPanel Orientation="Vertical"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center">
+			<TextBlock Classes="Header1"
+					   Text="TimPlan"
+					   FontSize="20"
+					   Margin="9"/>
 			<StackPanel Classes="HorizontalCenter">
 				<TextBox Classes="Default"
+						 Width="120"
 						 Text="{Binding Username}"
 						 Watermark="Username"/>
 				<TextBox Classes="Default"
+						 Width="120"
 						 Text="{Binding Password}"
 						 Watermark="Password"
 						 PasswordChar="*"/>
 			</StackPanel>
+			<TextBlock Classes="Default"
+					   Foreground="Red"
+					   FontWeight="Medium"
+					   HorizontalAlignment="Center"
+					   Text="{Binding ErrorText}"/>
 			<Button Classes="Default"
+					Margin="9"
 					Command="{Binding LoginCommand}"
 					Width="80">
 				Login
