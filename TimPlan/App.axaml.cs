@@ -46,8 +46,6 @@ public partial class App : Application
             Services = services.BuildServiceProvider();
 
             mainWindow.Show();
-
-            mainViewModel.Login();
             
 
         }

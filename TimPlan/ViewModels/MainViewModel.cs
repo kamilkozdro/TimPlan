@@ -109,6 +109,7 @@ public class MainViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> UserEditCommand { get; }
     public ReactiveCommand<Unit, Unit> TeamRoleEditCommand { get; }
     public ReactiveCommand<Unit, Unit> LogoutCommand { get; }
+    public ReactiveCommand<Unit, Unit> LoginCommand { get; }
 
     #endregion
 
@@ -123,6 +124,14 @@ public class MainViewModel : ViewModelBase
 
         this.WhenAnyValue(o => o.SelectedTeamMember)
             .Subscribe(UpdateTeamMemberTasks);
+
+        IObservable<bool> LoginCommandCanExecute = this.WhenAnyValue(
+                x => x.LoggedUser,
+                (UserModel? user) => user == null);
+
+        IObservable<bool> LogoutCommandCanExecute = this.WhenAnyValue(
+                x => x.LoggedUser,
+                (UserModel? user) => user != null);
 
         #region Set Commands
 
@@ -152,7 +161,8 @@ public class MainViewModel : ViewModelBase
             TeamRoleModel returnedTeamRole = await windowService.ShowTeamRoleEditWindow();
         });
 
-        LogoutCommand = ReactiveCommand.Create(Logout);
+        LogoutCommand = ReactiveCommand.Create(Logout, LogoutCommandCanExecute);
+        LoginCommand = ReactiveCommand.Create(Login, LoginCommandCanExecute);
 
         #endregion
 
@@ -162,11 +172,8 @@ public class MainViewModel : ViewModelBase
         LoggedUser = null;
         SelectedTeamMember = null;
         LoggedUserManager.Logout();
-
-        Login();
-
     }
-    public async void Login()
+    private async void Login()
     {
         var windowService = App.Current?.Services?.GetService<IWindowService>();
         UserModel loggedUser = await windowService.ShowLoginWindow();

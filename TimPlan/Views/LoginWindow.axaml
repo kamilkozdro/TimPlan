@@ -9,7 +9,7 @@
         Title="LoginWindow"
 		Background="Transparent"
 		SystemDecorations="None"
-		WindowStartupLocation="CenterScreen"
+		WindowStartupLocation="CenterOwner"
 		SizeToContent="WidthAndHeight">
 
 	<Design.DataContext>
@@ -31,26 +31,41 @@
 					   Margin="9"/>
 			<StackPanel Classes="HorizontalCenter">
 				<TextBox Classes="Default"
+						 Margin="6"
 						 Width="120"
 						 Text="{Binding Username}"
 						 Watermark="Username"/>
 				<TextBox Classes="Default"
+						 Margin="6"
 						 Width="120"
 						 Text="{Binding Password}"
 						 Watermark="Password"
 						 PasswordChar="*"/>
 			</StackPanel>
+
 			<TextBlock Classes="Default"
-					   Foreground="Red"
-					   FontWeight="Medium"
-					   HorizontalAlignment="Center"
-					   Text="{Binding ErrorText}"/>
-			<Button Classes="Default"
-					Margin="9"
-					Command="{Binding LoginCommand}"
-					Width="80">
-				Login
-			</Button>
+				   Foreground="Red"
+				   FontWeight="Medium"
+				   HorizontalAlignment="Center"
+				   Text="{Binding ErrorText}"/>
+			
+			<StackPanel Orientation="Horizontal"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center">
+				<Button Classes="Default"
+						 Margin="6"
+						Command="{Binding LoginCommand}"
+						Width="80">
+					Login
+				</Button>
+				<Button Classes="Default"
+						 Margin="6"
+						Command="{Binding CancelCommand}"
+						Width="80">
+					Cancel
+				</Button>
+			</StackPanel>
+
 		</StackPanel>
 	</Border>
 	

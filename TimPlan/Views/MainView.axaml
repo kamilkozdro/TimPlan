@@ -22,9 +22,10 @@
 				<!-- Admin Tool panel -->
 				<WrapPanel>
 					<TextBlock Classes="Default"
-							   Text="Logged as:"/>
-					<TextBlock Classes="Default"
 							   Text="{Binding LoggedUser.Name}"/>
+					<Button Classes="Default"
+							Command="{Binding LoginCommand}"
+							Content="Login"/>
 					<Button Classes="Default"
 							Command="{Binding LogoutCommand}"
 							Content="Logout"/>

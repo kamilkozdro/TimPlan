@@ -29,8 +29,9 @@ namespace TimPlan.ViewModels
             set { this.RaiseAndSetIfChanged(ref _errorText, value); }
         }
 
-        public ReactiveCommand<UserModel, UserModel> ReturnResultCommand { get; }
+        public ReactiveCommand<UserModel?, UserModel?> ReturnResultCommand { get; }
         public ReactiveCommand<Unit, Unit> LoginCommand { get; }
+        public ReactiveCommand<Unit, Unit> CancelCommand { get; }
 
         public LoginWindowViewModel()
         {
@@ -40,7 +41,8 @@ namespace TimPlan.ViewModels
                 (username, password) => !string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password));
 
             LoginCommand = ReactiveCommand.Create(Login, IsButtonLoginEnabled);
-            ReturnResultCommand = ReactiveCommand.Create<UserModel, UserModel>(model =>
+            CancelCommand = ReactiveCommand.Create(CancelLogging);
+            ReturnResultCommand = ReactiveCommand.Create<UserModel?, UserModel?>(model =>
             {
                 return model;
             });
@@ -55,15 +57,13 @@ namespace TimPlan.ViewModels
                 ErrorText = "Wrong credentials";
                 return;
             }
-            else
-            {
-                OnSuccesfullLogin(loggedUser);
-            }
+
+            ReturnResultCommand.Execute(loggedUser).Subscribe();
         }
 
-        public void OnSuccesfullLogin(UserModel user)
+        private void CancelLogging()
         {
-            ReturnResultCommand.Execute(user).Subscribe();
+            ReturnResultCommand.Execute(null).Subscribe();
         }
 
 
