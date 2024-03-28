@@ -17,6 +17,8 @@ namespace TimPlan.ViewModels
     public class TaskEditViewModel : ModelEditBase<TaskModel>
     {
 
+        #region Properties
+
         private ObservableCollection<TeamModel> _Teams;
         public ObservableCollection<TeamModel> Teams
         {
@@ -100,6 +102,7 @@ namespace TimPlan.ViewModels
 
         private ReadOnlyCollection<UserModel> _loadedUsers;
 
+        #endregion
 
         public TaskEditViewModel()
         {
@@ -202,7 +205,7 @@ namespace TimPlan.ViewModels
 
         protected override string DeleteModelCheck()
         {
-            throw new NotImplementedException();
+            return string.Empty;
         }
 
         protected override void ClearForm()

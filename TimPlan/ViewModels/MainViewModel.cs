@@ -33,6 +33,14 @@ public class MainViewModel : ViewModelBase
         set { this.RaiseAndSetIfChanged(ref _myTaskTilesVM, value); }
     }
 
+    private ObservableCollection<TaskModel> _myTasks;
+    public ObservableCollection<TaskModel> MyTasks
+    {
+        get { return _myTasks; }
+        set { this.RaiseAndSetIfChanged(ref _myTasks, value); }
+    }
+
+
     #endregion
 
     #region Team Overview Tab
@@ -43,17 +51,26 @@ public class MainViewModel : ViewModelBase
         get { return _selectedTeamMember; }
         set { this.RaiseAndSetIfChanged(ref _selectedTeamMember, value); }
     }
+
     private ObservableCollection<UserModel> _teamMembers;
     public ObservableCollection<UserModel> TeamMembers
     {
         get { return _teamMembers; }
         set { this.RaiseAndSetIfChanged(ref _teamMembers, value); }
     }
+
     private ObservableCollection<TaskTileViewModel> _selectedTeamMemberTaskTiles;
     public ObservableCollection<TaskTileViewModel> SelectedTeamMemberTaskTiles
     {
         get { return _selectedTeamMemberTaskTiles; }
         set { this.RaiseAndSetIfChanged(ref _selectedTeamMemberTaskTiles, value); }
+    }
+
+    private ObservableCollection<TaskModel> _selectedTeamMemberTasks;
+    public ObservableCollection<TaskModel> SelectedTeamMemberTasks
+    {
+        get { return _selectedTeamMemberTasks; }
+        set { this.RaiseAndSetIfChanged(ref _selectedTeamMemberTasks, value); }
     }
 
     #endregion
@@ -115,9 +132,12 @@ public class MainViewModel : ViewModelBase
 
     public MainViewModel()
     {
+        _myTasks = new ObservableCollection<TaskModel>();
         _myTaskTilesVM = new ObservableCollection<TaskTileViewModel>();
-        _selectedTeamMemberTaskTiles = new ObservableCollection<TaskTileViewModel>();
         _teamMembers = new ObservableCollection<UserModel>();
+        _selectedTeamMemberTasks = new ObservableCollection<TaskModel>();
+        _selectedTeamMemberTaskTiles = new ObservableCollection<TaskTileViewModel>();
+
 
         this.WhenAnyValue(o => o.LoggedUser)
             .Subscribe(UpdateUserLogged);
@@ -228,14 +248,20 @@ public class MainViewModel : ViewModelBase
     }    
     private void UpdateMyTasks()
     {
-        MyTaskTilesVM.Clear();
+        MyTasks.Clear();
 
         if (LoggedUser == null)
             return;
 
-        List<TaskModel> myTasks = SQLAccess.SelectUserTasks(LoggedUser.Id).ToList();
+        MyTasks = new ObservableCollection<TaskModel>(
+            SQLAccess.SelectUserTasks(LoggedUser.Id));
 
-        foreach (TaskModel task in myTasks)
+        UpdateMyTaskTiles();
+    }
+    private void UpdateMyTaskTiles()
+    {
+        MyTaskTilesVM.Clear();
+        foreach (TaskModel task in MyTasks)
         {
             TaskTileViewModel newTaskTileVM = new TaskTileViewModel(task);
             MyTaskTilesVM.Add(newTaskTileVM);
@@ -243,13 +269,20 @@ public class MainViewModel : ViewModelBase
     }
     private void UpdateTeamMemberTasks(UserModel? member)
     {
-        SelectedTeamMemberTaskTiles.Clear();
+        SelectedTeamMemberTasks.Clear();
 
         if (member == null)
             return;
 
-        List<TaskModel> teamMemberTasks = SQLAccess.SelectUserTasks(member.Id).ToList();
-        foreach (TaskModel task in teamMemberTasks)
+        SelectedTeamMemberTasks = new ObservableCollection<TaskModel>(
+            SQLAccess.SelectUserTasks(member.Id));
+
+        UpdateSelectedTeamMemberTaskTiles();
+    }
+    private void UpdateSelectedTeamMemberTaskTiles()
+    {
+        SelectedTeamMemberTaskTiles.Clear();
+        foreach (TaskModel task in SelectedTeamMemberTasks)
         {
             TaskTileViewModel newTaskTileVM = new TaskTileViewModel(task);
             newTaskTileVM.ReadOnlyTask = true;

@@ -31,7 +31,7 @@ namespace TimPlan.ViewModels
             set { this.RaiseAndSetIfChanged(ref _formModel, value); }
         }
 
-        private string _errorText;
+        private string _errorText = string.Empty;
         public string ErrorText
         {
             get { return _errorText; }
@@ -194,9 +194,18 @@ namespace TimPlan.ViewModels
         {
             return true;
         }
-        private void DeleteModel()
+        private async void DeleteModel()
         {
+            var windowService = App.Current.Services.GetService<IWindowService>();
+            bool dialogResult = await windowService.ShowDialogYesNo("Are you sure?");
 
+            if (dialogResult == false)
+                return;
+
+            if (!SQLAccess.DeleteSingle<T>(EditedModel.Id))
+                return;
+
+            ReturnResultCommand.Execute(null).Subscribe();
         }
         protected abstract string AddModelCheck();
         protected abstract string EditModelCheck();

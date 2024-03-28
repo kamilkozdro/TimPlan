@@ -21,6 +21,8 @@ namespace TimPlan.Lib
         private static Type[] ClassesToMapAttributes =
             { typeof(UserModel), typeof(TeamModel), typeof(TeamRoleModel), typeof(TaskModel), typeof(SystemRoleModel) };
 
+
+
         static public void MapClassAttributes()
         {
             foreach (Type classToMap in ClassesToMapAttributes)
