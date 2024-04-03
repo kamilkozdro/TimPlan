@@ -94,20 +94,13 @@ namespace TimPlan.ViewModels
             SuspendTaskCommand = ReactiveCommand.Create(SuspendTask, suspendTaskCanExecute);
             AcceptTaskCommand = ReactiveCommand.Create(AcceptTask, acceptTaskCanExecute);
             CompleteTaskCommand = ReactiveCommand.Create(CompleteTask, completeTaskCanExecute);
-            EditTaskCommand = ReactiveCommand.Create(() =>
-            {
-                var windowService = App.Current?.Services?.GetService<IWindowService>();
-                EditWindowType taskEditType;
-                if (_loggedUser.TeamRole.CanEditForeignTeamTask
-                    || (_loggedUser.TeamRole.CanEditTeamMemberTask && Task.TeamId == _loggedUser.TeamId))
-                    taskEditType = EditWindowType.Edit;
-                else
-                    taskEditType = EditWindowType.View;
-                windowService.ShowTaskEditWindow(taskEditType, Task);
-            });
+            EditTaskCommand = ReactiveCommand.Create(EditTask);
 
             //CanEditTask = CheckCanEditTask(_loggedUser);
         }
+
+        
+
         private void SuspendTask()
         {
             if (!SQLAccess.UpdateTaskState(Task.Id, TaskModel.TaskState.Suspended))
@@ -138,9 +131,20 @@ namespace TimPlan.ViewModels
             Task.State = TaskModel.TaskState.Completed;
             TaskState = TaskModel.TaskState.Completed;
         }
-        private void EditTask()
+        private async void EditTask()
         {
-
+            var windowService = App.Current?.Services?.GetService<IWindowService>();
+            EditWindowType taskEditType;
+            if (_loggedUser.TeamRole.CanEditForeignTeamTask
+                || (_loggedUser.TeamRole.CanEditTeamMemberTask && Task.TeamId == _loggedUser.TeamId))
+                taskEditType = EditWindowType.Edit;
+            else
+                taskEditType = EditWindowType.View;
+            TaskModel returnedTask = await windowService.ShowTaskEditWindow(taskEditType, Task);
+            if (returnedTask != null)
+            {
+                Task = returnedTask;
+            }
         }
 
         /*

@@ -189,6 +189,8 @@ namespace TimPlan.ViewModels
             {
                 return;
             }
+
+            ReturnResultCommand.Execute(newModel).Subscribe();
         }        
         protected virtual bool DeleteModelAdditionalAction()
         {

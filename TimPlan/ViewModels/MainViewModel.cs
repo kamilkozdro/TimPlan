@@ -1,14 +1,14 @@
-﻿using ReactiveUI;
-using System.Collections.ObjectModel;
-using TimPlan.Models;
+﻿using Avalonia.Threading;
+using Microsoft.Extensions.DependencyInjection;
+using ReactiveUI;
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using TimPlan.Services;
-using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
 using TimPlan.Lib;
-using System.Linq;
+using TimPlan.Models;
+using TimPlan.Services;
 
 namespace TimPlan.ViewModels;
 
@@ -116,6 +116,8 @@ public class MainViewModel : ViewModelBase
         set { this.RaiseAndSetIfChanged(ref _addTeamMemberTaskVisibility, value); }
     }
 
+    private DispatcherTimer _updateMyTaskTimer;
+
     #endregion
 
     #region Commands
@@ -138,6 +140,9 @@ public class MainViewModel : ViewModelBase
         _selectedTeamMemberTasks = new ObservableCollection<TaskModel>();
         _selectedTeamMemberTaskTiles = new ObservableCollection<TaskTileViewModel>();
 
+        _updateMyTaskTimer = new DispatcherTimer();
+        _updateMyTaskTimer.Interval = TimeSpan.FromSeconds(10);
+        _updateMyTaskTimer.Tick += UpdateMyTaskTimer_Tick;
 
         this.WhenAnyValue(o => o.LoggedUser)
             .Subscribe(UpdateUserLogged);
@@ -187,10 +192,14 @@ public class MainViewModel : ViewModelBase
         #endregion
 
     }
+
+    
+
     private void Logout()
     {
         LoggedUser = null;
         SelectedTeamMember = null;
+        _updateMyTaskTimer.Stop();
         LoggedUserManager.Logout();
     }
     private async void Login()
@@ -200,23 +209,21 @@ public class MainViewModel : ViewModelBase
 
         LoggedUserManager.Login(loggedUser);
         LoggedUser = loggedUser;
+        _updateMyTaskTimer.Start();
     }
     private async void AddTask(UserModel selectedTeamMember)
     {
-        if (selectedTeamMember == null)
+        var windowService = App.Current?.Services?.GetService<IWindowService>();
+        TaskModel returnedTask = await windowService.ShowTaskEditWindow(EditWindowType.Add, null, SelectedTeamMember);
+        if (returnedTask != null)
         {
-            var windowService = App.Current?.Services?.GetService<IWindowService>();
-            TaskModel returnedTask = await windowService.ShowTaskEditWindow(EditWindowType.Add, null, LoggedUser);
-        }
-        else
-        {
-            var windowService = App.Current?.Services?.GetService<IWindowService>();
-            TaskModel returnedTask = await windowService.ShowTaskEditWindow(EditWindowType.Add, null, SelectedTeamMember);
+            SelectedTeamMemberTasks.Add(returnedTask);
+            SelectedTeamMemberTaskTiles.Add(new TaskTileViewModel(returnedTask));
         }
     }
     private void UpdateUserLogged(UserModel? user)
     {
-        if(user != null)
+        if (user != null)
         {
             user.ReadSystemRole();
             user.ReadTeamRole();
@@ -245,16 +252,16 @@ public class MainViewModel : ViewModelBase
 
         UpdateMyTasks();
         UpdateTeamMembers();
-    }    
+    }
     private void UpdateMyTasks()
     {
         MyTasks.Clear();
 
-        if (LoggedUser == null)
-            return;
-
-        MyTasks = new ObservableCollection<TaskModel>(
+        if (LoggedUser != null)
+        {
+            MyTasks = new ObservableCollection<TaskModel>(
             SQLAccess.SelectUserTasks(LoggedUser.Id));
+        }
 
         UpdateMyTaskTiles();
     }
@@ -271,11 +278,11 @@ public class MainViewModel : ViewModelBase
     {
         SelectedTeamMemberTasks.Clear();
 
-        if (member == null)
-            return;
-
-        SelectedTeamMemberTasks = new ObservableCollection<TaskModel>(
+        if (member != null)
+        {
+            SelectedTeamMemberTasks = new ObservableCollection<TaskModel>(
             SQLAccess.SelectUserTasks(member.Id));
+        }
 
         UpdateSelectedTeamMemberTaskTiles();
     }
@@ -298,5 +305,10 @@ public class MainViewModel : ViewModelBase
 
         TeamMembers = new ObservableCollection<UserModel>(
             SQLAccess.SelectTeamMembers((int)LoggedUser.TeamId).ToList());
+    }
+
+    private void UpdateMyTaskTimer_Tick(object? sender, EventArgs e)
+    {
+        UpdateMyTasks();
     }
 }
