@@ -193,8 +193,6 @@ public class MainViewModel : ViewModelBase
 
     }
 
-    
-
     private void Logout()
     {
         LoggedUser = null;
@@ -276,25 +274,53 @@ public class MainViewModel : ViewModelBase
     }
     private void UpdateTeamMemberTasks(UserModel? member)
     {
+        // Check if old SelectedTeamMemberTasks are referenced to MyTasks ( Selected Team member was Logged user)
+        // We dont want to clear MyTasks, just remove reference
+        if (Object.ReferenceEquals(MyTasks, SelectedTeamMemberTasks))
+            SelectedTeamMemberTasks = new ObservableCollection<TaskModel>();
+
         SelectedTeamMemberTasks.Clear();
 
         if (member != null)
         {
-            SelectedTeamMemberTasks = new ObservableCollection<TaskModel>(
-            SQLAccess.SelectUserTasks(member.Id));
+            if(LoggedUser != null && LoggedUser.Id == member.Id)
+            {
+                SelectedTeamMemberTasks = MyTasks;
+            }
+            else
+            {
+                SelectedTeamMemberTasks = new ObservableCollection<TaskModel>(
+                            SQLAccess.SelectUserTasks(member.Id));
+            }
+            
         }
 
         UpdateSelectedTeamMemberTaskTiles();
     }
     private void UpdateSelectedTeamMemberTaskTiles()
     {
+
+        // Check if old SelectedTeamMemberTaskTiles are referenced to MyTaskTilesVM ( Selected Team member was Logged user)
+        // We dont want to clear MyTaskTilesVM, just remove reference
+        if (Object.ReferenceEquals(MyTaskTilesVM, SelectedTeamMemberTaskTiles))
+            SelectedTeamMemberTaskTiles = new ObservableCollection<TaskTileViewModel>();
+
         SelectedTeamMemberTaskTiles.Clear();
-        foreach (TaskModel task in SelectedTeamMemberTasks)
+
+        if(SelectedTeamMember != null && LoggedUser != null && SelectedTeamMember.Id == LoggedUser.Id)
         {
-            TaskTileViewModel newTaskTileVM = new TaskTileViewModel(task);
-            newTaskTileVM.ReadOnlyTask = true;
-            SelectedTeamMemberTaskTiles.Add(newTaskTileVM);
+            SelectedTeamMemberTaskTiles = MyTaskTilesVM;
         }
+        else
+        {
+            foreach (TaskModel task in SelectedTeamMemberTasks)
+            {
+                TaskTileViewModel newTaskTileVM = new TaskTileViewModel(task);
+                newTaskTileVM.ReadOnlyTask = true;
+                SelectedTeamMemberTaskTiles.Add(newTaskTileVM);
+            }
+        }
+        
     }
     private void UpdateTeamMembers()
     {
@@ -306,7 +332,6 @@ public class MainViewModel : ViewModelBase
         TeamMembers = new ObservableCollection<UserModel>(
             SQLAccess.SelectTeamMembers((int)LoggedUser.TeamId).ToList());
     }
-
     private void UpdateMyTaskTimer_Tick(object? sender, EventArgs e)
     {
         UpdateMyTasks();

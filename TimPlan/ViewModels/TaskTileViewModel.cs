@@ -146,20 +146,5 @@ namespace TimPlan.ViewModels
                 Task = returnedTask;
             }
         }
-
-        /*
-        public bool CheckCanEditTask(UserModel loggedUser)
-        {
-            if (loggedUser == null || loggedUser?.TeamRole == null)
-                return false;
-
-            if (loggedUser.TeamRole.CanEditAllTasks ||
-                (loggedUser.TeamRole.CanEditCreatedTasks && Task.CreatorUserId == loggedUser.Id))
-                return true;
-            else
-                return false;
-                
-        }
-        */
     }
 }
