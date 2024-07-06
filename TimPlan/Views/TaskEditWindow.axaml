@@ -36,7 +36,7 @@
 								Margin="3"
 								HorizontalAlignment="Stretch"
 								HorizontalContentAlignment="Left"
-								SelectedDate="{Binding DateStart}"
+								SelectedDate="{Binding FormModel.DateStart}"
 								SelectedDateFormat="Custom"
 								CustomDateFormatString="dd-MM-yyy"
 								IsTodayHighlighted="True"/>
@@ -48,7 +48,7 @@
 								Margin="3"
 								HorizontalAlignment="Stretch"
 								HorizontalContentAlignment="Left"
-								SelectedDate="{Binding DateEnd}"
+								SelectedDate="{Binding FormModel.DateEnd}"
 								SelectedDateFormat="Custom"
 								CustomDateFormatString="dd-MM-yyy"
 								IsTodayHighlighted="True"/>
@@ -60,7 +60,7 @@
 								Margin="3"
 								HorizontalAlignment="Stretch"
 								HorizontalContentAlignment="Left"
-								SelectedDate="{Binding DateCreated}"
+								SelectedDate="{Binding FormModel.DateCreated}"
 								SelectedDateFormat="Custom"
 								CustomDateFormatString="dd-MM-yyy"
 								IsTodayHighlighted="True"

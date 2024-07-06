@@ -1,11 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reactive;
-using System.Text;
-using System.Threading.Tasks;
 using TimPlan.Lib;
 using TimPlan.Models;
 using TimPlan.Services;
@@ -136,7 +132,8 @@ namespace TimPlan.ViewModels
             var windowService = App.Current?.Services?.GetService<IWindowService>();
             EditWindowType taskEditType;
             if (_loggedUser.TeamRole.CanEditForeignTeamTask
-                || (_loggedUser.TeamRole.CanEditTeamMemberTask && Task.TeamId == _loggedUser.TeamId))
+                || (_loggedUser.TeamRole.CanEditTeamMemberTask && Task.TeamId == _loggedUser.TeamId)
+                || _loggedUser.SystemRole.IsAdmin)
                 taskEditType = EditWindowType.Edit;
             else
                 taskEditType = EditWindowType.View;

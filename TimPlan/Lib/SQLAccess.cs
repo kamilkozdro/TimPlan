@@ -7,10 +7,8 @@ using System.Linq;
 using TimPlan.Models;
 using System.Diagnostics;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Text;
-using MsBox.Avalonia.Enums;
 
 namespace TimPlan.Lib
 {

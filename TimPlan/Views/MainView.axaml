@@ -71,7 +71,7 @@
 			<TabItem Header="Team Overview">
 				<SplitView IsPaneOpen="True"
 						   DisplayMode="CompactInline"
-						   OpenPaneLength="100">
+						   OpenPaneLength="150">
 					<!-- Team Members -->
 					<SplitView.Pane>
 						<ListBox Background="LightCyan"
@@ -79,10 +79,10 @@
 								 SelectedItem="{Binding SelectedTeamMember}">
 							<ListBox.ItemTemplate>
 								<DataTemplate>
-									<Border BorderBrush="Blue" BorderThickness="1"
-											CornerRadius="4" Padding="4">
+									<StackPanel Orientation="Horizontal">
+										<TextBlock Text="- "/>
 										<TextBlock Text="{Binding Name}"/>
-									</Border>
+									</StackPanel>
 								</DataTemplate>
 							</ListBox.ItemTemplate>
 						</ListBox>

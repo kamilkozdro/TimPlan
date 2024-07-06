@@ -139,6 +139,7 @@ namespace TimPlan.ViewModels
         {
             FormModel.TeamId = SelectedTeam?.Id;
             FormModel.TeamRoleId = SelectedTeamRole?.Id;
+            FormModel.SystemRoleId = SelectedSystemRole.Id;
 
             return base.GetModelFromForm();
         }

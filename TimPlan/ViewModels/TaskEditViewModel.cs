@@ -3,12 +3,8 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TimPlan.Lib;
 using TimPlan.Models;
 
@@ -109,9 +105,9 @@ namespace TimPlan.ViewModels
             _loggedUser = LoggedUserManager.GetUser();
 
             FormModel.CreatorUserId = _loggedUser.Id;
-            DateStart = DateTime.Now;
-            DateEnd = DateTime.Now;
-            DateCreated = DateTime.Now;
+            FormModel.DateStart = DateTime.Now;
+            FormModel.DateEnd = DateTime.Now;
+            FormModel.DateCreated = DateTime.Now;
 
             SetupPrivileges(_loggedUser);
 
