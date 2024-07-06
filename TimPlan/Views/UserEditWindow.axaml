@@ -9,6 +9,7 @@
         Title="UserEditWindow"
 		Background="LightCyan"
 		SizeToContent="WidthAndHeight"
+		MaxWidth="500"
 		WindowStartupLocation="CenterOwner">
 	<Design.DataContext>
 		<vm:UserEditViewModel />

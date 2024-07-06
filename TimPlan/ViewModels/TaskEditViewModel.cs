@@ -105,9 +105,9 @@ namespace TimPlan.ViewModels
             _loggedUser = LoggedUserManager.GetUser();
 
             FormModel.CreatorUserId = _loggedUser.Id;
-            FormModel.DateStart = DateTime.Now;
-            FormModel.DateEnd = DateTime.Now;
-            FormModel.DateCreated = DateTime.Now;
+            DateStart = DateTime.Now;
+            DateEnd = DateTime.Now;
+            DateCreated = DateTime.Now;
 
             SetupPrivileges(_loggedUser);
 
@@ -151,9 +151,9 @@ namespace TimPlan.ViewModels
             if (model == null)
                 ClearForm();
             
-            FormModel.DateStart = model.DateStart;
-            FormModel.DateEnd = model.DateEnd;
-            FormModel.DateCreated = model.DateCreated;
+            DateStart = model.DateStart;
+            DateEnd = model.DateEnd;
+            DateCreated = model.DateCreated;
 
             SelectedTeam = Teams.SingleOrDefault(team => team.Id == model.TeamId);
             SelectedParentTask = ParentTasks.SingleOrDefault(parentTask => parentTask.Id == model.ParentTaskID);

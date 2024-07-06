@@ -54,10 +54,13 @@
 
 		<TabControl>
 			<TabItem Header="My Tasks">
+				<ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
 					<ItemsControl ItemsSource="{Binding MyTaskTilesVM}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
-								<WrapPanel />
+								<StackPanel Orientation="Vertical"
+											HorizontalAlignment="Left"/>
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
 						<ItemsControl.ItemTemplate>
@@ -67,6 +70,8 @@
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>
+				</ScrollViewer>
+					
 			</TabItem>
 			<TabItem Header="Team Overview">
 				<SplitView IsPaneOpen="True"
@@ -88,29 +93,44 @@
 						</ListBox>
 					</SplitView.Pane>
 					<!-- Team member tasks -->
-					<WrapPanel>
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="*"/>
+						</Grid.RowDefinitions>
+						
 						<Button Classes="Tile"
+								Grid.Row="0"
+								HorizontalAlignment="Left"
 								Content="+"
 								Command="{Binding TaskAddCommand}"
 								CommandParameter="{Binding SelectedTeamMember}"
 								IsVisible="{Binding AddTeamMemberTaskVisibility}"/>
-						<ItemsControl ItemsSource="{Binding SelectedTeamMemberTaskTiles}">
-							<ItemsControl.ItemsPanel>
-								<ItemsPanelTemplate>
-									<WrapPanel />
-								</ItemsPanelTemplate>
-							</ItemsControl.ItemsPanel>
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-									<UserControl Content="{Binding}"
-												 Margin="6"/>
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-						</ItemsControl>
-					</WrapPanel>
+
+						<ScrollViewer VerticalScrollBarVisibility="Auto"
+									  HorizontalScrollBarVisibility="Disabled"
+									  AllowAutoHide="False"
+									  Grid.Row="1">
+							<ItemsControl ItemsSource="{Binding SelectedTeamMemberTaskTiles}">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<StackPanel Orientation="Vertical"
+													HorizontalAlignment="Left"/>
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<UserControl Content="{Binding}"
+													 Margin="3"/>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</ScrollViewer>
+					</Grid>
 
 				</SplitView>
 			</TabItem>
+			
 		</TabControl>
 	</DockPanel>
 </UserControl>

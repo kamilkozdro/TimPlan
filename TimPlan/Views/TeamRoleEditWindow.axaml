@@ -8,6 +8,7 @@
 	    x:CompileBindings="True"
 		Background="LightCyan"
 		SizeToContent="WidthAndHeight"
+		MaxWidth="500"
 		WindowStartupLocation="CenterOwner"
         Title="TeamRoleEditWindow">
 

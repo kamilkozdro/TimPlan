@@ -20,8 +20,8 @@
 			BorderBrush="Black"
 			BorderThickness="2"
 			CornerRadius="10"
-			MinWidth="300"
-			MinHeight="70">
+			Width="300"
+			MinHeight="50">
 		<ToolTip.Tip>
 			<TextBlock Classes="Default"
 						   Text="{Binding Task.Description}"
@@ -32,8 +32,10 @@
 			<!-- Task Name -->
 			<DockPanel DockPanel.Dock="Top">
 				<TextBlock Classes="Default"
-					   DockPanel.Dock="Left"
-					   Text="{Binding Task.Name}"/>
+						   DockPanel.Dock="Left"
+						   Width="200"
+						   TextWrapping="Wrap"
+						   Text="{Binding Task.Name}"/>
 				<Button DockPanel.Dock="Right"
 						Content="i"
 						Command="{Binding EditTaskCommand}"/>

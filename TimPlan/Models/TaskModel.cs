@@ -15,9 +15,9 @@ namespace TimPlan.Models
         [Column(DbParentTaskIdCol)]
         public int? ParentTaskID { get; set; }
         [Column(DbDateCreatedCol)]
-        public DateTime? DateCreated { get; set; }
+        public DateTime DateCreated { get; set; }
         [Column(DbDateStartCol)]
-        public DateTime? DateStart { get; set; }
+        public DateTime DateStart { get; set; }
         [Column(DbDateEndCol)]
         public DateTime DateEnd { get; set; }
         [Column(DbDescriptionCol)]

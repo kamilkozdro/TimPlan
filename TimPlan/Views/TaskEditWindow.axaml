@@ -8,6 +8,7 @@
 	    x:CompileBindings="True"
 		Background="LightCyan"
 		SizeToContent="WidthAndHeight"
+		MaxWidth="500"
 		WindowStartupLocation="CenterOwner"
         Title="TaskEditWindow">
 	<StackPanel Orientation="Vertical">
@@ -36,7 +37,7 @@
 								Margin="3"
 								HorizontalAlignment="Stretch"
 								HorizontalContentAlignment="Left"
-								SelectedDate="{Binding FormModel.DateStart}"
+								SelectedDate="{Binding DateStart}"
 								SelectedDateFormat="Custom"
 								CustomDateFormatString="dd-MM-yyy"
 								IsTodayHighlighted="True"/>
@@ -48,7 +49,7 @@
 								Margin="3"
 								HorizontalAlignment="Stretch"
 								HorizontalContentAlignment="Left"
-								SelectedDate="{Binding FormModel.DateEnd}"
+								SelectedDate="{Binding DateEnd}"
 								SelectedDateFormat="Custom"
 								CustomDateFormatString="dd-MM-yyy"
 								IsTodayHighlighted="True"/>
@@ -60,7 +61,7 @@
 								Margin="3"
 								HorizontalAlignment="Stretch"
 								HorizontalContentAlignment="Left"
-								SelectedDate="{Binding FormModel.DateCreated}"
+								SelectedDate="{Binding DateCreated}"
 								SelectedDateFormat="Custom"
 								CustomDateFormatString="dd-MM-yyy"
 								IsTodayHighlighted="True"

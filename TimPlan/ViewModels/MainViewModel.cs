@@ -254,7 +254,7 @@ public class MainViewModel : ViewModelBase
     private void UpdateMyTasks()
     {
         MyTasks.Clear();
-
+        
         if (LoggedUser != null)
         {
             MyTasks = new ObservableCollection<TaskModel>(
