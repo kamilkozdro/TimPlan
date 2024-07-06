@@ -21,7 +21,7 @@ namespace TimPlan.Converters
                     case TaskState.Completed:
                         return Brushes.PaleGreen;
                     case TaskState.Accepted:
-                        return Brushes.PaleTurquoise;
+                        return Brushes.LightSkyBlue;
                     case TaskState.Suspended:
                         return Brushes.LemonChiffon;
                     default:

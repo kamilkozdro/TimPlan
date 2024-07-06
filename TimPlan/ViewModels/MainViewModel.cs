@@ -215,8 +215,13 @@ public class MainViewModel : ViewModelBase
         TaskModel returnedTask = await windowService.ShowTaskEditWindow(EditWindowType.Add, null, SelectedTeamMember);
         if (returnedTask != null)
         {
+            UpdateTeamMemberTasks(SelectedTeamMember);
+            /*
+            TaskTileViewModel newTaskTile = new TaskTileViewModel(returnedTask);
+            newTaskTile.ReadOnlyTask = true;
             SelectedTeamMemberTasks.Add(returnedTask);
-            SelectedTeamMemberTaskTiles.Add(new TaskTileViewModel(returnedTask));
+            SelectedTeamMemberTaskTiles.Add(newTaskTile);
+            */
         }
     }
     private void UpdateUserLogged(UserModel? user)
@@ -285,6 +290,7 @@ public class MainViewModel : ViewModelBase
         {
             if(LoggedUser != null && LoggedUser.Id == member.Id)
             {
+                UpdateMyTasks();
                 SelectedTeamMemberTasks = MyTasks;
             }
             else
